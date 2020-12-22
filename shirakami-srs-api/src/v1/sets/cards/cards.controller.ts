@@ -6,16 +6,18 @@ import {
   NotFoundException,
   Param,
   Post,
-  Put,
-} from '@nestjs/common';
+  Put, UseGuards
+} from "@nestjs/common";
 import { BaseCardDTO, CardDTO } from './dtos/card.dto';
 import { CardsService } from './cards.service';
+import { JWTGuard } from "../../authentication/guards/jwt.guard";
 
 @Controller()
 export class CardsController {
   constructor(private readonly cardsService: CardsService) {}
 
   @Get()
+  @UseGuards(JWTGuard)
   async getAllCards(@Param('setId') setId: string): Promise<CardDTO[]> {
     return this.cardsService
       .findBySetId(setId)
@@ -23,6 +25,7 @@ export class CardsController {
   }
 
   @Get(':id')
+  @UseGuards(JWTGuard)
   async getCard(@Param('id') id: string): Promise<CardDTO> {
     const entity = await this.cardsService.findOneById(id);
     if (!entity) throw new NotFoundException();
@@ -30,6 +33,7 @@ export class CardsController {
   }
 
   @Post()
+  @UseGuards(JWTGuard)
   async postCard(
     @Param('setId') setId: string,
     @Body() card: BaseCardDTO,
@@ -44,6 +48,7 @@ export class CardsController {
   }
 
   @Put(':id')
+  @UseGuards(JWTGuard)
   async putCard(
     @Param('id') id: string,
     @Body() card: BaseCardDTO,
@@ -53,6 +58,7 @@ export class CardsController {
   }
 
   @Delete(':id')
+  @UseGuards(JWTGuard)
   async deleteSet(@Param('id') id) {
     await this.cardsService.removeById(id);
     return { success: true };

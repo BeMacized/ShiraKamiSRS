@@ -7,15 +7,18 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { BaseSetDTO, SetDTO } from './dtos/set.dto';
 import { SetsService } from './sets.service';
+import { JWTGuard } from '../authentication/guards/jwt.guard';
 
 @Controller()
 export class SetsController {
   constructor(private readonly setsService: SetsService) {}
 
   @Get()
+  @UseGuards(JWTGuard)
   async getAllSets(): Promise<SetDTO[]> {
     return this.setsService
       .findAll()
@@ -23,6 +26,7 @@ export class SetsController {
   }
 
   @Get(':id')
+  @UseGuards(JWTGuard)
   async getSet(@Param('id') id: string): Promise<SetDTO> {
     const entity = await this.setsService.findOneById(id);
     if (!entity) throw new NotFoundException();
@@ -30,12 +34,14 @@ export class SetsController {
   }
 
   @Post()
+  @UseGuards(JWTGuard)
   async postSet(@Body() set: BaseSetDTO): Promise<SetDTO> {
     const entity = await this.setsService.create(set);
     return SetDTO.fromEntity(entity);
   }
 
   @Put(':id')
+  @UseGuards(JWTGuard)
   async putSet(
     @Param('id') id: string,
     @Body() set: BaseSetDTO,
@@ -46,6 +52,7 @@ export class SetsController {
   }
 
   @Delete(':id')
+  @UseGuards(JWTGuard)
   async deleteSet(@Param('id') id) {
     await this.setsService.removeById(id);
     return { success: true };
