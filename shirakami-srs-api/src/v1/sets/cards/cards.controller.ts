@@ -6,11 +6,14 @@ import {
   NotFoundException,
   Param,
   Post,
-  Put, UseGuards
-} from "@nestjs/common";
-import { BaseCardDTO, CardDTO } from './dtos/card.dto';
+  Put,
+  UseGuards,
+} from '@nestjs/common';
+import { CardDTO, CreateCardDTO, UpdateCardDTO } from './dtos/card.dto';
 import { CardsService } from './cards.service';
-import { JWTGuard } from "../../authentication/guards/jwt.guard";
+import { JWTGuard } from '../../authentication/guards/jwt.guard';
+import { UserEntity } from '../../users/entities/user.entity';
+import { User } from '../../common/user.decorator';
 
 @Controller()
 export class CardsController {
@@ -18,16 +21,22 @@ export class CardsController {
 
   @Get()
   @UseGuards(JWTGuard)
-  async getAllCards(@Param('setId') setId: string): Promise<CardDTO[]> {
+  async getAllCards(
+    @Param('setId') setId: string,
+    @User() user: UserEntity,
+  ): Promise<CardDTO[]> {
     return this.cardsService
-      .findBySetId(setId)
+      .findBySetId(setId, user.id)
       .then((cards) => cards.map(CardDTO.fromEntity));
   }
 
   @Get(':id')
   @UseGuards(JWTGuard)
-  async getCard(@Param('id') id: string): Promise<CardDTO> {
-    const entity = await this.cardsService.findOneById(id);
+  async getCard(
+    @Param('id') id: string,
+    @User() user: UserEntity,
+  ): Promise<CardDTO> {
+    const entity = await this.cardsService.findOneById(id, user.id);
     if (!entity) throw new NotFoundException();
     return CardDTO.fromEntity(entity);
   }
@@ -36,31 +45,50 @@ export class CardsController {
   @UseGuards(JWTGuard)
   async postCard(
     @Param('setId') setId: string,
-    @Body() card: BaseCardDTO,
+    @Body() card: CreateCardDTO,
+    @User() user: UserEntity,
   ): Promise<CardDTO> {
-    const entity = await this.cardsService.create({
-      ...card,
-      setId,
-      srsLevel: 0,
-      levelLastChanged: new Date(),
-    });
+    const entity = await this.cardsService.create(
+      {
+        ...card,
+        setId,
+        levelLastChanged: new Date(
+          (card.levelLastChanged || 0) * 1000 || Date.now(),
+        ),
+        srsLevel: card.srsLevel || 0,
+      },
+      user.id,
+    );
     return CardDTO.fromEntity(entity);
   }
 
   @Put(':id')
   @UseGuards(JWTGuard)
   async putCard(
+    @Param('setId') setId: string,
     @Param('id') id: string,
-    @Body() card: BaseCardDTO,
+    @Body() card: UpdateCardDTO,
+    @User() user: UserEntity,
   ): Promise<CardDTO> {
-    const entity = await this.cardsService.update(id, card);
+    const entity = await this.cardsService.update(
+      id,
+      {
+        ...card,
+        setId,
+        levelLastChanged: new Date(
+          (card.levelLastChanged || 0) * 1000 || Date.now(),
+        ),
+        srsLevel: card.srsLevel || 0,
+      },
+      user.id,
+    );
     return CardDTO.fromEntity(entity);
   }
 
   @Delete(':id')
   @UseGuards(JWTGuard)
-  async deleteSet(@Param('id') id) {
-    await this.cardsService.removeById(id);
+  async deleteSet(@Param('id') id, @User() user: UserEntity) {
+    await this.cardsService.removeById(id, user.id);
     return { success: true };
   }
 }

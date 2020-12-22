@@ -1,21 +1,26 @@
 import { CardValueDTO } from './card-value.dto';
-import { IsNotEmpty, IsNumber, IsUUID, ValidateNested } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsUUID, ValidateNested } from "class-validator";
 import { CardEntity } from '../entities/card.entity';
 import { Type } from 'class-transformer';
 
-export class BaseCardDTO {
+export class CreateCardDTO {
   @ValidateNested()
   @Type(() => CardValueDTO)
   public readonly value: CardValueDTO;
-}
-
-export class CardDTO extends BaseCardDTO {
-  @IsUUID()
-  public readonly id: string;
   @IsNumber()
+  @IsOptional()
   public readonly levelLastChanged?: number;
   @IsNumber()
+  @IsOptional()
   public readonly srsLevel?: number;
+}
+
+export class UpdateCardDTO extends CreateCardDTO {
+  @IsUUID()
+  public readonly id: string;
+}
+
+export class CardDTO extends UpdateCardDTO {
   @IsNotEmpty()
   @IsUUID()
   public readonly setId: string;

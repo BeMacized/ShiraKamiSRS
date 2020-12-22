@@ -3,15 +3,16 @@ import {
   Controller,
   Delete,
   Get,
-  NotFoundException,
   Param,
   Post,
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { BaseSetDTO, SetDTO } from './dtos/set.dto';
+import { CreateSetDTO, SetDTO, UpdateSetDTO } from './dtos/set.dto';
 import { SetsService } from './sets.service';
 import { JWTGuard } from '../authentication/guards/jwt.guard';
+import { User } from '../common/user.decorator';
+import { UserEntity } from '../users/entities/user.entity';
 
 @Controller()
 export class SetsController {
@@ -19,24 +20,29 @@ export class SetsController {
 
   @Get()
   @UseGuards(JWTGuard)
-  async getAllSets(): Promise<SetDTO[]> {
+  async getAllSets(@User() user: UserEntity): Promise<SetDTO[]> {
     return this.setsService
-      .findAll()
+      .findAll(user.id)
       .then((sets) => sets.map(SetDTO.fromEntity));
   }
 
   @Get(':id')
   @UseGuards(JWTGuard)
-  async getSet(@Param('id') id: string): Promise<SetDTO> {
-    const entity = await this.setsService.findOneById(id);
-    if (!entity) throw new NotFoundException();
+  async getSet(
+    @Param('id') id: string,
+    @User() user: UserEntity,
+  ): Promise<SetDTO> {
+    const entity = await this.setsService.findOneById(id, user.id);
     return SetDTO.fromEntity(entity);
   }
 
   @Post()
   @UseGuards(JWTGuard)
-  async postSet(@Body() set: BaseSetDTO): Promise<SetDTO> {
-    const entity = await this.setsService.create(set);
+  async postSet(
+    @Body() set: CreateSetDTO,
+    @User() user: UserEntity,
+  ): Promise<SetDTO> {
+    const entity = await this.setsService.create({ ...set, userId: user.id });
     return SetDTO.fromEntity(entity);
   }
 
@@ -44,17 +50,22 @@ export class SetsController {
   @UseGuards(JWTGuard)
   async putSet(
     @Param('id') id: string,
-    @Body() set: BaseSetDTO,
+    @Body() set: UpdateSetDTO,
+    @User() user: UserEntity,
   ): Promise<SetDTO> {
-    const entity = await this.setsService.update(id, set);
+    const entity = await this.setsService.update(id, {
+      ...set,
+      id,
+      userId: user.id,
+    });
 
     return SetDTO.fromEntity(entity);
   }
 
   @Delete(':id')
   @UseGuards(JWTGuard)
-  async deleteSet(@Param('id') id) {
-    await this.setsService.removeById(id);
+  async deleteSet(@Param('id') id, @User() user: UserEntity) {
+    await this.setsService.removeById(id, user.id);
     return { success: true };
   }
 }

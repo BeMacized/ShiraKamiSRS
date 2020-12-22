@@ -30,3 +30,4 @@ export class CardEntity {
 }
 
 export type CreateCardEntity = Omit<CardEntity, 'id' | 'set'>;
+export type UpdateCardEntity = Omit<CardEntity, 'set'>;
