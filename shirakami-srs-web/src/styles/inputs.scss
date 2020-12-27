@@ -1,0 +1,23 @@
+@import 'themes';
+
+input[type='text'],
+input[type='password'] {
+    &.input {
+        padding: 0.5em 1em;
+        border: none;
+        outline: none;
+        border-bottom: 2px solid var(--color-input-border-inactive);
+        border-radius: 0;
+        transition: all 0.15s ease;
+        background: none;
+        color: var(--color-on-surface);
+
+        &::placeholder {
+            color: var(--color-on-surface-mute);
+        }
+
+        &:focus {
+            border-color: var(--color-input-border-active);
+        }
+    }
+}

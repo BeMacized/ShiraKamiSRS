@@ -1,0 +1,141 @@
+@import 'materials.scss';
+
+.card-set {
+    .card {
+        .header {
+            border-top-left-radius: 0.5em;
+            border-top-right-radius: 0.5em;
+            overflow: hidden;
+            margin: -#{$surface-padding} -#{$surface-padding} 0 -#{$surface-padding};
+            display: flex;
+            flex-direction: row;
+            justify-content: stretch;
+            align-items: center;
+
+            .info {
+                padding: $surface-padding;
+                flex: 1;
+
+                .info-set-modes {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: stretch;
+                    margin: 0.5em 0;
+
+                    .set-mode {
+                        background: var(--color-background);
+                        border-radius: 0.25em;
+                        padding: 0.25em 0.5em;
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+                        span {
+                            font-weight: 600;
+                        }
+
+                        i.material-icons {
+                            font-size: 1em;
+                            margin: 0 0.25em;
+                        }
+
+                        &:not(:first-child) {
+                            margin-left: 0.5em;
+                        }
+                    }
+                }
+
+                .info-next-review {
+                    color: var(--color-on-surface-mute);
+                }
+            }
+
+            .actions {
+                padding: $surface-padding;
+                display: flex;
+                flex-direction: row;
+                justify-content: flex-end;
+                flex-shrink: 0;
+
+                button + button {
+                    margin-left: 1em;
+                }
+
+                button.btn-count {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+
+                    span:first-child {
+                        flex: 1;
+                    }
+                    span:last-child {
+                        display: block;
+                        flex-shrink: 0;
+                        background: white;
+                        border-radius: 9999999px;
+                        margin-left: 1em;
+                        padding: 0.25em 0.5em;
+                        min-width: 2em;
+                        color: var(--scoped-bg-color);
+                    }
+
+                    &.btn.btn-count-none-available {
+                        background-color: gray;
+                        span:last-child {
+                            color: gray;
+                        }
+                    }
+                }
+            }
+        }
+
+        .srs-row {
+            border-top: var(--color-surface-border) 3px solid;
+            display: flex;
+            flex-direction: row;
+            align-items: stretch;
+            justify-content: stretch;
+            margin: 0 -#{$surface-padding} -#{$surface-padding} -#{$surface-padding};
+            border-bottom-left-radius: 0.5em;
+            border-bottom-right-radius: 0.5em;
+            overflow: hidden;
+            position: relative;
+
+            .srs-row-shadow {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                @include innerShadow(1, true);
+            }
+
+            .srs-group {
+                z-index: 0;
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                padding: 0.5em;
+                position: relative;
+
+                @for $i from 1 through 5 {
+                    &.srs-group-#{$i} {
+                        background-color: var(--color-srs-group-#{$i});
+                        color: var(--color-on-srs-group-#{$i});
+                    }
+                }
+
+                span:first-child {
+                    font-size: 1.5em;
+                    font-weight: 400;
+                }
+
+                span:last-child {
+                    opacity: 0.75;
+                }
+            }
+        }
+    }
+}

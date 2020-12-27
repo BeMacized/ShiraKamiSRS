@@ -1,0 +1,80 @@
+@import 'node_modules/sass-material-colors/sass/sass-material-colors';
+@import 'shadows.scss';
+
+@mixin baseTheme() {
+    --color-primary: #{material-color('cyan', '400')};
+    --color-primary-lighter: #{material-color('cyan', '300')};
+    --color-on-primary: white;
+
+    --color-secondary: #{material-color('grey', '900')};
+    --color-secondary-lighter: #{material-color('grey', '800')};
+    --color-on-secondary: white;
+
+    --color-input-border-inactive: #{material-color('grey', '500')};
+    --color-input-border-active: #{var(--color-primary)};
+
+    --color-button-unavailable: #{material-color('grey', '500')};
+    --color-on-button-unavailable: white;
+
+    --color-srs-group-1: #dd0093;
+    --color-srs-group-2: #882d9e;
+    --color-srs-group-3: #294ddb;
+    --color-srs-group-4: #0093dd;
+    --color-srs-group-5: #212121;
+    --color-on-srs-group-1: white;
+    --color-on-srs-group-2: white;
+    --color-on-srs-group-3: white;
+    --color-on-srs-group-4: white;
+    --color-on-srs-group-5: white;
+}
+
+@mixin lightTheme() {
+    --theme-name: 'light';
+
+    --color-background: #{material-color('grey', '100')};
+    --color-on-background: #{material-color('grey', '900')};
+    --color-on-background-mute: #{material-color('grey', '400')};
+
+    --color-surface: #{white};
+    --color-surface-lighter: #{material-color('grey', '200')};
+    --color-surface-border: #{material-color('grey', '300')};
+    --color-on-surface: #{material-color('grey', '900')};
+    --color-on-surface-mute: #{material-color('grey', '400')};
+
+    @for $i from 1 through 5 {
+        --shadow-#{$i}: #{build-shadow($i, true, false)};
+        --shadow-inset-#{$i}: #{build-shadow($i, true, true)};
+    }
+}
+
+@mixin darkTheme() {
+    --theme-name: 'dark';
+
+    --color-background: #{black};
+    --color-on-background: #{material-color('grey', '100')};
+    --color-on-background-mute: #{material-color('grey', '400')};
+
+    --color-surface: #{material-color('grey', '900')};
+    --color-surface-lighter: #{material-color('grey', '800')};
+    --color-on-surface: #{material-color('grey', '100')};
+    --color-on-surface-mute: #{material-color('grey', '400')};
+    --color-surface-border: #{material-color('grey', '800')};
+
+    @for $i from 1 through 5 {
+        --shadow-#{$i}: #{build-shadow($i, false, false)};
+        --shadow-inset-#{$i}: #{build-shadow($i, false, true)};
+    }
+}
+
+// Selectors
+body {
+    @include baseTheme();
+}
+
+body.dark {
+    @include darkTheme();
+}
+
+body:not(.dark) {
+    @include lightTheme();
+}

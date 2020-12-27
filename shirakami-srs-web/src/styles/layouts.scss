@@ -1,0 +1,63 @@
+@import 'responsive.scss';
+
+$layout-gap: 1.5em;
+
+.page-container {
+    max-width: 1200px;
+    margin: $layout-gap auto;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    justify-content: stretch;
+    align-items: flex-start;
+
+    &.h-center {
+        justify-content: center;
+    }
+
+    &.v-center {
+        align-items: center;
+    }
+
+    &.center {
+        justify-content: center;
+        align-items: center;
+    }
+
+    &.stretch {
+        align-items: stretch;
+    }
+
+    > *:not(:last-child) {
+        margin-right: $layout-gap;
+    }
+
+    &.mobile-collapse {
+        @include breakpoint(xs) {
+            flex-direction: column;
+            align-items: stretch;
+            > *:not(:last-child) {
+                margin-bottom: $layout-gap;
+                margin-right: 0;
+            }
+        }
+    }
+}
+
+.col {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    > *:not(:last-child) {
+        margin-bottom: $layout-gap;
+    }
+}
+
+@for $i from 1 through 6 {
+    .flex-#{$i} {
+        flex: $i;
+    }
+}

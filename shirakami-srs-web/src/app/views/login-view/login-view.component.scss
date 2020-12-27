@@ -1,0 +1,59 @@
+@import 'materials.scss';
+
+:host {
+    width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.dialog {
+    @include surface();
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 300px;
+
+    .logo {
+        font-size: 4em;
+        margin-bottom: 0.25em;
+        span {
+            transition: all 0.15s ease;
+            &:first-child {
+                color: var(--color-primary);
+                font-weight: 200;
+            }
+            &:last-child {
+                color: var(--color-on-surface);
+                font-weight: 200;
+            }
+        }
+    }
+
+    .input-block {
+        margin: 2em 0;
+        width: 100%;
+    }
+
+    .title {
+        font-weight: 200;
+        font-size: 2em;
+    }
+
+    a {
+        margin-top: 1em;
+        font-size: 0.75em;
+    }
+
+    button,
+    input {
+        width: 100%;
+        display: block;
+        &:not(:last-child) {
+            margin-bottom: 1em;
+        }
+    }
+}

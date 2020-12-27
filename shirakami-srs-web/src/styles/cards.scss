@@ -1,0 +1,5 @@
+@import 'materials.scss';
+
+.card {
+    @include surface();
+}

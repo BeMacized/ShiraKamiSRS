@@ -1,0 +1,32 @@
+@import 'themes.scss';
+@import 'buttons.scss';
+@import 'inputs.scss';
+@import 'cards.scss';
+@import 'layouts.scss';
+@import 'responsive.scss';
+@import 'typography.scss';
+@import '../node_modules/flag-icon-css/css/flag-icon.css';
+@import '../node_modules/material-icons/iconfont/material-icons.css';
+
+html,
+body {
+    margin: 0;
+    overflow: hidden;
+    background-color: var(--color-background);
+    color: var(--color-on-background);
+    font-size: 11px;
+    min-height: 100vh;
+    transition: all 0.15s ease;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+a,
+a:visited,
+a:hover,
+a:focus,
+a:active {
+    color: inherit;
+}

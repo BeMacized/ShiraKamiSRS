@@ -1,0 +1,41 @@
+<div class="page-container">
+    <div class="row stretch">
+        <div class="card flex-1">
+            <h1>Theme</h1>
+            <button
+                class="btn"
+                [ngClass]="
+                    themeService.settings.mode === 'SYSTEM'
+                        ? 'btn-primary'
+                        : 'btn-secondary'
+                "
+                (click)="themeService.setMode('SYSTEM')"
+            >
+                System
+            </button>
+            <button
+                class="btn"
+                [ngClass]="
+                    themeService.settings.mode === 'LIGHT'
+                        ? 'btn-primary'
+                        : 'btn-secondary'
+                "
+                (click)="themeService.setMode('LIGHT')"
+            >
+                Light
+            </button>
+            <button
+                class="btn"
+                [ngClass]="
+                    themeService.settings.mode === 'DARK'
+                        ? 'btn-primary'
+                        : 'btn-secondary'
+                "
+                (click)="themeService.setMode('DARK')"
+            >
+                Dark
+            </button>
+        </div>
+        <div class="card flex-1"></div>
+    </div>
+</div>
