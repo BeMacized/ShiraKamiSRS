@@ -116,7 +116,7 @@ export class TokensService {
     token: string,
   ): Promise<RefreshTokenPayload> {
     try {
-      return this.jwt.verifyAsync(token, {
+      return await this.jwt.verifyAsync(token, {
         secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
       });
     } catch (e) {

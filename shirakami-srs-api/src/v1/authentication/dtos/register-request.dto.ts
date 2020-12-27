@@ -1,11 +1,11 @@
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import { IsEmail, Length, Matches } from 'class-validator';
 
 export class RegisterRequestDto {
   @IsEmail()
-  @IsNotEmpty()
   email: string;
-  @IsNotEmpty()
+  @Length(3, 32)
+  @Matches(/[a-zA-Z0-9-_]+/g)
   username: string;
-  @IsNotEmpty()
+  @Length(6, 32)
   password: string;
 }

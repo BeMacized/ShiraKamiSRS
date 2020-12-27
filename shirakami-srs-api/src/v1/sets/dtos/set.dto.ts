@@ -1,23 +1,19 @@
-import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsString, IsUUID, Length } from 'class-validator';
 import { SetEntity } from '../entities/set.entity';
 import { CardDto } from '../cards/dtos/card.dto';
 
-export class CreateSetDto {
+export class CreateOrUpdateSetDto {
   @IsNotEmpty()
   @IsString()
+  @Length(1, 255)
   public readonly name: string;
 }
 
-export class UpdateSetDto {
+export class SetDto extends CreateOrUpdateSetDto {
   @IsNotEmpty()
   @IsUUID()
   public readonly id: string;
-  @IsNotEmpty()
-  @IsString()
-  public readonly name: string;
-}
 
-export class SetDto extends UpdateSetDto {
   public readonly cards?: CardDto[];
 
   static fromEntity(entity: SetEntity): SetDto {

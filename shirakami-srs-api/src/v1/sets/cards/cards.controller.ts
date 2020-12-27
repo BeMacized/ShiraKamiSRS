@@ -1,15 +1,5 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  NotFoundException,
-  Param,
-  Post,
-  Put,
-  UseGuards,
-} from '@nestjs/common';
-import { CardDto, CreateCardDto, UpdateCardDto } from './dtos/card.dto';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { CardDto, CreateOrUpdateCardDto } from './dtos/card.dto';
 import { CardsService } from './cards.service';
 import { JWTGuard } from '../../authentication/guards/jwt.guard';
 import { UserEntity } from '../../users/entities/user.entity';
@@ -17,8 +7,7 @@ import { User } from '../../common/user.decorator';
 
 @Controller()
 export class CardsController {
-  constructor(private readonly cardsService: CardsService) {
-  }
+  constructor(private readonly cardsService: CardsService) {}
 
   @Get()
   @UseGuards(JWTGuard)
@@ -46,7 +35,7 @@ export class CardsController {
   @UseGuards(JWTGuard)
   async postCard(
     @Param('setId') setId: string,
-    @Body() card: CreateCardDto,
+    @Body() card: CreateOrUpdateCardDto,
     @User() user: UserEntity,
   ): Promise<CardDto> {
     const entity = await this.cardsService.create(
@@ -65,7 +54,7 @@ export class CardsController {
   async putCard(
     @Param('setId') setId: string,
     @Param('id') id: string,
-    @Body() card: UpdateCardDto,
+    @Body() card: CreateOrUpdateCardDto,
     @User() user: UserEntity,
   ): Promise<CardDto> {
     const entity = await this.cardsService.update(

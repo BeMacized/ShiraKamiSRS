@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from 'typeorm';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { CardEntity } from './card.entity';
 
 @Entity()
@@ -13,12 +13,12 @@ export class SrsLevelEntity {
   lastChanged: Date;
 
   @OneToOne(() => CardEntity, {
-    cascade: true,
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn()
   card?: CardEntity;
 
+  static getDefaultEntity(): Readonly<Omit<SrsLevelEntity, 'id'>> {
+    return { level: -1, lastChanged: new Date() };
+  }
 }
-

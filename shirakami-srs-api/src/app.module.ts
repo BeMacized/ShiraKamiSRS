@@ -17,7 +17,13 @@ import { SrsLevelEntity } from './v1/sets/cards/entities/srs-level.entity';
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: './sqlite.db',
-      entities: [SetEntity, CardEntity, UserEntity, RefreshTokenEntity, SrsLevelEntity],
+      entities: [
+        SetEntity,
+        CardEntity,
+        UserEntity,
+        RefreshTokenEntity,
+        SrsLevelEntity,
+      ],
       synchronize: true,
       logging: true,
     }),
@@ -35,5 +41,4 @@ import { SrsLevelEntity } from './v1/sets/cards/entities/srs-level.entity';
   controllers: [AppController],
   providers: [],
 })
-export class AppModule {
-}
+export class AppModule {}

@@ -1,18 +1,9 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-  UseGuards,
-} from '@nestjs/common';
-import { CreateSetDto, SetDto, UpdateSetDto } from './dtos/set.dto';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { SetsService } from './sets.service';
 import { JWTGuard } from '../authentication/guards/jwt.guard';
 import { User } from '../common/user.decorator';
 import { UserEntity } from '../users/entities/user.entity';
+import { CreateOrUpdateSetDto, SetDto } from './dtos/set.dto';
 
 @Controller()
 export class SetsController {
@@ -39,7 +30,7 @@ export class SetsController {
   @Post()
   @UseGuards(JWTGuard)
   async postSet(
-    @Body() set: CreateSetDto,
+    @Body() set: CreateOrUpdateSetDto,
     @User() user: UserEntity,
   ): Promise<SetDto> {
     const entity = await this.setsService.create({ ...set, userId: user.id });
@@ -50,12 +41,11 @@ export class SetsController {
   @UseGuards(JWTGuard)
   async putSet(
     @Param('id') id: string,
-    @Body() set: UpdateSetDto,
+    @Body() set: CreateOrUpdateSetDto,
     @User() user: UserEntity,
   ): Promise<SetDto> {
     const entity = await this.setsService.update(id, {
       ...set,
-      id,
       userId: user.id,
     });
 

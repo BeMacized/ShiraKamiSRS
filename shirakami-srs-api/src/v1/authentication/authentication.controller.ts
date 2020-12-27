@@ -1,4 +1,10 @@
-import { Body, Controller, NotFoundException, Post, UnauthorizedException } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  NotFoundException,
+  Post,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { TokensService } from './tokens.service';
 import { AuthResponseDto } from './dtos/auth-response.dto';
@@ -12,8 +18,7 @@ export class AuthenticationController {
   constructor(
     private usersService: UsersService,
     private tokensService: TokensService,
-  ) {
-  }
+  ) {}
 
   @Post('/register')
   public async register(

@@ -1,9 +1,9 @@
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
-  OneToMany,
+  Entity,
   ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { CardEntity } from '../cards/entities/card.entity';
 import { UserEntity } from '../../users/entities/user.entity';
@@ -19,11 +19,10 @@ export class SetEntity {
   @ManyToOne(() => UserEntity)
   user?: UserEntity;
 
-  @Column()
+  @Column({ type: 'varchar', length: 255 })
   name: string;
 
   @OneToMany(() => CardEntity, (card) => card.set)
   cards?: CardEntity[];
 }
-export type CreateSetEntity = Omit<SetEntity, 'id' | 'cards' | 'user'>;
-export type UpdateSetEntity = Omit<SetEntity, 'cards' | 'user'>;
+export type CreateOrUpdateSetEntity = Omit<SetEntity, 'id' | 'cards' | 'user'>;

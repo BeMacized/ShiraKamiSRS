@@ -1,15 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  CreateSetEntity,
-  SetEntity,
-  UpdateSetEntity,
-} from './entities/set.entity';
+import { CreateOrUpdateSetEntity, SetEntity } from './entities/set.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -64,7 +56,7 @@ export class SetsService {
    * @param set - The data to create the set with.
    * @returns The created set.
    */
-  async create(set: CreateSetEntity): Promise<SetEntity> {
+  async create(set: CreateOrUpdateSetEntity): Promise<SetEntity> {
     const result = await this.setRepository.insert(set);
     return this.findOneById(result.identifiers[0]['id'], set.userId);
   }
@@ -76,8 +68,12 @@ export class SetsService {
    * @returns The updated set object. Is null if the set was not found.
    * @throws {NotFoundException} when no set was found for the given id.
    */
-  async update(id: string, set: UpdateSetEntity): Promise<SetEntity> {
+  async update(id: string, set: CreateOrUpdateSetEntity): Promise<SetEntity> {
+    // Ensure the set exists
+    await this.findOneById(id, set.userId);
+    // Update the set
     await this.setRepository.update(id, set);
+    // Find the set
     return this.findOneById(id, set.userId);
   }
 }

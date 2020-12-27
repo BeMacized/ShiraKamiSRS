@@ -7,8 +7,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RefreshTokenEntity } from './entities/refresh-token.entity';
 import { TokensService } from './tokens.service';
-import { JWTStrategy } from "./strategies/jwt.strategy";
-import { JWTGuard } from "./guards/jwt.guard";
+import { JWTStrategy } from './strategies/jwt.strategy';
+import { JWTGuard } from './guards/jwt.guard';
 
 @Module({
   imports: [

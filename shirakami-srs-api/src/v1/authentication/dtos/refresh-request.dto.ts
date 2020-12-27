@@ -1,8 +1,8 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsJWT, IsNotEmpty } from 'class-validator';
 
 export class RefreshRequestDto {
-  @IsNotEmpty()
+  @IsJWT()
   refreshToken: string;
-  @IsNotEmpty()
+  @IsJWT()
   accessToken: string;
 }

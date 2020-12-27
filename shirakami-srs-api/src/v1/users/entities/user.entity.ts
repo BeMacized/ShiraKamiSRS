@@ -9,13 +9,13 @@ export class UserEntity {
   @Column({ unique: true })
   email: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 32 })
   username: string;
 
   @Column()
   discriminator: number;
 
-  @Column()
+  @Column({ type: 'varchar', length: 60 })
   passwordHash?: string;
 
   @OneToMany(() => RefreshTokenEntity, (entity) => entity.user)
