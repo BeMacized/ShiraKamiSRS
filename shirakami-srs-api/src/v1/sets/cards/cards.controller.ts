@@ -9,7 +9,7 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { CardDTO, CreateCardDTO, UpdateCardDTO } from './dtos/card.dto';
+import { CardDto, CreateCardDto, UpdateCardDto } from './dtos/card.dto';
 import { CardsService } from './cards.service';
 import { JWTGuard } from '../../authentication/guards/jwt.guard';
 import { UserEntity } from '../../users/entities/user.entity';
@@ -17,17 +17,18 @@ import { User } from '../../common/user.decorator';
 
 @Controller()
 export class CardsController {
-  constructor(private readonly cardsService: CardsService) {}
+  constructor(private readonly cardsService: CardsService) {
+  }
 
   @Get()
   @UseGuards(JWTGuard)
   async getAllCards(
     @Param('setId') setId: string,
     @User() user: UserEntity,
-  ): Promise<CardDTO[]> {
+  ): Promise<CardDto[]> {
     return this.cardsService
       .findBySetId(setId, user.id)
-      .then((cards) => cards.map(CardDTO.fromEntity));
+      .then((cards) => cards.map(CardDto.fromEntity));
   }
 
   @Get(':id')
@@ -35,31 +36,28 @@ export class CardsController {
   async getCard(
     @Param('id') id: string,
     @User() user: UserEntity,
-  ): Promise<CardDTO> {
+  ): Promise<CardDto> {
     const entity = await this.cardsService.findOneById(id, user.id);
     if (!entity) throw new NotFoundException();
-    return CardDTO.fromEntity(entity);
+    return CardDto.fromEntity(entity);
   }
 
   @Post()
   @UseGuards(JWTGuard)
   async postCard(
     @Param('setId') setId: string,
-    @Body() card: CreateCardDTO,
+    @Body() card: CreateCardDto,
     @User() user: UserEntity,
-  ): Promise<CardDTO> {
+  ): Promise<CardDto> {
     const entity = await this.cardsService.create(
       {
         ...card,
         setId,
-        levelLastChanged: new Date(
-          (card.levelLastChanged || 0) * 1000 || Date.now(),
-        ),
-        srsLevel: card.srsLevel || 0,
       },
       user.id,
     );
-    return CardDTO.fromEntity(entity);
+    console.log('CREATED CARD', entity);
+    return CardDto.fromEntity(entity);
   }
 
   @Put(':id')
@@ -67,22 +65,18 @@ export class CardsController {
   async putCard(
     @Param('setId') setId: string,
     @Param('id') id: string,
-    @Body() card: UpdateCardDTO,
+    @Body() card: UpdateCardDto,
     @User() user: UserEntity,
-  ): Promise<CardDTO> {
+  ): Promise<CardDto> {
     const entity = await this.cardsService.update(
       id,
       {
         ...card,
         setId,
-        levelLastChanged: new Date(
-          (card.levelLastChanged || 0) * 1000 || Date.now(),
-        ),
-        srsLevel: card.srsLevel || 0,
       },
       user.id,
     );
-    return CardDTO.fromEntity(entity);
+    return CardDto.fromEntity(entity);
   }
 
   @Delete(':id')

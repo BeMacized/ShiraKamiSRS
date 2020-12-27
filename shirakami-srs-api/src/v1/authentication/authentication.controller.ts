@@ -1,22 +1,24 @@
-import { Body, Controller, Post, UnauthorizedException } from '@nestjs/common';
+import { Body, Controller, NotFoundException, Post, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { TokensService } from './tokens.service';
-import { AuthResponseDTO } from './dtos/auth-response.dto';
-import { RegisterRequestDTO } from './dtos/register-request.dto';
-import { LoginRequestDTO } from './dtos/login-request.dto';
-import { RefreshRequestDTO } from './dtos/refresh-request.dto';
+import { AuthResponseDto } from './dtos/auth-response.dto';
+import { RegisterRequestDto } from './dtos/register-request.dto';
+import { LoginRequestDto } from './dtos/login-request.dto';
+import { RefreshRequestDto } from './dtos/refresh-request.dto';
+import { UserEntity } from '../users/entities/user.entity';
 
 @Controller()
 export class AuthenticationController {
   constructor(
     private usersService: UsersService,
     private tokensService: TokensService,
-  ) {}
+  ) {
+  }
 
   @Post('/register')
   public async register(
-    @Body() body: RegisterRequestDTO,
-  ): Promise<AuthResponseDTO> {
+    @Body() body: RegisterRequestDto,
+  ): Promise<AuthResponseDto> {
     const user = await this.usersService.create(body);
 
     const accessToken = await this.tokensService.generateAccessToken(user);
@@ -30,9 +32,12 @@ export class AuthenticationController {
   }
 
   @Post('/login')
-  public async login(@Body() body: LoginRequestDTO): Promise<AuthResponseDTO> {
+  public async login(@Body() body: LoginRequestDto): Promise<AuthResponseDto> {
     const { email, password } = body;
-    const user = await this.usersService.findByEmail(email, true);
+    const user = await this.usersService.findByEmail(email, true).catch((e) => {
+      if (e instanceof NotFoundException) return null;
+      throw e;
+    });
     const valid = user
       ? await this.usersService.validateCredentials(user, password)
       : false;
@@ -53,8 +58,8 @@ export class AuthenticationController {
 
   @Post('/refresh')
   public async refresh(
-    @Body() body: RefreshRequestDTO,
-  ): Promise<AuthResponseDTO> {
+    @Body() body: RefreshRequestDto,
+  ): Promise<AuthResponseDto> {
     const {
       user,
       accessToken,

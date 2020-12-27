@@ -8,7 +8,7 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { CreateSetDTO, SetDTO, UpdateSetDTO } from './dtos/set.dto';
+import { CreateSetDto, SetDto, UpdateSetDto } from './dtos/set.dto';
 import { SetsService } from './sets.service';
 import { JWTGuard } from '../authentication/guards/jwt.guard';
 import { User } from '../common/user.decorator';
@@ -20,10 +20,10 @@ export class SetsController {
 
   @Get()
   @UseGuards(JWTGuard)
-  async getAllSets(@User() user: UserEntity): Promise<SetDTO[]> {
+  async getAllSets(@User() user: UserEntity): Promise<SetDto[]> {
     return this.setsService
       .findAll(user.id)
-      .then((sets) => sets.map(SetDTO.fromEntity));
+      .then((sets) => sets.map(SetDto.fromEntity));
   }
 
   @Get(':id')
@@ -31,35 +31,35 @@ export class SetsController {
   async getSet(
     @Param('id') id: string,
     @User() user: UserEntity,
-  ): Promise<SetDTO> {
+  ): Promise<SetDto> {
     const entity = await this.setsService.findOneById(id, user.id);
-    return SetDTO.fromEntity(entity);
+    return SetDto.fromEntity(entity);
   }
 
   @Post()
   @UseGuards(JWTGuard)
   async postSet(
-    @Body() set: CreateSetDTO,
+    @Body() set: CreateSetDto,
     @User() user: UserEntity,
-  ): Promise<SetDTO> {
+  ): Promise<SetDto> {
     const entity = await this.setsService.create({ ...set, userId: user.id });
-    return SetDTO.fromEntity(entity);
+    return SetDto.fromEntity(entity);
   }
 
   @Put(':id')
   @UseGuards(JWTGuard)
   async putSet(
     @Param('id') id: string,
-    @Body() set: UpdateSetDTO,
+    @Body() set: UpdateSetDto,
     @User() user: UserEntity,
-  ): Promise<SetDTO> {
+  ): Promise<SetDto> {
     const entity = await this.setsService.update(id, {
       ...set,
       id,
       userId: user.id,
     });
 
-    return SetDTO.fromEntity(entity);
+    return SetDto.fromEntity(entity);
   }
 
   @Delete(':id')

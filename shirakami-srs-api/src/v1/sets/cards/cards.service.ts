@@ -11,14 +11,18 @@ import {
   UpdateCardEntity,
 } from './entities/card.entity';
 import { SetsService } from '../sets.service';
+import { SrsLevelEntity } from './entities/srs-level.entity';
 
 @Injectable()
 export class CardsService {
   constructor(
     @InjectRepository(CardEntity)
     private cardRepository: Repository<CardEntity>,
+    @InjectRepository(SrsLevelEntity)
+    private srsLevelRepository: Repository<SrsLevelEntity>,
     private setsService: SetsService,
-  ) {}
+  ) {
+  }
 
   /**
    * Finds all cards from a set.
@@ -36,6 +40,7 @@ export class CardsService {
   /**
    * Find a specific card by its id.
    * @param id - The id of the card to find.
+   * @param userId - The id of the user for which to find the card.
    * @returns The found card.
    * @throws {NotFoundException} when no card or set were found for the given ids.
    * @throws {ForbiddenException} when the set the card belongs to does not belong to the specified user.
@@ -75,8 +80,44 @@ export class CardsService {
   async create(card: CreateCardEntity, userId?: string): Promise<CardEntity> {
     // Ensure the set exists
     if (userId) await this.setsService.findOneById(card.setId, userId);
+    // Create the srs levels
+    const srsLevelJpToEn = await this.srsLevelRepository.save({
+      level: -1,
+      lastChanged: Date.now(),
+    });
+    const srsLevelEnToJp = await this.srsLevelRepository.save({
+      level: -1,
+      lastChanged: Date.now(),
+    });
+    const srsLevelKanjiToKana = await this.srsLevelRepository.save({
+      level: -1,
+      lastChanged: Date.now(),
+    });
     // Create the card
-    const result = await this.cardRepository.insert(card);
+    const result = await this.cardRepository.insert({
+      ...card,
+      srsLevelJpToEn,
+      srsLevelEnToJp,
+      srsLevelKanjiToKana,
+      // srsLevelJpToEn: {
+      //   level: -1,
+      //   lastChanged: Date.now(),
+      // },
+      // srsLevelEnToJp: {
+      //   level: -1,
+      //   lastChanged: Date.now(),
+      // },
+      // srsLevelKanjiToKana: {
+      //   level: -1,
+      //   lastChanged: Date.now(),
+      // },
+    });
+    console.log('SAVING', {
+      ...card,
+      srsLevelJpToEn,
+      srsLevelEnToJp,
+      srsLevelKanjiToKana,
+    });
     // Find and return the card
     return this.findOneById(result.identifiers[0]['id']);
   }
@@ -95,10 +136,14 @@ export class CardsService {
     card: UpdateCardEntity,
     userId?: string,
   ): Promise<CardEntity> {
+
     // Ensure the card exists
-    await this.findOneById(card.id, userId);
+    const cardEntity = await this.findOneById(card.id, userId);
     // Update the card
-    await this.cardRepository.update(id, card);
+    await this.cardRepository.update(id, {
+      ...cardEntity,
+      ...card,
+    });
     // Find and return the card
     return this.findOneById(id);
   }

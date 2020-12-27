@@ -1,37 +1,41 @@
-import { CardValueDTO } from './card-value.dto';
+import { CardValueDto } from './card-value.dto';
 import { IsNotEmpty, IsNumber, IsOptional, IsUUID, ValidateNested } from "class-validator";
 import { CardEntity } from '../entities/card.entity';
 import { Type } from 'class-transformer';
+import { SrsLevelDto } from './srs-level.dto';
 
-export class CreateCardDTO {
+export class CreateCardDto {
   @ValidateNested()
-  @Type(() => CardValueDTO)
-  public readonly value: CardValueDTO;
-  @IsNumber()
-  @IsOptional()
-  public readonly levelLastChanged?: number;
-  @IsNumber()
-  @IsOptional()
-  public readonly srsLevel?: number;
+  @Type(() => CardValueDto)
+  public readonly value: CardValueDto;
 }
 
-export class UpdateCardDTO extends CreateCardDTO {
+export class UpdateCardDto extends CreateCardDto {
   @IsUUID()
   public readonly id: string;
 }
 
-export class CardDTO extends UpdateCardDTO {
-  @IsNotEmpty()
+export class CardDto extends UpdateCardDto {
   @IsUUID()
   public readonly setId: string;
+  @IsNumber()
+  @ValidateNested()
+  public readonly srsLevelEnToJp: SrsLevelDto;
+  @IsNumber()
+  @ValidateNested()
+  public readonly srsLevelJpToEn: SrsLevelDto;
+  @IsNumber()
+  @ValidateNested()
+  public readonly srsLevelKanjiToKana: SrsLevelDto;
 
-  static fromEntity(entity: CardEntity): CardDTO {
+  static fromEntity(entity: CardEntity): CardDto {
     return {
       id: entity.id,
       setId: entity.setId,
       value: entity.value,
-      srsLevel: entity.srsLevel,
-      levelLastChanged: Math.floor(entity.levelLastChanged.getTime() / 1000),
+      srsLevelEnToJp: SrsLevelDto.fromEntity(entity.srsLevelEnToJp),
+      srsLevelJpToEn: SrsLevelDto.fromEntity(entity.srsLevelJpToEn),
+      srsLevelKanjiToKana: SrsLevelDto.fromEntity(entity.srsLevelKanjiToKana),
     };
   }
 }

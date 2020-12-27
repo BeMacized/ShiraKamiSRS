@@ -1,14 +1,14 @@
 import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
 import { SetEntity } from '../entities/set.entity';
-import { CardDTO } from '../cards/dtos/card.dto';
+import { CardDto } from '../cards/dtos/card.dto';
 
-export class CreateSetDTO {
+export class CreateSetDto {
   @IsNotEmpty()
   @IsString()
   public readonly name: string;
 }
 
-export class UpdateSetDTO {
+export class UpdateSetDto {
   @IsNotEmpty()
   @IsUUID()
   public readonly id: string;
@@ -17,14 +17,14 @@ export class UpdateSetDTO {
   public readonly name: string;
 }
 
-export class SetDTO extends UpdateSetDTO {
-  public readonly cards?: CardDTO[];
+export class SetDto extends UpdateSetDto {
+  public readonly cards?: CardDto[];
 
-  static fromEntity(entity: SetEntity): SetDTO {
+  static fromEntity(entity: SetEntity): SetDto {
     return {
       id: entity.id,
       name: entity.name,
-      cards: entity.cards ? entity.cards.map(CardDTO.fromEntity) : undefined,
+      cards: entity.cards ? entity.cards.map(CardDto.fromEntity) : undefined,
     };
   }
 }

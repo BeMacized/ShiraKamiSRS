@@ -1,13 +1,13 @@
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class CardValueDTO {
+export class CardValueDto {
   @IsString()
   @IsNotEmpty()
   public readonly english: string;
   @IsString()
   @IsNotEmpty()
-  public readonly kanaOnly: string;
+  public readonly kana: string;
   @IsString()
   @IsOptional()
-  public readonly withKanji?: string;
+  public readonly kanji?: string;
 }

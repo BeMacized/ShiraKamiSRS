@@ -1,11 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToOne, JoinColumn } from 'typeorm';
 import { SetEntity } from '../../entities/set.entity';
 import { IsString } from 'class-validator';
+import { SrsLevelEntity } from './srs-level.entity';
 
 class CardValue {
   english: string;
-  kanaOnly: string;
-  withKanji?: string;
+  kana: string;
+  kanji?: string;
 }
 
 @Entity()
@@ -16,11 +17,14 @@ export class CardEntity {
   @Column('simple-json')
   value: CardValue;
 
-  @Column({ default: 0 })
-  srsLevel: number;
+  @OneToOne(() => SrsLevelEntity, level => level.card, { cascade: true, eager: true })
+  srsLevelEnToJp: SrsLevelEntity;
 
-  @Column()
-  levelLastChanged: Date;
+  @OneToOne(() => SrsLevelEntity, level => level.card, { cascade: true, eager: true })
+  srsLevelJpToEn: SrsLevelEntity;
+
+  @OneToOne(() => SrsLevelEntity, level => level.card, { cascade: true, eager: true })
+  srsLevelKanjiToKana: SrsLevelEntity;
 
   @Column()
   setId: string;
@@ -29,5 +33,5 @@ export class CardEntity {
   set?: SetEntity;
 }
 
-export type CreateCardEntity = Omit<CardEntity, 'id' | 'set'>;
-export type UpdateCardEntity = Omit<CardEntity, 'set'>;
+export type UpdateCardEntity = Omit<CardEntity, 'set' | 'srsLevelEnToJp' | 'srsLevelJpToEn' | 'srsLevelKanjiToKana'>;
+export type CreateCardEntity = Omit<UpdateCardEntity, 'id'>;
