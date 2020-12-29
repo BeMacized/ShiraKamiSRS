@@ -5,6 +5,10 @@ $layout-gap: 1.5em;
 .page-container {
     max-width: 1200px;
     margin: $layout-gap auto;
+
+    > *:not(:last-child) {
+        margin-bottom: $layout-gap;
+    }
 }
 
 .row {
