@@ -2,23 +2,65 @@ $breakpoint-sm: 768px;
 $breakpoint-md: 992px;
 $breakpoint-lg: 1200px;
 
+$breakpoint-tokens: xs sm md lg;
+
 @mixin breakpoint($class) {
     @if $class == xs {
-        @media (max-width: #{$breakpoint-sm - 1px}) {
+        @media only screen and (max-width: #{$breakpoint-sm - 1px}) {
             @content;
         }
     } @else if $class == sm {
-        @media (min-width: $breakpoint-sm) {
+        @media only screen and (min-width: $breakpoint-sm) {
             @content;
         }
     } @else if $class == md {
-        @media (min-width: $breakpoint-md) {
+        @media only screen and (min-width: $breakpoint-md) {
             @content;
         }
     } @else if $class == lg {
-        @media (min-width: $breakpoint-lg) {
+        @media only screen and (min-width: $breakpoint-lg) {
             @content;
         }
+    } @else {
+        @warn "Breakpoint mixin supports: xs, sm, md, lg";
+    }
+}
+
+@mixin breakpoint-above($class) {
+    @if $class == xs {
+            @content;
+    } @else if $class == sm {
+        @media only screen and (min-width: $breakpoint-sm) {
+            @content;
+        }
+    } @else if $class == md {
+        @media only screen and (min-width: $breakpoint-md) {
+            @content;
+        }
+    } @else if $class == lg {
+        @media only screen and (min-width: $breakpoint-lg) {
+            @content;
+        }
+    } @else {
+        @warn "Breakpoint mixin supports: xs, sm, md, lg";
+    }
+}
+
+@mixin breakpoint-below($class) {
+    @if $class == xs {
+        @media only screen and (max-width: #{$breakpoint-sm - 1px}) {
+            @content;
+        }
+    } @else if $class == sm {
+        @media only screen and (max-width: #{$breakpoint-md - 1px}) {
+            @content;
+        }
+    } @else if $class == md {
+        @media only screen and (min-width: #{$breakpoint-lg - 1px}) {
+            @content;
+        }
+    } @else if $class == lg {
+        @content;
     } @else {
         @warn "Breakpoint mixin supports: xs, sm, md, lg";
     }

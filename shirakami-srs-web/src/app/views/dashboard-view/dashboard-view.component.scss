@@ -1,5 +1,9 @@
 @import 'responsive.scss';
 
+:host {
+    display: block;
+}
+
 .srs-groups {
     .srs-group {
         display: flex;

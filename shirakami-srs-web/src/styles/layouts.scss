@@ -4,64 +4,42 @@ $layout-gap: 1.5em;
 
 .page-container {
     max-width: 1200px;
-    margin: $layout-gap auto;
+    margin: 0 auto;
+    padding: $layout-gap;
 
     > *:not(:last-child) {
         margin-bottom: $layout-gap;
     }
 }
 
-.row {
-    display: flex;
-    flex-direction: row;
-    justify-content: stretch;
-    align-items: flex-start;
+.grid {
+    display: grid;
+    grid-gap: $layout-gap;
+    grid-auto-columns: auto;
+    align-self: start;
 
-    &.h-center {
-        justify-content: center;
+    > * {
+        max-width: 100%;
+        //overflow: hidden;
     }
 
-    &.v-center {
-        align-items: center;
-    }
-
-    &.center {
-        justify-content: center;
-        align-items: center;
-    }
-
-    &.stretch {
-        align-items: stretch;
-    }
-
-    > *:not(:last-child) {
-        margin-right: $layout-gap;
-    }
-
-    &.mobile-collapse {
-        @include breakpoint(xs) {
-            flex-direction: column;
-            align-items: stretch;
-            > *:not(:last-child) {
-                margin-bottom: $layout-gap;
-                margin-right: 0;
+    @each $breakpoint in $breakpoint-tokens {
+        @for $i from 1 through 12 {
+            &.#{$breakpoint}-#{$i} {
+                @include breakpoint($breakpoint) {
+                    grid-template-columns: repeat(#{$i}, 1fr);
+                }
             }
         }
-    }
-}
-
-.col {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: flex-start;
-    > *:not(:last-child) {
-        margin-bottom: $layout-gap;
-    }
-}
-
-@for $i from 1 through 6 {
-    .flex-#{$i} {
-        flex: $i;
+        @for $i from 1 through 12 {
+            .span-#{$i} {
+                grid-column: span #{$i};
+            }
+            .#{$breakpoint}-span-#{$i} {
+                @include breakpoint($breakpoint) {
+                    grid-column: span #{$i};
+                }
+            }
+        }
     }
 }

@@ -13,9 +13,18 @@
             justify-content: stretch;
             align-items: center;
 
+            @include breakpoint-below(sm) {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
             .info {
                 padding: $surface-padding;
                 flex: 1;
+
+                @include breakpoint-below(sm) {
+                    padding-bottom: 0.5em;
+                }
 
                 .info-set-modes {
                     display: flex;
@@ -32,6 +41,7 @@
                         align-items: center;
                         span {
                             font-weight: 600;
+                            white-space: nowrap;
                         }
 
                         i.material-icons {
@@ -42,7 +52,6 @@
                         &:not(:first-child) {
                             margin-left: 0.5em;
                         }
-
                     }
                 }
 
@@ -57,6 +66,11 @@
                 flex-direction: row;
                 justify-content: flex-end;
                 flex-shrink: 0;
+
+                @include breakpoint-below(sm) {
+                    justify-content: flex-start;
+                    padding-top: 0.5em;
+                }
 
                 button + button {
                     margin-left: 1em;
