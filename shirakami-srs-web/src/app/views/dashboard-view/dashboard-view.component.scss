@@ -4,6 +4,25 @@
     display: block;
 }
 
+h1.section-title {
+    margin-top: 1em;
+}
+
+.lessons-reviews-card {
+
+    button {
+        height: 100px;
+        .btn-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: row;
+            align-items: flex-end;
+            justify-content: space-between;
+        }
+    }
+}
+
 .srs-groups {
     .srs-group {
         display: flex;
@@ -28,6 +47,14 @@
 
         span:last-child {
             opacity: 0.75;
+        }
+
+        @include breakpoint(xs) {
+            padding: 0.5em;
+
+            span:first-child {
+                margin-bottom: 0;
+            }
         }
     }
 }

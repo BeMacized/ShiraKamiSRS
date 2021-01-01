@@ -1,0 +1,21 @@
+.collapsible {
+    &-header {
+        cursor: pointer;
+    }
+
+    &-title {
+        font-weight: 600;
+        margin-bottom: 5px;
+        font-size: 1.1em;
+        line-height: 24px;
+    }
+
+    i.material-icons {
+        float: right;
+        user-select: none;
+        transition: transform 0.25s ease;
+        &.collapsed {
+            transform: rotate(180deg);
+        }
+    }
+}

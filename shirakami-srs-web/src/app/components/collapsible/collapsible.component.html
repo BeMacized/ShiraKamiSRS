@@ -1,0 +1,14 @@
+<div class='collapsible'>
+    <div class='collapsible-header' (click)='toggle()' #header
+         [style.--collapsible-collapsed]='isCollapsed ? 1 : 0'
+    >
+        <ng-content select='.collapsible-header'></ng-content>
+    </div>
+    <div class='collapsible-header default' (click)='toggle()' *ngIf='header.children.length === 0'>
+        <span class='collapsible-title'>{{ title }}</span>
+        <i class='material-icons' [class.collapsed]='isCollapsed'>expand_less</i>
+    </div>
+    <div *ngIf='!isCollapsed' @vshrink @triggerChildren>
+        <ng-content></ng-content>
+    </div>
+</div>

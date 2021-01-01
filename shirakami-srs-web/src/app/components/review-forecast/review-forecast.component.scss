@@ -1,0 +1,94 @@
+
+app-collapsible {
+    display: block;
+
+    &:not(:first-child) {
+        margin-top: 1em;
+    }
+}
+
+.schedule-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: 1.2em;
+
+    &:first-child {
+        border-top: 1px solid var(--color-surface-border);
+    }
+
+    &-header {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        font-size: 1.2em;
+
+        .title {
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .addition, .total {
+            width: 3em;
+            padding-left: calc(0.5em + 1px);
+            padding-right: 0.5em;
+            white-space: nowrap;
+            overflow: hidden;
+            opacity: var(--collapsible-collapsed);
+            transition: opacity .15s ease;
+        }
+
+        i.material-icons {
+            user-select: none;
+            transition: transform 0.25s ease;
+            transform: rotate(calc(var(--collapsible-collapsed) * 180deg));
+        }
+    }
+
+    .time, .bar, .addition, .total {
+        padding-top: 0.25em;
+        padding-bottom: 0.25em;
+    }
+
+    .time {
+        margin-right: 1em;
+    }
+
+    .bar {
+        flex: 1;
+        border-left: 1px solid var(--color-surface-border);
+        padding-right: 0.5em;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: stretch;
+
+        &-fill {
+            $thickness: 0.8em;
+            height: $thickness;
+            background-color: var(--color-primary);
+            border-top-right-radius: #{$thickness / 2};
+            border-bottom-right-radius: #{$thickness / 2};
+            min-width: #{$thickness / 2};
+            transition: width .15s ease;
+        }
+    }
+
+
+    .total, .addition {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 3em;
+        padding-left: 0.5em;
+        padding-right: 0.5em;
+        border-left: 1px solid var(--color-surface-border);
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .addition {
+        display: flex;
+        justify-content: flex-end;
+    }
+}

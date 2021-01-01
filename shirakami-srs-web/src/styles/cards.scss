@@ -1,5 +1,8 @@
 @import 'materials.scss';
 
+$card-padding: 2.5em;
+
 .card {
     @include surface();
+    padding: $card-padding;
 }

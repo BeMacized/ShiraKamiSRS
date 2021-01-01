@@ -1,4 +1,4 @@
-@import 'materials.scss';
+@import 'cards.scss';
 @import 'responsive.scss';
 
 .card-set {
@@ -7,7 +7,7 @@
             border-top-left-radius: 0.5em;
             border-top-right-radius: 0.5em;
             overflow: hidden;
-            margin: -#{$surface-padding} -#{$surface-padding} 0 -#{$surface-padding};
+            margin: -#{$card-padding} -#{$card-padding} 0 -#{$card-padding};
             display: flex;
             flex-direction: row;
             justify-content: stretch;
@@ -19,7 +19,7 @@
             }
 
             .info {
-                padding: $surface-padding;
+                padding: $card-padding;
                 flex: 1;
 
                 @include breakpoint-below(sm) {
@@ -56,12 +56,12 @@
                 }
 
                 .info-next-review {
-                    color: var(--color-on-surface-mute);
+                    color: var(--color-on-card-mute);
                 }
             }
 
             .actions {
-                padding: $surface-padding;
+                padding: $card-padding;
                 display: flex;
                 flex-direction: row;
                 justify-content: flex-end;
@@ -84,34 +84,17 @@
                     span:first-child {
                         flex: 1;
                     }
-                    span:last-child {
-                        display: block;
-                        flex-shrink: 0;
-                        background: white;
-                        border-radius: 9999999px;
-                        margin-left: 1em;
-                        padding: 0.25em 0.5em;
-                        min-width: 2em;
-                        color: var(--scoped-bg-color);
-                    }
-
-                    &.btn.btn-count-none-available {
-                        background-color: gray;
-                        span:last-child {
-                            color: gray;
-                        }
-                    }
                 }
             }
         }
 
         .srs-row {
-            border-top: var(--color-surface-border) 3px solid;
+            border-top: var(--color-card-border) 3px solid;
             display: flex;
             flex-direction: row;
             align-items: stretch;
             justify-content: stretch;
-            margin: 0 -#{$surface-padding} -#{$surface-padding} -#{$surface-padding};
+            margin: 0 -#{$card-padding} -#{$card-padding} -#{$card-padding};
             border-bottom-left-radius: 0.5em;
             border-bottom-right-radius: 0.5em;
             overflow: hidden;

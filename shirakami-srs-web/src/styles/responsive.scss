@@ -4,6 +4,18 @@ $breakpoint-lg: 1200px;
 
 $breakpoint-tokens: xs sm md lg;
 
+@mixin below-width($width) {
+    @media only screen and (max-width: $width) {
+        @content;
+    }
+}
+
+@mixin above-width($width) {
+    @media only screen and (min-width: $width) {
+        @content;
+    }
+}
+
 @mixin breakpoint($class) {
     @if $class == xs {
         @media only screen and (max-width: #{$breakpoint-sm - 1px}) {

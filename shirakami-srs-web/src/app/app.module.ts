@@ -9,14 +9,17 @@ import { ThemeService } from './services/theme.service';
 import { AppInitService } from './services/app-init.service';
 import { DebugViewComponent } from './views/debug-view/debug-view.component';
 import { CardSetCardComponent } from './components/card-set-card/card-set-card.component';
+import { ReviewForecastComponent } from './components/review-forecast/review-forecast.component';
+import { CollapsibleComponent } from './components/collapsible/collapsible.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 export function initializeApp(appInitService: AppInitService) {
     return () => appInitService.init();
 }
 
 @NgModule({
-    declarations: [AppComponent, DashboardViewComponent, LoginViewComponent, DebugViewComponent, CardSetCardComponent],
-    imports: [BrowserModule, AppRoutingModule],
+    declarations: [AppComponent, DashboardViewComponent, LoginViewComponent, DebugViewComponent, CardSetCardComponent, ReviewForecastComponent, CollapsibleComponent],
+    imports: [BrowserModule, BrowserAnimationsModule, AppRoutingModule],
     providers: [
         ThemeService,
         AppInitService,
@@ -29,4 +32,5 @@ export function initializeApp(appInitService: AppInitService) {
     ],
     bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule {
+}
