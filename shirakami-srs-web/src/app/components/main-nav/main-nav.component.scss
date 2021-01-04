@@ -1,3 +1,4 @@
+@import 'node_modules/sass-material-colors/sass/sass-material-colors';
 @import 'layouts.scss';
 @import 'shadows.scss';
 
@@ -67,7 +68,7 @@ app-logo {
     }
 
     .avatar {
-        background: var(--color-on-surface);
+        background: material-color('grey', '900');
         position: relative;
         border-radius: 9999999px;
         width: 4.5em;
