@@ -30,7 +30,6 @@ export class AuthenticationController {
     const refreshToken = await this.tokensService.generateRefreshToken(user);
 
     return {
-      user,
       accessToken,
       refreshToken,
     };
@@ -55,7 +54,6 @@ export class AuthenticationController {
 
     user.passwordHash = undefined;
     return {
-      user,
       accessToken,
       refreshToken,
     };
@@ -66,7 +64,6 @@ export class AuthenticationController {
     @Body() body: RefreshRequestDto,
   ): Promise<AuthResponseDto> {
     const {
-      user,
       accessToken,
       refreshToken,
     } = await this.tokensService.refreshTokens(
@@ -74,7 +71,6 @@ export class AuthenticationController {
       body.refreshToken,
     );
     return {
-      user,
       accessToken,
       refreshToken,
     };

@@ -77,7 +77,7 @@ export class TokensService {
   public async refreshTokens(
     accessToken: string,
     refreshToken: string,
-  ): Promise<{ user: UserEntity; accessToken: string; refreshToken: string }> {
+  ): Promise<{ accessToken: string; refreshToken: string }> {
     const refreshTokenEntity = await this.resolveRefreshToken(refreshToken);
     // Check if token exists
     if (!refreshTokenEntity) {
@@ -99,7 +99,6 @@ export class TokensService {
     await this.refreshTokenRepository.delete(refreshTokenEntity.id);
     // Return new tokens
     return {
-      user,
       accessToken,
       refreshToken,
     };

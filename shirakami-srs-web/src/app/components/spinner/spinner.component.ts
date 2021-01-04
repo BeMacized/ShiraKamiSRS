@@ -32,11 +32,10 @@ export class SpinnerComponent implements OnInit {
         this.c = Math.ceil(this.svgSize / 2);
         this.r = Math.ceil(this.svgSize / 2 - this.strokeWidth / 2);
         this.dashOffset = 2 * Math.PI * this.r;
-        console.log(this);
     }
 
     constructor() {
-        // this.size = 'NORMAL';
+        this.size = 'NORMAL';
     }
 
     ngOnInit(): void {}

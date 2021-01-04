@@ -1,35 +1,23 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, switchMap, take } from 'rxjs/operators';
 import { AppSettingsService } from '../services/app-settings.service';
 import { Observable } from 'rxjs';
+import { map, switchMap, take } from 'rxjs/operators';
+import { AuthLoginResponse } from './auth-repository.service';
 import { User } from '../models/user.model';
-
-export interface AuthLoginResponse {
-    accessToken: string;
-    refreshToken: string;
-}
 
 @Injectable({
     providedIn: 'root',
 })
-export class AuthRepositoryService {
+export class UserRepositoryService {
     constructor(
         private http: HttpClient,
         private appSettings: AppSettingsService
     ) {}
 
-    public login(
-        email: string,
-        password: string
-    ): Observable<AuthLoginResponse> {
-        return this.getApiUrl(`/auth/login`).pipe(
-            switchMap((url) =>
-                this.http.post<AuthLoginResponse>(url, {
-                    email,
-                    password,
-                })
-            )
+    public getMe(): Observable<User> {
+        return this.getApiUrl(`/users/me`).pipe(
+            switchMap((url) => this.http.get<User>(url))
         );
     }
 

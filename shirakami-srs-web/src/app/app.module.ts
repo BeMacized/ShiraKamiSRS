@@ -15,8 +15,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MainNavComponent } from './components/main-nav/main-nav.component';
 import { LogoComponent } from './components/logo/logo.component';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { SpinnerComponent } from './components/spinner/spinner.component';
+import { AuthInterceptor } from './interceptors/auth-interceptor.service';
 
 export function initializeApp(appInitService: AppInitService) {
     return () => appInitService.init();
@@ -45,6 +46,7 @@ export function initializeApp(appInitService: AppInitService) {
     providers: [
         ThemeService,
         AppInitService,
+        { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
         {
             provide: APP_INITIALIZER,
             useFactory: initializeApp,

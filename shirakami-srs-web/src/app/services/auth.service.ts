@@ -11,10 +11,11 @@ import {
     AuthLoginResponse,
     AuthRepositoryService,
 } from '../repositories/auth-repository.service';
-import { User } from '../models/user.model';
 import jwt_decode from 'jwt-decode';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ServiceError } from '../models/service-error.model';
+import { UserService } from './user.service';
+import { Router } from '@angular/router';
 
 const TOKEN_SET_KEY = 'AUTH_TOKEN_SET';
 
@@ -31,23 +32,38 @@ export class AuthService {
 
     constructor(
         private storage: StorageMap,
-        private authRepository: AuthRepositoryService
+        private authRepository: AuthRepositoryService,
+        private userService: UserService,
+        private router: Router
     ) {}
 
     public async init() {
-        await this.loadTokenSet();
+        try {
+            if (await this.loadTokenSet()) await this.userService.refreshUser();
+        } catch (e) {
+            await this.logout();
+        }
+    }
+
+    public getTokenSet(): TokenSet {
+        return this.tokenSet.value;
     }
 
     public async login(email: string, password: string) {
         if (this.isLoggedInSync()) await this.logout();
         try {
+            // Attempt a log in
             const resp = await this.authRepository
                 .login(email, password)
                 .toPromise();
+            // Extract a token set from the response
             const tokenSet = this.getTokenSetFromLoginResponse(resp);
-            this.tokenSet.next(tokenSet);
+            // Persist the token set
             await this.saveTokenSet(tokenSet);
+            // Set the token set as the current set
+            this.tokenSet.next(tokenSet);
         } catch (e) {
+            await this.logout();
             if (e instanceof HttpErrorResponse) {
                 switch (e.status) {
                     case 401:
@@ -58,18 +74,34 @@ export class AuthService {
             }
             throw e;
         }
+        try {
+            // Retrieve the user
+            await this.userService.refreshUser();
+        } catch (e) {
+            await this.logout();
+            if (e instanceof HttpErrorResponse) {
+                switch (e.status) {
+                    case 0:
+                        throw new ServiceError('SERVICE_UNAVAILABLE');
+                }
+            }
+            throw e;
+        }
     }
 
     public async logout(): Promise<void> {
         this.tokenSet.next(null);
+        await this.userService.clearUser();
+        await this.storage.delete(TOKEN_SET_KEY).toPromise();
+        await this.router.navigate(['login']);
     }
 
     public isLoggedInSync(): boolean {
         return !!this.tokenSet.value;
     }
 
-    private async loadTokenSet(): Promise<void> {
-        if (!(await this.storage.has(TOKEN_SET_KEY).toPromise())) return;
+    private async loadTokenSet(): Promise<TokenSet> {
+        if (!(await this.storage.has(TOKEN_SET_KEY).toPromise())) return null;
         const tokenSetData: StoredTokenSet = await this.storage
             .get<StoredTokenSet>(TOKEN_SET_KEY, TokenSetSchema)
             .toPromise();
@@ -80,7 +112,7 @@ export class AuthService {
             refreshTokenExpiry: new Date(tokenSetData.refreshTokenExpiry),
         };
         this.tokenSet.next(tokenSet);
-        return;
+        return tokenSet;
     }
 
     private async saveTokenSet(tokenSet: TokenSet): Promise<void> {

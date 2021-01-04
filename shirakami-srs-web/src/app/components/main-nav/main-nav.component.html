@@ -1,10 +1,14 @@
 <div class="nav-container">
     <app-logo></app-logo>
     <div class="left">
-        <div class="account">
-            <span class="username">Username</span>
+        <div class="account" (click)="authService.logout()" *ngIf="user">
+            <span class="username">{{ user.username }}</span>
             <div class="avatar">
-                <svg data-jdenticon-value="hello"></svg>
+                <svg
+                    [attr.data-jdenticon-value]="
+                        user.username + '#' + user.discriminator
+                    "
+                ></svg>
             </div>
         </div>
     </div>
