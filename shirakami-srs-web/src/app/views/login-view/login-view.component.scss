@@ -15,22 +15,11 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-width: 300px;
+    max-width: 350px;
+    width: 100%;
 
-    .logo {
-        font-size: 4em;
+    app-logo {
         margin-bottom: 0.25em;
-        span {
-            transition: all 0.15s ease;
-            &:first-child {
-                color: var(--color-primary);
-                font-weight: 200;
-            }
-            &:last-child {
-                color: var(--color-on-surface);
-                font-weight: 200;
-            }
-        }
     }
 
     .input-block {
@@ -49,9 +38,11 @@
     }
 
     button,
-    input {
+    input,
+    .login-error {
         width: 100%;
         display: block;
+
         &:not(:last-child) {
             margin-bottom: 1em;
         }

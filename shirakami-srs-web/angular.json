@@ -31,7 +31,9 @@
                         "styles": [
                             "src/styles.scss"
                         ],
-                        "scripts": [],
+                        "scripts": [
+                            "node_modules/jdenticon/dist/jdenticon.js"
+                        ],
                         "stylePreprocessorOptions": {
                             "includePaths": ["src/styles"]
                         },

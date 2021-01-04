@@ -1,56 +1,58 @@
-<div class='page-container'>
-
-    <div class='grid xs-1 sm-3'>
-        <div class='grid xs-span-1 sm-span-2'>
-            <h1 class='section-title'>All Sets</h1>
-            <div class='card lessons-reviews-card'>
-                <div class='grid xs-2 sm-2'>
-                    <button class='btn btn-primary btn-rect'>
-                        <div class='btn-content'>
+<app-main-nav></app-main-nav>
+<div class="page-container">
+    <div class="grid xs-1 sm-3">
+        <div class="grid xs-span-1 sm-span-2">
+            <h1 class="section-title">All Sets</h1>
+            <div class="card lessons-reviews-card">
+                <div class="grid xs-2 sm-2">
+                    <button class="btn btn-primary btn-rect">
+                        <div class="btn-content">
                             <span>Lessons</span>
-                            <span class='counter-badge'>0</span>
+                            <span class="counter-badge">0</span>
                         </div>
                     </button>
-                    <button class='btn btn-primary btn-rect btn-unavailable' disabled>
-                        <div class='btn-content'>
+                    <button
+                        class="btn btn-primary btn-rect btn-unavailable"
+                        disabled
+                    >
+                        <div class="btn-content">
                             <span>Reviews</span>
-                            <span class='counter-badge'>0</span>
+                            <span class="counter-badge">0</span>
                         </div>
                     </button>
                 </div>
             </div>
-            <div class='srs-groups grid xs-2 sm-5'>
-                <div class='card srs-group srs-group-1 xs-span-2'>
+            <div class="srs-groups grid xs-2 sm-5">
+                <div class="card srs-group srs-group-1 xs-span-2">
                     <span>1</span>
                     <span>Apprentice</span>
                 </div>
-                <div class='card srs-group srs-group-2'>
+                <div class="card srs-group srs-group-2">
                     <span>2</span>
                     <span>Guru</span>
                 </div>
-                <div class='card srs-group srs-group-3'>
+                <div class="card srs-group srs-group-3">
                     <span>3</span>
                     <span>Master</span>
                 </div>
-                <div class='card srs-group srs-group-4'>
+                <div class="card srs-group srs-group-4">
                     <span>4</span>
                     <span>Enlightened</span>
                 </div>
-                <div class='card srs-group srs-group-5'>
+                <div class="card srs-group srs-group-5">
                     <span>5</span>
                     <span>Burned</span>
                 </div>
             </div>
-            <h1 class='section-title'>Your Sets</h1>
+            <h1 class="section-title">Your Sets</h1>
             <app-card-set-card></app-card-set-card>
             <app-card-set-card></app-card-set-card>
             <app-card-set-card></app-card-set-card>
             <app-card-set-card></app-card-set-card>
         </div>
-        <div class='grid span-1'>
-            <h1 class='section-title'>Review Forecast</h1>
+        <div class="grid span-1">
+            <h1 class="section-title">Review Forecast</h1>
             <app-review-forecast></app-review-forecast>
         </div>
     </div>
-
 </div>

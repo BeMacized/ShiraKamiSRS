@@ -12,7 +12,11 @@ import {
 } from '@angular/animations';
 
 export function triggerChildren(name = 'triggerChildren') {
-    return trigger(name, [transition('* => *', [group([query('@*', [animateChild()], { optional: true })])])]);
+    return trigger(name, [
+        transition('* => *', [
+            group([query('@*', [animateChild()], { optional: true })]),
+        ]),
+    ]);
 }
 export function listItem(name = 'listItem', length = '.4s ease') {
     return trigger(name, [
@@ -158,7 +162,10 @@ export function slidingPane(name = 'slidingPane', length = '.4s ease') {
     ]);
 }
 
-export function preparedListItem(name = 'preparedListItem', length = '.4s ease') {
+export function preparedListItem(
+    name = 'preparedListItem',
+    length = '.4s ease'
+) {
     return trigger(name, [
         state('true', style({})),
         state(
@@ -254,57 +261,115 @@ export function fade(name = 'fade', length = '.15s ease') {
 
 export function fadeUp(name = 'fadeUp', length = '.15s ease') {
     return trigger(name, [
-        transition(':enter', [style({ opacity: 0, transform: 'translateY(44px)' }), animate(length)]),
-        transition(':leave', [animate(length, style({ opacity: 0, transform: 'translateY(44px)' }))]),
+        transition(':enter', [
+            style({ opacity: 0, transform: 'translateY(44px)' }),
+            animate(length),
+        ]),
+        transition(':leave', [
+            animate(
+                length,
+                style({ opacity: 0, transform: 'translateY(44px)' })
+            ),
+        ]),
     ]);
 }
 
 export function fadeUpInv(name = 'fadeUpInv', length = '.15s ease') {
     return trigger(name, [
-        transition(':enter', [style({ opacity: 0, transform: 'translateY(44px)' }), animate(length)]),
-        transition(':leave', [animate(length, style({ opacity: 0, transform: 'translateY(-44px)' }))]),
+        transition(':enter', [
+            style({ opacity: 0, transform: 'translateY(44px)' }),
+            animate(length),
+        ]),
+        transition(':leave', [
+            animate(
+                length,
+                style({ opacity: 0, transform: 'translateY(-44px)' })
+            ),
+        ]),
     ]);
 }
 
 export function fadeLeft(name = 'fadeLeft', length = '.15s ease') {
     return trigger(name, [
-        transition(':enter', [style({ opacity: 0, transform: 'translateX(-44px)' }), animate(length)]),
-        transition(':leave', [animate(length, style({ opacity: 0, transform: 'translateX(-44px)' }))]),
+        transition(':enter', [
+            style({ opacity: 0, transform: 'translateX(-44px)' }),
+            animate(length),
+        ]),
+        transition(':leave', [
+            animate(
+                length,
+                style({ opacity: 0, transform: 'translateX(-44px)' })
+            ),
+        ]),
     ]);
 }
 
 export function fadeRight(name = 'fadeRight', length = '.15s ease') {
     return trigger(name, [
-        transition(':enter', [style({ opacity: 0, transform: 'translateX(44px)' }), animate(length)]),
-        transition(':leave', [animate(length, style({ opacity: 0, transform: 'translateX(44px)' }))]),
+        transition(':enter', [
+            style({ opacity: 0, transform: 'translateX(44px)' }),
+            animate(length),
+        ]),
+        transition(':leave', [
+            animate(
+                length,
+                style({ opacity: 0, transform: 'translateX(44px)' })
+            ),
+        ]),
     ]);
 }
 
 export function fadeDown(name = 'fadeDown', length = '.15s ease') {
     return trigger(name, [
-        transition(':enter', [style({ opacity: 0, transform: 'translateY(-44px)' }), animate(length)]),
-        transition(':leave', [animate(length, style({ opacity: 0, transform: 'translateY(-44px)' }))]),
+        transition(':enter', [
+            style({ opacity: 0, transform: 'translateY(-44px)' }),
+            animate(length),
+        ]),
+        transition(':leave', [
+            animate(
+                length,
+                style({ opacity: 0, transform: 'translateY(-44px)' })
+            ),
+        ]),
     ]);
 }
 
 export function fadeDownInv(name = 'fadeDownInv', length = '.15s ease') {
     return trigger(name, [
-        transition(':enter', [style({ opacity: 0, transform: 'translateY(-44px)' }), animate(length)]),
-        transition(':leave', [animate(length, style({ opacity: 0, transform: 'translateY(44px)' }))]),
+        transition(':enter', [
+            style({ opacity: 0, transform: 'translateY(-44px)' }),
+            animate(length),
+        ]),
+        transition(':leave', [
+            animate(
+                length,
+                style({ opacity: 0, transform: 'translateY(44px)' })
+            ),
+        ]),
     ]);
 }
 
 export function zoomFadeShrink(name = 'zoomFadeShrink', length = '.5s ease') {
     return trigger(name, [
-        transition(':enter', [style({ opacity: 0, transform: 'scale(0)' }), animate(length)]),
-        transition(':leave', [animate(length, style({ opacity: 0, transform: 'scale(0)' }))]),
+        transition(':enter', [
+            style({ opacity: 0, transform: 'scale(0)' }),
+            animate(length),
+        ]),
+        transition(':leave', [
+            animate(length, style({ opacity: 0, transform: 'scale(0)' })),
+        ]),
     ]);
 }
 
 export function zoomFadeGrow(name = 'zoomFadeGrow', length = '.5s ease') {
     return trigger(name, [
-        transition(':enter', [style({ opacity: 0, transform: 'scale(2)' }), animate(length)]),
-        transition(':leave', [animate(length, style({ opacity: 0, transform: 'scale(2)' }))]),
+        transition(':enter', [
+            style({ opacity: 0, transform: 'scale(2)' }),
+            animate(length),
+        ]),
+        transition(':leave', [
+            animate(length, style({ opacity: 0, transform: 'scale(2)' })),
+        ]),
     ]);
 }
 
@@ -444,17 +509,31 @@ export function shrink(name = 'shrink', length = '.2s ease') {
     ]);
 }
 
-export function fadeUpStaggered(name = 'fadeUpStaggered', length = '.15s ease', interval = 50) {
+export function fadeUpStaggered(
+    name = 'fadeUpStaggered',
+    length = '.15s ease',
+    interval = 50
+) {
     return trigger(name, [
         transition('* => *', [
             query(
                 ':enter',
-                [style({ opacity: 0, transform: 'translateY(44px)' }), stagger(interval, [animate(length)])],
+                [
+                    style({ opacity: 0, transform: 'translateY(44px)' }),
+                    stagger(interval, [animate(length)]),
+                ],
                 { optional: true }
             ),
             query(
                 ':leave',
-                [stagger(interval, [animate(length, style({ opacity: 0, transform: 'translateY(44px)' }))])],
+                [
+                    stagger(interval, [
+                        animate(
+                            length,
+                            style({ opacity: 0, transform: 'translateY(44px)' })
+                        ),
+                    ]),
+                ],
                 { optional: true }
             ),
         ]),

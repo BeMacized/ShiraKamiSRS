@@ -6,7 +6,7 @@ import { AuthenticationModule } from './v1/authentication/authentication.module'
 
 export const APP_ROUTES: Routes = [
   {
-    path: '/v1',
+    path: '/api/v1',
     module: V1Module,
     children: [
       {

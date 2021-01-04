@@ -16,6 +16,7 @@ button.btn {
     justify-content: center;
     background-color: var(--scoped-bg-color);
     color: var(--scoped-color);
+    min-height: 42px;
 
     &:not(:disabled) {
         &:hover {
@@ -33,7 +34,11 @@ button.btn {
         --scoped-color: var(--color-on-primary);
 
         &:not(:disabled):hover {
-            --scoped-bg-color: var(--color-primary-lighter);
+            --scoped-bg-color: var(--color-primary-hover);
+        }
+
+        &:disabled {
+            opacity: 0.5;
         }
     }
 
@@ -41,11 +46,15 @@ button.btn {
         --scoped-bg-color: var(--color-secondary);
         --scoped-color: var(--color-on-secondary);
         &:not(:disabled):hover {
-            --scoped-bg-color: var(--color-secondary-lighter);
+            --scoped-bg-color: var(--color-secondary-hover);
         }
 
         body.dark & {
             --scoped-border-color: var(--color-on-surface);
+        }
+
+        &:disabled {
+            opacity: 0.5;
         }
     }
 

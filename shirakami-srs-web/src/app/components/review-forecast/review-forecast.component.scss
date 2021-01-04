@@ -1,4 +1,3 @@
-
 app-collapsible {
     display: block;
 
@@ -18,24 +17,38 @@ app-collapsible {
     }
 
     &-header {
+        $border-radius: 0.5em;
         display: flex;
         flex-direction: row;
         align-items: center;
         font-size: 1.2em;
+        transition: background-color 0.15s ease, border-radius 0.15s ease;
+        border-radius: $border-radius $border-radius 0 0;
+
+        &:hover {
+            background-color: var(--color-surface-lighter);
+            border-radius: $border-radius $border-radius
+                calc(var(--collapsible-collapsed) * #{$border-radius})
+                calc(var(--collapsible-collapsed) * #{$border-radius});
+        }
+
+        &:active {
+            background-color: transparent;
+        }
 
         .title {
-            font-weight: 600;
             flex: 1;
         }
 
-        .addition, .total {
+        .addition,
+        .total {
             width: 3em;
             padding-left: calc(0.5em + 1px);
             padding-right: 0.5em;
             white-space: nowrap;
             overflow: hidden;
             opacity: var(--collapsible-collapsed);
-            transition: opacity .15s ease;
+            transition: opacity 0.15s ease;
         }
 
         i.material-icons {
@@ -45,7 +58,10 @@ app-collapsible {
         }
     }
 
-    .time, .bar, .addition, .total {
+    .time,
+    .bar,
+    .addition,
+    .total {
         padding-top: 0.25em;
         padding-bottom: 0.25em;
     }
@@ -70,12 +86,12 @@ app-collapsible {
             border-top-right-radius: #{$thickness / 2};
             border-bottom-right-radius: #{$thickness / 2};
             min-width: #{$thickness / 2};
-            transition: width .15s ease;
+            transition: width 0.15s ease;
         }
     }
 
-
-    .total, .addition {
+    .total,
+    .addition {
         display: flex;
         flex-direction: row;
         align-items: center;

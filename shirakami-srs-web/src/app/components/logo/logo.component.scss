@@ -1,0 +1,19 @@
+.logo {
+    font-size: 4em;
+    word-break: keep-all;
+    white-space: nowrap;
+
+    span {
+        transition: all 0.15s ease;
+
+        &:first-child {
+            color: var(--color-primary);
+            font-weight: 200;
+        }
+
+        &:last-child {
+            color: var(--color-on-surface);
+            font-weight: 200;
+        }
+    }
+}

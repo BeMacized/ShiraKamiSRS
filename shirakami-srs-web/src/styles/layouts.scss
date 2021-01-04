@@ -1,9 +1,10 @@
 @import 'responsive.scss';
 
 $layout-gap: 1.5em;
+$layout-width: 1200px;
 
 .page-container {
-    max-width: 1200px;
+    max-width: $layout-width;
     padding: $layout-gap;
     margin: 0 auto;
 

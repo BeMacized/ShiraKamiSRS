@@ -12,14 +12,36 @@ import { CardSetCardComponent } from './components/card-set-card/card-set-card.c
 import { ReviewForecastComponent } from './components/review-forecast/review-forecast.component';
 import { CollapsibleComponent } from './components/collapsible/collapsible.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MainNavComponent } from './components/main-nav/main-nav.component';
+import { LogoComponent } from './components/logo/logo.component';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { SpinnerComponent } from './components/spinner/spinner.component';
 
 export function initializeApp(appInitService: AppInitService) {
     return () => appInitService.init();
 }
 
 @NgModule({
-    declarations: [AppComponent, DashboardViewComponent, LoginViewComponent, DebugViewComponent, CardSetCardComponent, ReviewForecastComponent, CollapsibleComponent],
-    imports: [BrowserModule, BrowserAnimationsModule, AppRoutingModule],
+    declarations: [
+        AppComponent,
+        DashboardViewComponent,
+        LoginViewComponent,
+        DebugViewComponent,
+        CardSetCardComponent,
+        ReviewForecastComponent,
+        CollapsibleComponent,
+        MainNavComponent,
+        LogoComponent,
+        SpinnerComponent,
+    ],
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        HttpClientModule,
+        FormsModule,
+        AppRoutingModule,
+    ],
     providers: [
         ThemeService,
         AppInitService,
@@ -32,5 +54,4 @@ export function initializeApp(appInitService: AppInitService) {
     ],
     bootstrap: [AppComponent],
 })
-export class AppModule {
-}
+export class AppModule {}

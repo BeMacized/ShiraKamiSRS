@@ -22,5 +22,4 @@ export class CollapsibleComponent implements OnInit {
     public toggle(): void {
         this.isCollapsed = !this.isCollapsed;
     }
-
 }

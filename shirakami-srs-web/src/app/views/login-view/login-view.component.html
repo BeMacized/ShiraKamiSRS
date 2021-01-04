@@ -1,21 +1,41 @@
 <div class="card dialog">
-    <div class="logo"><span>白紙</span><span>SRS</span></div>
+    <app-logo></app-logo>
     <span class="title">Log in</span>
-    <div class="input-block">
+    <form class="input-block" (ngSubmit)="onFormSubmit()">
         <input
             class="input"
             type="text"
             name="email"
             placeholder="E-mail address"
+            [(ngModel)]="email"
         />
         <input
             class="input"
             type="password"
             name="password"
             placeholder="Password"
+            [(ngModel)]="password"
         />
-    </div>
-    <button class="btn btn-primary">Login</button>
+        <input type="submit" style="visibility: hidden; position: absolute" />
+        <div class="alert alert-error login-error" *ngIf="loginError" @vshrink>
+            {{ loginError }}
+        </div>
+    </form>
+    <button
+        class="btn btn-primary"
+        (click)="onFormSubmit()"
+        [disabled]="loginStatus === 'IN_PROGRESS' || loginStatus === 'SUCCESS' || (!email && !password)"
+    >
+        <div *ngIf="loginStatus === 'IN_PROGRESS'">
+            <app-spinner [size]="'SMALL'"></app-spinner>
+        </div>
+        <div *ngIf="loginStatus === 'IDLE' || loginStatus === 'ERROR'">
+            Log In
+        </div>
+        <div *ngIf="loginStatus === 'SUCCESS'">
+            <i class='material-icons'>done</i>
+        </div>
+    </button>
     <button class="btn btn-secondary">Create Account</button>
     <a href="#" class="forgot-password">I forgot my password</a>
 </div>

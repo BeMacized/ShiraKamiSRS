@@ -1,0 +1,24 @@
+<div
+    class="spinner-container"
+    [style.width]="svgSize + 'px'"
+    [style.height]="svgSize + 'px'"
+>
+    <svg
+        class="spinner"
+        [style.--spinner-dash-offset]="dashOffset"
+        [attr.width]="svgSize"
+        [attr.height]="svgSize"
+        [attr.viewBox]="'0 0 ' + (svgSize + 1) + ' ' + (svgSize + 1)"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <circle
+            class="path"
+            fill="none"
+            [attr.stroke-width]="strokeWidth"
+            stroke-linecap="round"
+            [attr.cx]="c"
+            [attr.cy]="c"
+            [attr.r]="r"
+        ></circle>
+    </svg>
+</div>
