@@ -18,6 +18,7 @@ import { FormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { AuthInterceptor } from './interceptors/auth-interceptor.service';
+import { ClickOutsideDirective } from './directives/click-outside.directive';
 
 export function initializeApp(appInitService: AppInitService) {
     return () => appInitService.init();
@@ -35,6 +36,7 @@ export function initializeApp(appInitService: AppInitService) {
         MainNavComponent,
         LogoComponent,
         SpinnerComponent,
+        ClickOutsideDirective,
     ],
     imports: [
         BrowserModule,

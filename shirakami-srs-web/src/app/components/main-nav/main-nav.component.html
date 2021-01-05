@@ -1,14 +1,30 @@
 <div class="nav-container">
     <app-logo></app-logo>
     <div class="left">
-        <div class="account" (click)="authService.logout()" *ngIf="user">
-            <span class="username">{{ user.username }}</span>
-            <div class="avatar">
-                <svg
-                    [attr.data-jdenticon-value]="
-                        user.username + '#' + user.discriminator
-                    "
-                ></svg>
+        <div
+            class="nav-item"
+            *ngIf="user"
+            (clickOutside)="showAccountDropdown = false"
+        >
+            <button class="nav-item-content account" (click)="clickAccount()">
+                <span class="username">{{ user.username }}</span>
+                <div class="avatar">
+                    <svg
+                        [attr.data-jdenticon-value]="
+                            user.username + '#' + user.discriminator
+                        "
+                    ></svg>
+                </div>
+            </button>
+            <div
+                class="dropdown card"
+                *ngIf="showAccountDropdown"
+                @dropdown
+            >
+                <div class='dropdown-item' (click)='authService.logout()'>
+                    <i class='material-icons'>exit_to_app</i>
+                    <span>Log out</span>
+                </div>
             </div>
         </div>
     </div>
