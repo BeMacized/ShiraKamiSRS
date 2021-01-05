@@ -24,16 +24,26 @@
     <button
         class="btn btn-primary"
         (click)="onFormSubmit()"
-        [disabled]="loginStatus === 'IN_PROGRESS' || loginStatus === 'SUCCESS' || (!email && !password)"
+        [disabled]="
+            loginStatus === 'IN_PROGRESS' ||
+            loginStatus === 'SUCCESS' ||
+            (!email && !password)
+        "
     >
-        <div *ngIf="loginStatus === 'IN_PROGRESS'">
-            <app-spinner [size]="'SMALL'"></app-spinner>
-        </div>
-        <div *ngIf="loginStatus === 'IDLE' || loginStatus === 'ERROR'">
-            Log In
-        </div>
-        <div *ngIf="loginStatus === 'SUCCESS'">
-            <i class='material-icons'>done</i>
+        <div class="flex-row jc-center ai-center">
+            <div *ngIf="loginStatus === 'IN_PROGRESS'" @hshrink>
+                <app-spinner [size]="'SMALL'"></app-spinner>
+            </div>
+            <div
+                *ngIf="loginStatus === 'IDLE' || loginStatus === 'ERROR'"
+                @hshrink
+                class='nowrap'
+            >
+                Log In
+            </div>
+            <div *ngIf="loginStatus === 'SUCCESS'" @hshrink>
+                <i class="material-icons">done</i>
+            </div>
         </div>
     </button>
     <button class="btn btn-secondary">Create Account</button>

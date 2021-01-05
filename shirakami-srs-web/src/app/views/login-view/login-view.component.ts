@@ -3,14 +3,14 @@ import { ThemeService } from '../../services/theme.service';
 import { AuthService } from '../../services/auth.service';
 import { ServiceError } from '../../models/service-error.model';
 import { OperationStatus } from '../../models/operation-status.model';
-import { vshrink } from '../../utils/animations';
+import { hshrink, vshrink } from '../../utils/animations';
 import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-login-view',
     templateUrl: './login-view.component.html',
     styleUrls: ['./login-view.component.scss'],
-    animations: [vshrink()],
+    animations: [vshrink(), hshrink()],
 })
 export class LoginViewComponent implements OnInit {
     email: string;

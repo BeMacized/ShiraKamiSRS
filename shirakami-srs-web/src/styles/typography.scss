@@ -16,3 +16,8 @@ h5 {
     margin: 0;
     font-weight: 200;
 }
+
+.nowrap {
+    word-break: keep-all;
+    white-space: nowrap;
+}

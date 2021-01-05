@@ -5,7 +5,7 @@ import { AppSettingsService } from '../services/app-settings.service';
 import { Observable } from 'rxjs';
 import { User } from '../models/user.model';
 
-export interface AuthLoginResponse {
+export interface AuthResponse {
     accessToken: string;
     refreshToken: string;
 }
@@ -22,12 +22,23 @@ export class AuthRepositoryService {
     public login(
         email: string,
         password: string
-    ): Observable<AuthLoginResponse> {
+    ): Observable<AuthResponse> {
         return this.getApiUrl(`/auth/login`).pipe(
             switchMap((url) =>
-                this.http.post<AuthLoginResponse>(url, {
+                this.http.post<AuthResponse>(url, {
                     email,
                     password,
+                })
+            )
+        );
+    }
+
+    public refresh(accessToken: string, refreshToken: string): Observable<AuthResponse> {
+        return this.getApiUrl(`/auth/refresh`).pipe(
+            switchMap((url) =>
+                this.http.post<AuthResponse>(url, {
+                    accessToken,
+                    refreshToken,
                 })
             )
         );

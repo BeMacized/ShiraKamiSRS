@@ -43,3 +43,41 @@ $layout-width: 1200px;
         }
     }
 }
+
+
+.flex {
+    &-row {
+        flex-direction: row;
+    }
+    &-column {
+        flex-direction: column;
+    }
+    &-row, &-column {
+        display: flex;
+        &.jc-start {
+            justify-content: flex-start;
+        }
+        &.jc-end {
+            justify-content: flex-end;
+        }
+        &.jc-center {
+            justify-content: center;
+        }
+        &.jc-stretch {
+            justify-content: stretch;
+        }
+        &.ai-start {
+            align-items: flex-start;
+        }
+        &.ai-end {
+            align-items: flex-end;
+        }
+        &.ai-center {
+            align-items: center;
+        }
+        &.ai-stretch {
+            align-items: stretch;
+        }
+    }
+}
+

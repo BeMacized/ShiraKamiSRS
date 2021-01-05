@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { StorageMap } from '@ngx-pwa/local-storage';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import {
     StoredTokenSet,
     TokenSet,
     TokenSetSchema,
 } from '../models/token-set.model';
-import { map } from 'rxjs/operators';
+import { delay, filter, map, switchMap } from 'rxjs/operators';
 import {
-    AuthLoginResponse,
+    AuthResponse,
     AuthRepositoryService,
 } from '../repositories/auth-repository.service';
 import jwt_decode from 'jwt-decode';
@@ -18,6 +18,8 @@ import { UserService } from './user.service';
 import { Router } from '@angular/router';
 
 const TOKEN_SET_KEY = 'AUTH_TOKEN_SET';
+// const ACCESS_TOKEN_REFRESH_PERIOD = 1000 * 60 * 5;
+const ACCESS_TOKEN_REFRESH_PERIOD = 1000 * 5;
 
 @Injectable({
     providedIn: 'root',
@@ -35,7 +37,9 @@ export class AuthService {
         private authRepository: AuthRepositoryService,
         private userService: UserService,
         private router: Router
-    ) {}
+    ) {
+        this.handleAutoTokenRefresh();
+    }
 
     public async init() {
         try {
@@ -100,19 +104,74 @@ export class AuthService {
         return !!this.tokenSet.value;
     }
 
+    private handleAutoTokenRefresh() {
+        this.tokenSet
+            .pipe(
+                switchMap((tokenSet) => {
+                    if (!tokenSet) return of(null);
+                    const refreshDelay = Math.max(
+                        0,
+                        tokenSet.accessTokenExpiry.getTime() -
+                            Date.now() -
+                            ACCESS_TOKEN_REFRESH_PERIOD
+                    );
+                    return of(tokenSet).pipe(delay(refreshDelay));
+                }),
+                filter((tokenSet) => !!tokenSet)
+            )
+            .subscribe((tokenSet: TokenSet) => this.refreshTokens(tokenSet));
+    }
+
+    private async refreshTokens(tokenSet: TokenSet): Promise<TokenSet> {
+        try {
+            const resp = await this.authRepository
+                .refresh(tokenSet.accessToken, tokenSet.refreshToken)
+                .toPromise();
+            const newTokens = this.getTokenSetFromLoginResponse(resp);
+            this.tokenSet.next(newTokens);
+            await this.saveTokenSet(newTokens);
+            return newTokens;
+        } catch (e) {
+            // TODO: Tell user that their login expired.
+            await this.logout();
+        }
+    }
+
     private async loadTokenSet(): Promise<TokenSet> {
         if (!(await this.storage.has(TOKEN_SET_KEY).toPromise())) return null;
+        // Get token set from storage
         const tokenSetData: StoredTokenSet = await this.storage
             .get<StoredTokenSet>(TOKEN_SET_KEY, TokenSetSchema)
             .toPromise();
-        const tokenSet: TokenSet = {
+        let tokenSet: TokenSet = {
             accessToken: tokenSetData.accessToken,
             accessTokenExpiry: new Date(tokenSetData.accessTokenExpiry),
             refreshToken: tokenSetData.refreshToken,
             refreshTokenExpiry: new Date(tokenSetData.refreshTokenExpiry),
         };
-        this.tokenSet.next(tokenSet);
-        return tokenSet;
+        // Check if the access token is about to expire
+        if (
+            tokenSet.accessTokenExpiry.getTime() - Date.now() <
+            ACCESS_TOKEN_REFRESH_PERIOD
+        ) {
+            // Check if the refresh token is still valid
+            if (tokenSet.refreshTokenExpiry.getTime() - Date.now() > 0) {
+                // Attempt to refresh the token set
+                return this.refreshTokens(tokenSet);
+            }
+            // If not, log out
+            else {
+                // TODO: Tell user that their login expired.
+                await this.logout();
+                return null;
+            }
+        }
+        // If it's not about to expire, just load it normally
+        else {
+            // Activate the token set and return it
+            this.tokenSet.next(tokenSet);
+            return tokenSet;
+        }
     }
 
     private async saveTokenSet(tokenSet: TokenSet): Promise<void> {
@@ -130,7 +189,7 @@ export class AuthService {
             .toPromise();
     }
 
-    private getTokenSetFromLoginResponse(resp: AuthLoginResponse) {
+    private getTokenSetFromLoginResponse(resp: AuthResponse): TokenSet {
         const { exp: accessExp } = jwt_decode(resp.accessToken) as any;
         const { exp: refreshExp } = jwt_decode(resp.refreshToken) as any;
         return {
