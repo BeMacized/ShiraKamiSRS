@@ -2,7 +2,9 @@
 <div class="page-container">
     <div class="grid xs-1 sm-3">
         <div class="grid xs-span-1 sm-span-2">
-            <h1 class="section-title">All Sets</h1>
+            <div class="section-header">
+                <h1 class="section-header-title">All Sets</h1>
+            </div>
             <div class="card lessons-reviews-card">
                 <div class="grid xs-2 sm-2">
                     <button class="btn btn-primary btn-rect">
@@ -44,7 +46,14 @@
                     <span>Burned</span>
                 </div>
             </div>
-            <h1 class="section-title">Your Sets</h1>
+            <div class="section-header">
+                <h1 class="section-header-title">Your Sets</h1>
+                <div class="section-header-actions">
+                    <button class="btn btn-rect btn-transparent">
+                        <i class="material-icons">more_vert</i>
+                    </button>
+                </div>
+            </div>
             <app-card-set-card></app-card-set-card>
             <app-card-set-card></app-card-set-card>
             <app-card-set-card></app-card-set-card>
@@ -52,6 +61,9 @@
         </div>
         <div class="grid span-1">
             <h1 class="section-title">Review Forecast</h1>
+            <div class="section-header">
+                <h1 class="section-header-title">Review Forecast</h1>
+            </div>
             <app-review-forecast></app-review-forecast>
         </div>
     </div>

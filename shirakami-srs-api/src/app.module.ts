@@ -30,8 +30,7 @@ import { SrsLevelEntity } from './v1/sets/cards/entities/srs-level.entity';
     ConfigModule.forRoot({
       validationSchema: Joi.object({
         JWT_ACCESS_SECRET: Joi.string().required(),
-        // JWT_ACCESS_EXPIRY: Joi.number().default(60 * 60 * 24),
-        JWT_ACCESS_EXPIRY: Joi.number().default(30),
+        JWT_ACCESS_EXPIRY: Joi.number().default(60 * 60 * 24),
         JWT_REFRESH_SECRET: Joi.string().required(),
         JWT_REFRESH_EXPIRY: Joi.number().default(60 * 60 * 24 * 30),
       }),

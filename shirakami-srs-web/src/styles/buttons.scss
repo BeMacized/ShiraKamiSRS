@@ -58,6 +58,17 @@ button.btn {
         }
     }
 
+    &.btn-transparent {
+        --scoped-bg-color: transparent;
+        --scoped-color: var(--color-on-surface);
+        &:not(:disabled):hover {
+            --scoped-bg-color: var(--color-on-secondary);
+        }
+        &:disabled {
+            opacity: 0.5;
+        }
+    }
+
     &.btn-unavailable {
         --scoped-bg-color: var(--color-button-unavailable);
         --scoped-color: var(--color-on-button-unavailable);

@@ -18,8 +18,7 @@ import { UserService } from './user.service';
 import { Router } from '@angular/router';
 
 const TOKEN_SET_KEY = 'AUTH_TOKEN_SET';
-// const ACCESS_TOKEN_REFRESH_PERIOD = 1000 * 60 * 5;
-const ACCESS_TOKEN_REFRESH_PERIOD = 1000 * 5;
+const ACCESS_TOKEN_REFRESH_PERIOD = 1000 * 60 * 5;
 
 @Injectable({
     providedIn: 'root',
@@ -134,6 +133,7 @@ export class AuthService {
         } catch (e) {
             // TODO: Tell user that their login expired.
             await this.logout();
+            return null;
         }
     }
 
@@ -143,7 +143,7 @@ export class AuthService {
         const tokenSetData: StoredTokenSet = await this.storage
             .get<StoredTokenSet>(TOKEN_SET_KEY, TokenSetSchema)
             .toPromise();
-        let tokenSet: TokenSet = {
+        const tokenSet: TokenSet = {
             accessToken: tokenSetData.accessToken,
             accessTokenExpiry: new Date(tokenSetData.accessTokenExpiry),
             refreshToken: tokenSetData.refreshToken,

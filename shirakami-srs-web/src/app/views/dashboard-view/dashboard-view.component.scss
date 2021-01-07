@@ -4,10 +4,24 @@
     display: block;
 }
 
-h1.section-title {
-    margin-top: 1em;
-}
 
+.section-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 1em;
+
+    &-title {
+        flex: 1;
+    }
+
+    &-actions {
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+}
 .lessons-reviews-card {
     button {
         height: 100px;
