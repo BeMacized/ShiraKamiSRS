@@ -1,8 +1,9 @@
 @import 'shadows.scss';
 
+$mat-surface-border-radius: 0.5em;
 
 @mixin surface() {
-    border-radius: 0.5em;
+    border-radius: $mat-surface-border-radius;
     background-color: var(--color-surface);
     color: var(--color-on-surface);
     transition: all 0.15s ease;

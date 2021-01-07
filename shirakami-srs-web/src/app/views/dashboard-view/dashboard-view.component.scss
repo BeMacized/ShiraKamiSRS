@@ -62,7 +62,7 @@
             opacity: 0.75;
         }
 
-        @include breakpoint(xs) {
+        @include bp(xs) {
             padding: 0.5em;
 
             span:first-child {

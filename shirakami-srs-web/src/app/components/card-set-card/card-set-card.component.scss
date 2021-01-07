@@ -12,8 +12,9 @@
             flex-direction: row;
             justify-content: stretch;
             align-items: center;
+            position: relative;
 
-            @include breakpoint-below(sm) {
+            @include bp-and-below(sm) {
                 flex-direction: column;
                 align-items: stretch;
             }
@@ -22,15 +23,20 @@
                 padding: $card-padding;
                 flex: 1;
 
-                @include breakpoint-below(sm) {
+                @include bp-and-below(sm) {
                     padding-bottom: 0.5em;
+                    padding: $card-padding / 2;
                 }
 
-                .info-set-modes {
+                &-title {
+                    word-break: break-all;
+                }
+
+                &-set-modes {
                     display: flex;
                     flex-direction: row;
                     align-items: stretch;
-                    margin: 0.5em 0;
+                    margin-top: 0.5em;
 
                     .set-mode {
                         background: var(--color-background);
@@ -55,8 +61,9 @@
                     }
                 }
 
-                .info-next-review {
-                    color: var(--color-on-card-mute);
+                &-next-review {
+                    margin-top: 1em;
+                    color: var(--color-on-surface-mute);
                 }
             }
 
@@ -67,12 +74,17 @@
                 justify-content: flex-end;
                 flex-shrink: 0;
 
-                @include breakpoint-below(sm) {
-                    justify-content: flex-start;
-                    padding-top: 0.5em;
+                @include bp-and-below(sm) {
+                    justify-content: center;
+                    padding: $card-padding / 2;
+                    padding-top: 0;
+
+                    button:not(.btn-settings) {
+                        flex: 1;
+                    }
                 }
 
-                button + button {
+                button:not(:first-child) {
                     margin-left: 1em;
                 }
 
@@ -83,10 +95,20 @@
 
                     span:first-child {
                         flex: 1;
+                        text-align: left;
                     }
                 }
             }
+
+            .btn-xs-settings {
+                position: absolute;
+                top: 1em;
+                right: 1em;
+                color: var(--color-on-surface);
+                border: 1px solid var(--color-surface-border);
+            }
         }
+
 
         .srs-row {
             border-top: var(--color-card-border) 3px solid;
@@ -134,7 +156,7 @@
                 span:last-child {
                     opacity: 0.75;
 
-                    @include breakpoint(xs) {
+                    @include bp(xs) {
                         display: none;
                     }
                 }

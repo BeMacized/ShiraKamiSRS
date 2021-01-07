@@ -61,6 +61,7 @@ button.btn {
     &.btn-transparent {
         --scoped-bg-color: transparent;
         --scoped-color: var(--color-on-surface);
+        border: 1px solid var(--color-surface-border);
         &:not(:disabled):hover {
             --scoped-bg-color: var(--color-on-secondary);
         }

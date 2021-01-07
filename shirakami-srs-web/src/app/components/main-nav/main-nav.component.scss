@@ -2,11 +2,13 @@
 @import 'layouts.scss';
 @import 'shadows.scss';
 
+$nav-height: 6em;
+
 :host {
     display: block;
     position: sticky;
     width: 100%;
-    height: 6em;
+    height: $nav-height;
     top: 0;
     @include shadow(3, true);
     background-color: var(--color-surface);
@@ -106,6 +108,14 @@ app-logo {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     padding: 1em 0;
+
+    @include bp(xs) {
+        width: 100%;
+        border-radius: 0;
+        top: $nav-height;
+        position: fixed;
+
+    }
 
     &-item {
         padding: 1em;

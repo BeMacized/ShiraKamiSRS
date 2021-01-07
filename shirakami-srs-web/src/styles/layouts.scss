@@ -26,7 +26,7 @@ $layout-width: 1200px;
     @each $breakpoint in $breakpoint-tokens {
         @for $i from 1 through 12 {
             &.#{$breakpoint}-#{$i} {
-                @include breakpoint($breakpoint) {
+                @include bp($breakpoint) {
                     grid-template-columns: repeat(#{$i}, minmax(0, 1fr));
                 }
             }
@@ -36,7 +36,7 @@ $layout-width: 1200px;
                 grid-column: span #{$i};
             }
             .#{$breakpoint}-span-#{$i} {
-                @include breakpoint($breakpoint) {
+                @include bp($breakpoint) {
                     grid-column: span #{$i};
                 }
             }

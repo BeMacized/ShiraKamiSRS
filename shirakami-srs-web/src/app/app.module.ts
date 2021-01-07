@@ -19,6 +19,7 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { AuthInterceptor } from './interceptors/auth-interceptor.service';
 import { ClickOutsideDirective } from './directives/click-outside.directive';
+import { SetCreationViewComponent } from './views/set-creation-view/set-creation-view.component';
 
 export function initializeApp(appInitService: AppInitService) {
     return () => appInitService.init();
@@ -37,6 +38,7 @@ export function initializeApp(appInitService: AppInitService) {
         LogoComponent,
         SpinnerComponent,
         ClickOutsideDirective,
+        SetCreationViewComponent,
     ],
     imports: [
         BrowserModule,
