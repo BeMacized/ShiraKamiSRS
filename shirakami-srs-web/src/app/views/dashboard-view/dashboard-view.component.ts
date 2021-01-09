@@ -9,6 +9,7 @@ import { SetService } from '../../services/set.service';
 import { minPromiseDuration } from '../../utils/promise-utils';
 import { fade, vshrink } from '../../utils/animations';
 import { EditSetModesModalComponent } from '../../components/modals/edit-set-modes-modal/edit-set-modes-modal.component';
+import { EditSetNameModalComponent } from '../../components/modals/edit-set-name-modal/edit-set-name-modal.component';
 
 @Component({
     selector: 'app-dashboard-view',
@@ -85,10 +86,20 @@ export class DashboardViewComponent implements OnInit {
         return item.id;
     }
 
-    changeModes = async (set: SetEntity) => {
+    changeSetModes = async (set: SetEntity) => {
         set = await this.modalService
             .showModal<EditSetModesModalComponent, SetEntity, SetEntity>(
                 EditSetModesModalComponent,
+                set
+            )
+            .toPromise();
+        if (set) await this.refreshSets();
+    };
+
+    renameSet = async (set: SetEntity) => {
+        set = await this.modalService
+            .showModal<EditSetNameModalComponent, SetEntity, SetEntity>(
+                EditSetNameModalComponent,
                 set
             )
             .toPromise();

@@ -85,4 +85,8 @@ export class SetService {
     async updateSetModes(id: string, modes: SetMode[]): Promise<SetEntity> {
         return this.updateSet({ id, modes });
     }
+
+    async updateSetName(id: string, name: string): Promise<SetEntity> {
+        return this.updateSet({ id, name });
+    }
 }

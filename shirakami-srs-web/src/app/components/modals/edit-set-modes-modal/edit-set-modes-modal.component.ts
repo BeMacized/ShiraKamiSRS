@@ -65,10 +65,6 @@ export class EditSetModesModalComponent
         else this.modes.push(mode);
     }
 
-    goToPage(page: Page) {
-        setTimeout(() => (this.page = page));
-    }
-
     async updateSet() {
         if (this.updateStatus === 'IN_PROGRESS') return;
         this.updateStatus = 'IN_PROGRESS';

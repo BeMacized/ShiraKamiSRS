@@ -1,28 +1,27 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Modal } from '../../../services/modal.service';
-import { SetEntity, SetMode } from '../../../models/set.model';
 import {
     crossFade,
     fade,
-    fadeLeft,
-    fadeUp, hshrink,
+    fadeUp,
+    hshrink,
     modalPage,
     triggerChildren,
     vshrink,
 } from '../../../utils/animations';
 import { smoothHeight } from '../../../directives/smooth-height.directive';
+import { Modal } from '../../../services/modal.service';
+import { SetEntity, SetMode } from '../../../models/set.model';
 import { SetService } from '../../../services/set.service';
 import { OperationStatus } from '../../../models/operation-status.model';
-import { HttpErrorResponse } from '@angular/common/http';
-import { ServiceError } from '../../../models/service-error.model';
 import { minPromiseDuration } from '../../../utils/promise-utils';
+import { ServiceError } from '../../../models/service-error.model';
 
-type Page = 'NAME' | 'MODES' | 'CREATING';
+type Page = 'NAME' | 'UPDATING';
 
 @Component({
-    selector: 'app-create-set-modal',
-    templateUrl: './create-set-modal.component.html',
-    styleUrls: ['./create-set-modal.component.scss'],
+    selector: 'app-edit-set-name-modal',
+    templateUrl: './edit-set-name-modal.component.html',
+    styleUrls: ['./edit-set-name-modal.component.scss'],
     animations: [
         triggerChildren('triggerModal', '@modal'),
         fade('bg', '0.4s ease'),
@@ -34,18 +33,19 @@ type Page = 'NAME' | 'MODES' | 'CREATING';
         hshrink(),
     ],
 })
-export class CreateSetModalComponent
-    extends Modal<void, SetEntity>
+export class EditSetNameModalComponent
+    extends Modal<SetEntity, SetEntity>
     implements OnInit {
-    page: Page = 'NAME';
-    setName = '';
-    modes: SetMode[] = ['jpToEn'];
-    creationStatus: OperationStatus = 'IDLE';
-    errorMessage: string;
-
     constructor(private setService: SetService) {
         super();
     }
+
+    @ViewChild('nameInput') nameInput: ElementRef;
+    page: Page = 'NAME';
+    setName: string;
+    updateStatus: OperationStatus = 'IDLE';
+    errorMessage: string;
+    set: SetEntity;
 
     get isSetNameValid() {
         return (
@@ -55,15 +55,9 @@ export class CreateSetModalComponent
         );
     }
 
-
-
-    @ViewChild('nameInput') nameInput: ElementRef;
-
     ngOnInit(): void {
         this.goToPage('NAME');
     }
-
-    initModal(data: void | undefined) {}
 
     goToPage(page: Page) {
         setTimeout(() => {
@@ -76,23 +70,35 @@ export class CreateSetModalComponent
         });
     }
 
-    async createSet() {
-        if (this.creationStatus === 'IN_PROGRESS') return;
-        this.creationStatus = 'IN_PROGRESS';
-        this.page = 'CREATING';
+    initModal(data: SetEntity | undefined) {
+        if (!data) {
+            console.warn(
+                'Attempted to open EditSetNameModal without providing an existing set'
+            );
+            this.close();
+            return;
+        }
+        this.set = data;
+        this.setName = this.set.name;
+    }
+
+    async updateSet() {
+        if (this.updateStatus === 'IN_PROGRESS') return;
+        this.updateStatus = 'IN_PROGRESS';
+        this.page = 'UPDATING';
         this.errorMessage = null;
         try {
-            const set = await minPromiseDuration(this.setService.createSet(
-                this.setName,
-                this.modes
-            ), 500);
-            this.creationStatus = 'SUCCESS';
+            const set = await minPromiseDuration(
+                this.setService.updateSetName(this.set.id, this.setName),
+                500
+            );
+            this.updateStatus = 'SUCCESS';
             setTimeout(() => {
                 this.emit(set);
                 this.close();
             }, 1500);
         } catch (e) {
-            this.creationStatus = 'ERROR';
+            this.updateStatus = 'ERROR';
             switch (e instanceof ServiceError ? e.code : '') {
                 case 'SERVICE_UNAVAILABLE':
                     this.errorMessage =
@@ -100,7 +106,7 @@ export class CreateSetModalComponent
                     break;
                 default:
                     this.errorMessage =
-                        'An unknown error occurred while trying to create the set.';
+                        'An unknown error occurred while trying to update the set.';
             }
         }
     }

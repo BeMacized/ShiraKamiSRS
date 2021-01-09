@@ -104,7 +104,7 @@
                 </div>
 
                 <div *ngFor="let set of sets; trackBy: trackSetBy" @fade>
-                    <app-card-set-card [set]="set" (changeModes)='changeModes(set)'></app-card-set-card>
+                    <app-card-set-card [set]="set" (changeModes)='changeSetModes(set)' (rename)='renameSet(set)'></app-card-set-card>
                 </div>
             </div>
             <!--/YOUR SETS-->

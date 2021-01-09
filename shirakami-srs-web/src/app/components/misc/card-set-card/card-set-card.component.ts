@@ -19,6 +19,9 @@ export class CardSetCardComponent implements OnInit {
     @Output()
     changeModes: EventEmitter<void> = new EventEmitter<void>();
 
+    @Output()
+    rename: EventEmitter<void> = new EventEmitter<void>();
+
     constructor(private contextMenu: ContextMenuService) {}
 
     ngOnInit(): void {}
@@ -30,6 +33,11 @@ export class CardSetCardComponent implements OnInit {
             this.setActionsPopup = this.contextMenu.openMenu(
                 {
                     items: [
+                        {
+                            text: 'Rename',
+                            icon: 'text_format',
+                            onClick: () => this.rename.emit(),
+                        },
                         {
                             text: 'Change Modes',
                             icon: 'edit',
