@@ -1,8 +1,20 @@
 <div class="nav-container">
+    <button class="btn btn-rect" *ngIf="backRoute" @hshrink (click)="goBack()">
+        <i class="material-icons">arrow_back_ios_new</i>
+    </button>
     <app-logo></app-logo>
+    <div
+        class="nav-item xs-hidden"
+        routerLink="/dashboard"
+        routerLinkActive="active"
+    >
+        <button class="nav-item-content">
+            <span>Dashboard</span>
+        </button>
+    </div>
     <div class="left">
         <div
-            class="nav-item"
+            class="nav-item xs-hidden"
             *ngIf="user"
             (clickOutside)="showAccountDropdown = false"
         >
@@ -16,13 +28,9 @@
                     ></svg>
                 </div>
             </button>
-            <div
-                class="dropdown card"
-                *ngIf="showAccountDropdown"
-                @dropdown
-            >
-                <div class='dropdown-item' (click)='authService.logout()'>
-                    <i class='material-icons'>exit_to_app</i>
+            <div class="dropdown card" *ngIf="showAccountDropdown" @dropdown>
+                <div class="dropdown-item" (click)="authService.logout()">
+                    <i class="material-icons">exit_to_app</i>
                     <span>Log out</span>
                 </div>
             </div>

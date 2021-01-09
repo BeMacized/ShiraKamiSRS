@@ -59,7 +59,7 @@ $breakpoint-tokens: xs sm md lg;
 @each $breakpoint in $breakpoint-tokens {
     .#{$breakpoint}-hidden {
         @include bp($breakpoint) {
-            display: none;
+            display: none !important;
         }
     }
 }

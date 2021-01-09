@@ -1,25 +1,28 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
 import { Subject } from 'rxjs';
 import { UserService } from '../../../services/user.service';
 import { takeUntil } from 'rxjs/operators';
 import { User } from '../../../models/user.model';
-import { fadeDown } from '../../../utils/animations';
+import { fadeDown, hshrink } from '../../../utils/animations';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-main-nav',
     templateUrl: './main-nav.component.html',
     styleUrls: ['./main-nav.component.scss'],
-    animations: [fadeDown('dropdown')],
+    animations: [fadeDown('dropdown'), hshrink()],
 })
 export class MainNavComponent implements OnInit, OnDestroy {
     user: User;
     destroy$: Subject<void> = new Subject();
     showAccountDropdown = false;
+    @Input() backRoute: any[];
 
     constructor(
         public authService: AuthService,
-        private userService: UserService
+        private userService: UserService,
+        private router: Router
     ) {
         this.userService.user
             .pipe(takeUntil(this.destroy$))
@@ -36,5 +39,9 @@ export class MainNavComponent implements OnInit, OnDestroy {
         setTimeout(
             () => (this.showAccountDropdown = !this.showAccountDropdown)
         );
+    }
+
+    goBack() {
+        this.router.navigate(this.backRoute);
     }
 }

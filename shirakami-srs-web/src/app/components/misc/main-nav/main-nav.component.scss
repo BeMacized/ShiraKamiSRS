@@ -37,6 +37,13 @@ $nav-height: 6em;
     .nav-item {
         position: relative;
         height: 100%;
+        user-select: none;
+
+        &.active {
+            .nav-item-content:after {
+                height: 0.25em;
+            }
+        }
 
         .nav-item-content {
             padding: 0 0.5em;
@@ -69,12 +76,28 @@ $nav-height: 6em;
                     transform: translateY(1px);
                 }
             }
+
+            &:after {
+                position: absolute;
+                content: '';
+                bottom: 0;
+                left: 0;
+                height: 0;
+                background: var(--color-primary);
+                width: 100%;
+                transition: all 0.15s ease;
+            }
+
+            .active &:after {
+                height: 4px;
+            }
         }
     }
 }
 
 app-logo {
     font-size: 0.75em;
+    margin-right: 3em;
 }
 
 .account {
@@ -114,7 +137,6 @@ app-logo {
         border-radius: 0;
         top: $nav-height;
         position: fixed;
-
     }
 
     &-item {

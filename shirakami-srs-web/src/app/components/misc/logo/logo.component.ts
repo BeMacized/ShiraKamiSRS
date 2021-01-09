@@ -15,6 +15,31 @@ import {
     animations: [
         trigger('logo', [
             state(
+                '*',
+                style({
+                    width: 0,
+                    'margin-left': 0,
+                    'margin-right': 0,
+                    'padding-left': 0,
+                    'padding-right': 0,
+                })
+            ),
+            state(
+                'hidden',
+                style({
+                    width: 0,
+                    'margin-left': 0,
+                    'margin-right': 0,
+                    'padding-left': 0,
+                    'padding-right': 0,
+                })
+            ),
+            state('shown', style({})),
+            transition('hidden => shown', [animate('0.15s ease')]),
+            transition('shown => hidden', [animate('0.15s ease')]),
+        ]),
+        trigger('logoInv', [
+            state(
                 'hidden',
                 style({
                     width: 0,

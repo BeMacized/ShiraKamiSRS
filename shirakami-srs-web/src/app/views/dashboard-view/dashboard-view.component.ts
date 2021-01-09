@@ -96,7 +96,7 @@ export class DashboardViewComponent implements OnInit {
                 set
             )
             .toPromise();
-        const index = this.sets.findIndex((s) => s.id === set.id);
+        const index = this.sets.findIndex((s) => set && s.id === set.id);
         if (index >= 0) this.sets.splice(index, 1, set);
         if (set) await this.refreshSets();
     };
@@ -108,7 +108,7 @@ export class DashboardViewComponent implements OnInit {
                 set
             )
             .toPromise();
-        const index = this.sets.findIndex((s) => s.id === set.id);
+        const index = this.sets.findIndex((s) => set && s.id === set.id);
         if (index >= 0) this.sets.splice(index, 1, set);
         if (set) await this.refreshSets();
     };
@@ -120,7 +120,7 @@ export class DashboardViewComponent implements OnInit {
                 set
             )
             .toPromise();
-        const index = this.sets.findIndex((s) => s.id === set.id);
+        const index = this.sets.findIndex((s) => set && s.id === set.id);
         if (index >= 0) this.sets.splice(index, 1);
         if (deleted) await this.refreshSets();
     };
