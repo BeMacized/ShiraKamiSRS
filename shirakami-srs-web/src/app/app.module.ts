@@ -20,6 +20,10 @@ import { SpinnerComponent } from './components/spinner/spinner.component';
 import { AuthInterceptor } from './interceptors/auth-interceptor.service';
 import { ClickOutsideDirective } from './directives/click-outside.directive';
 import { SetCreationViewComponent } from './views/set-creation-view/set-creation-view.component';
+import { SafePopupBaseComponent } from './components/safe-popup-base/safe-popup-base.component';
+import { GenericContextMenuComponent } from './components/generic-context-menu/generic-context-menu.component';
+import { CreateSetModalComponent } from './components/create-set-modal/create-set-modal.component';
+import { SmoothHeightDirective } from './directives/smooth-height.directive';
 
 export function initializeApp(appInitService: AppInitService) {
     return () => appInitService.init();
@@ -39,6 +43,10 @@ export function initializeApp(appInitService: AppInitService) {
         SpinnerComponent,
         ClickOutsideDirective,
         SetCreationViewComponent,
+        SafePopupBaseComponent,
+        GenericContextMenuComponent,
+        CreateSetModalComponent,
+        SmoothHeightDirective,
     ],
     imports: [
         BrowserModule,
@@ -59,5 +67,6 @@ export function initializeApp(appInitService: AppInitService) {
         },
     ],
     bootstrap: [AppComponent],
+    // entryComponents: [],
 })
 export class AppModule {}

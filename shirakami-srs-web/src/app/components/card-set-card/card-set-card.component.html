@@ -2,19 +2,22 @@
     <div class="card">
         <div class="header">
             <div class="info">
-                <h1 class="info-title">Genki I: Chapter 1</h1>
+                <h1 class="info-title">{{ set.name }}</h1>
                 <div class="info-set-modes">
-                    <div class="set-mode">
-                        <span class="flag-icon flag-icon-gb"></span>
-                        <i class="material-icons">arrow_forward</i>
-                        <span class="flag-icon flag-icon-jp"></span>
-                    </div>
-                    <div class="set-mode">
+                    <div class="set-mode" *ngIf="set.modes.includes('jpToEn')">
                         <span class="flag-icon flag-icon-jp"></span>
                         <i class="material-icons">arrow_forward</i>
                         <span class="flag-icon flag-icon-gb"></span>
                     </div>
-                    <div class="set-mode">
+                    <div class="set-mode" *ngIf="set.modes.includes('enToJp')">
+                        <span class="flag-icon flag-icon-gb"></span>
+                        <i class="material-icons">arrow_forward</i>
+                        <span class="flag-icon flag-icon-jp"></span>
+                    </div>
+                    <div
+                        class="set-mode"
+                        *ngIf="set.modes.includes('kanjiToKana')"
+                    >
                         <span>漢字</span>
                         <i class="material-icons">arrow_forward</i>
                         <span>かな</span>

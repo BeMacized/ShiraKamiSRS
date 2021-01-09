@@ -1,12 +1,83 @@
 import { Component, OnInit } from '@angular/core';
+import { ContextMenuService } from '../../services/context-menu.service';
+import { DomComponent } from '../../services/dom.service';
+import { ModalService } from '../../services/modal.service';
+import { CreateSetModalComponent } from '../../components/create-set-modal/create-set-modal.component';
+import { SetEntity } from '../../models/set.model';
+import { OperationStatus } from '../../models/operation-status.model';
+import { SetService } from '../../services/set.service';
+import { minPromiseDuration } from '../../utils/promise-utils';
+import { fade, vshrink } from '../../utils/animations';
 
 @Component({
     selector: 'app-dashboard-view',
     templateUrl: './dashboard-view.component.html',
     styleUrls: ['./dashboard-view.component.scss'],
+    animations: [vshrink(), fade()],
 })
 export class DashboardViewComponent implements OnInit {
-    constructor() {}
+    setActionsPopup: DomComponent;
+    sets: SetEntity[] = [];
+    setsFetchStatus: OperationStatus = 'IDLE';
 
-    ngOnInit(): void {}
+    constructor(
+        private contextMenu: ContextMenuService,
+        private modalService: ModalService,
+        private setService: SetService
+    ) {}
+
+    async ngOnInit() {
+        await this.refreshSets();
+    }
+
+    async refreshSets() {
+        if (this.setsFetchStatus === 'IN_PROGRESS') return;
+        this.setsFetchStatus = 'IN_PROGRESS';
+        try {
+            this.sets = await minPromiseDuration(this.setService.getSets(), 400);
+            this.setsFetchStatus = 'SUCCESS';
+        } catch (e) {
+            console.error(e);
+            this.setsFetchStatus = 'ERROR';
+        }
+    }
+
+    openSetActionsModal($event: MouseEvent) {
+        if (this.setActionsPopup) {
+            this.setActionsPopup.remove();
+        } else {
+            this.setActionsPopup = this.contextMenu.openMenu(
+                {
+                    items: [
+                        {
+                            text: 'Refresh',
+                            icon: 'cached',
+                            onClick: () => this.refreshSets(),
+                        },
+                        {
+                            text: 'Create Set',
+                            icon: 'add',
+                            onClick: () => this.createSet(),
+                        },
+                    ],
+                },
+                $event
+            );
+            this.setActionsPopup.on(
+                'remove',
+                () => (this.setActionsPopup = null)
+            );
+        }
+    }
+
+    createSet = async () => {
+        await this.modalService
+            .showModal<CreateSetModalComponent>(CreateSetModalComponent)
+            .toPromise();
+        await this.refreshSets();
+    };
+
+    trackSetBy(index: number, item: SetEntity) {
+        return item.id;
+    }
 }

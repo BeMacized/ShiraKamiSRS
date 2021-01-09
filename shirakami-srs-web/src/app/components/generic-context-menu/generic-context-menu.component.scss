@@ -1,0 +1,71 @@
+@import 'materials.scss';
+
+:host {
+    @include surface();
+    padding: 1em 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    min-width: 150px;
+    max-width: calc(100vw - 20px);
+    pointer-events: all;
+    transition: none;
+}
+
+.separator {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: stretch;
+    padding: 1em 1em;
+
+    .line {
+        height: 1px;
+        width: 100%;
+        background: var(--color-surface-border);
+    }
+}
+
+.item {
+    outline: none;
+    border: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background: transparent;
+    padding: 1em 2em;
+    transition: all 0.15s ease;
+    color: var(--color-on-surface);
+
+    .icon-wrapper {
+        margin-right: 1em;
+        width: 1em;
+        margin-left: -0.5em;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .title {
+        flex: 1;
+        display: block;
+        text-align: left;
+    }
+
+    &:not(:disabled) {
+        cursor: pointer;
+
+        &:hover {
+            background: var(--color-surface-mute);
+        }
+
+        &:active {
+            opacity: 0.5;
+        }
+    }
+
+    &:disabled {
+        color: var(--color-on-surface);
+        opacity: 0.5;
+    }
+}

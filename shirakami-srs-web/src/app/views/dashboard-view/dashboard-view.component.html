@@ -1,7 +1,9 @@
 <app-main-nav></app-main-nav>
 <div class="page-container">
     <div class="grid xs-1 sm-3">
+        <!-- MAIN COLUMN -->
         <div class="grid xs-span-1 sm-span-2">
+            <!-- ALL SETS-->
             <div class="section-header">
                 <h1 class="section-header-title">All Sets</h1>
             </div>
@@ -46,24 +48,78 @@
                     <span>Burned</span>
                 </div>
             </div>
+            <!--/ALL SETS-->
+
+            <!-- YOUR SETS-->
             <div class="section-header">
                 <h1 class="section-header-title">Your Sets</h1>
                 <div class="section-header-actions">
-                    <button class="btn btn-rect btn-transparent">
+                    <button
+                        class="btn btn-rect btn-transparent"
+                        (click)="openSetActionsModal($event)"
+                    >
                         <i class="material-icons">more_vert</i>
                     </button>
                 </div>
             </div>
-            <app-card-set-card></app-card-set-card>
-            <app-card-set-card></app-card-set-card>
-            <app-card-set-card></app-card-set-card>
-            <app-card-set-card></app-card-set-card>
+            <div class="set-list">
+                <div
+                    class="set-list-issue"
+                    *ngIf="
+                        setsFetchStatus === 'IN_PROGRESS' ||
+                        (setsFetchStatus === 'SUCCESS' && !sets?.length) ||
+                        setsFetchStatus === 'ERROR'
+                    "
+                    @vshrink
+                >
+                    <div *ngIf="setsFetchStatus === 'IN_PROGRESS'" @vshrink>
+                        <app-spinner></app-spinner>
+                        <span class="set-list-issue-description">
+                            Loading your sets...
+                        </span>
+                    </div>
+                    <div
+                        *ngIf="setsFetchStatus === 'SUCCESS' && !sets?.length"
+                        @vshrink
+                    >
+                        <div class="set-list-issue-description">
+                            <span> You currently don't have any sets. </span>
+                            <br />
+                            <span>
+                                Start by
+                                <a (click)="!!createSet()" href="#">creating</a>
+                                one!
+                            </span>
+                        </div>
+                    </div>
+                    <div *ngIf="setsFetchStatus === 'ERROR'" @vshrink>
+                        <span class="set-list-issue-description">
+                            Your sets could not be loaded.
+                            <br />
+                            You could try
+                            <a (click)="!!refreshSets()" href="#">refreshing</a>
+                            the list.
+                        </span>
+                    </div>
+                </div>
+
+                <div *ngFor="let set of sets; trackBy: trackSetBy" @fade>
+                    <app-card-set-card [set]="set"></app-card-set-card>
+                </div>
+            </div>
+            <!--/YOUR SETS-->
         </div>
+        <!--/MAIN COLUMN -->
+
+        <!-- SIDE COLUMN -->
         <div class="grid span-1">
+            <!-- REVIEW FORECAST -->
             <div class="section-header">
                 <h1 class="section-header-title">Review Forecast</h1>
             </div>
             <app-review-forecast></app-review-forecast>
+            <!--/REVIEW FORECAST -->
         </div>
+        <!--/SIDE COLUMN -->
     </div>
 </div>

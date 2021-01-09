@@ -26,7 +26,7 @@ app-collapsible {
         border-radius: $border-radius $border-radius 0 0;
 
         &:hover {
-            background-color: var(--color-surface-lighter);
+            background-color: var(--color-surface-mute);
             border-radius: $border-radius $border-radius
                 calc(var(--collapsible-collapsed) * #{$border-radius})
                 calc(var(--collapsible-collapsed) * #{$border-radius});

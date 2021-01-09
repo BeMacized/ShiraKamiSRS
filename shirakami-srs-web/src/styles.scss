@@ -7,8 +7,9 @@
 @import 'typography.scss';
 @import 'misc.scss';
 @import 'alerts.scss';
-@import '../node_modules/flag-icon-css/css/flag-icon.css';
-@import '../node_modules/material-icons/iconfont/material-icons.css';
+@import 'modals.scss';
+@import '~flag-icon-css/css/flag-icon.css';
+@import '~material-icons/iconfont/material-icons.css';
 
 html,
 body {
@@ -30,7 +31,7 @@ a:visited,
 a:hover,
 a:focus,
 a:active {
-    color: inherit;
+    color: var(--color-primary);
 }
 
 i.material-icons {

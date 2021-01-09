@@ -1,0 +1,104 @@
+@import 'responsive.scss';
+@import 'shadows.scss';
+
+
+
+.status-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    .error-icon {
+        font-size: 7em;
+        color: var(--color-alert-error);
+    }
+
+    .success-icon {
+        font-size: 7em;
+        color: var(--color-alert-success);
+    }
+
+    .status-message {
+        margin-top: 2em;
+        font-weight: 500;
+    }
+}
+
+.set-modes {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    margin-top: 2em;
+    width: 100%;
+
+    @include bp(xs) {
+        flex-direction: column;
+    }
+
+    @include bp(xs) {
+
+    }
+
+    .set-mode {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        background: var(--color-surface-mute);
+        border-radius: 0.25em;
+        padding: 1em;
+        flex: 1;
+        user-select: none;
+        cursor: pointer;
+        overflow: hidden;
+        outline: none;
+        border: 2px solid transparent;
+        @include shadow(1, true);
+        transition: all .15s ease;
+        opacity: 0.6;
+
+        @include bp(sm) {
+            &:not(:first-child) {
+                margin-left: 1em;
+            }
+        }
+
+        @include bp(xs) {
+            &:not(:first-child) {
+                margin-top: 1em;
+            }
+        }
+
+        &:hover {
+            border-color: var(--color-primary-dark);
+            opacity: 0.8;
+        }
+
+        &:active {
+            transform: translateY(1px);
+        }
+
+        &.active {
+            opacity: 1;
+            background: var(--color-primary);
+            color: var(--color-on-primary);
+        }
+
+        &-icon {
+            flex: 1;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5em;
+            word-break: keep-all;
+            white-space: nowrap;
+        }
+        &-title {
+            flex: 0 0;
+            text-align: center;
+            margin-top: 1em;
+            font-weight: bold;
+        }
+    }
+}

@@ -8,6 +8,8 @@ import {
 import { CardEntity } from '../cards/entities/card.entity';
 import { UserEntity } from '../../users/entities/user.entity';
 
+export type SetMode = 'enToJp' | 'jpToEn' | 'kanjiToKana';
+
 @Entity()
 export class SetEntity {
   @PrimaryGeneratedColumn('uuid')
@@ -21,6 +23,9 @@ export class SetEntity {
 
   @Column({ type: 'varchar', length: 255 })
   name: string;
+
+  @Column('simple-json')
+  modes: SetMode[];
 
   @OneToMany(() => CardEntity, (card) => card.set)
   cards?: CardEntity[];

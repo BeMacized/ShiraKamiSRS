@@ -7,9 +7,9 @@ input[type='password'] {
         border: none;
         outline: none;
         border-bottom: 2px solid var(--color-input-border-inactive);
-        border-radius: 0;
+        border-radius: 0.25em;
         transition: all 0.15s ease;
-        background: none;
+        background: var(--color-surface-mute);
         color: var(--color-on-surface);
 
         &::placeholder {
@@ -18,6 +18,10 @@ input[type='password'] {
 
         &:focus {
             border-color: var(--color-input-border-active);
+        }
+
+        &-large {
+            font-size: 1.5em;
         }
     }
 }

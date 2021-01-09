@@ -1,0 +1,18 @@
+<ng-container *ngIf="_menu">
+    <ng-container *ngFor="let item of _menu.items">
+        <div *ngIf="item.type === 'SEPARATOR'" class="separator">
+            <div class="line"></div>
+        </div>
+        <button
+            *ngIf="item.type !== 'SEPARATOR'"
+            class="item"
+            [disabled]="!item.onClick"
+            (click)="onClick(item)"
+        >
+            <div class="icon-wrapper" *ngIf="_showIcons">
+                <i class="material-icons" *ngIf="item.icon">{{ item.icon }}</i>
+            </div>
+            <div class="title">{{ item.text }}</div>
+        </button>
+    </ng-container>
+</ng-container>

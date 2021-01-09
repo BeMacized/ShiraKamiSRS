@@ -19,8 +19,10 @@ button.btn {
     min-height: 42px;
 
     &:not(:disabled) {
+        cursor: pointer;
+
         &:hover {
-            --scoped-bg-color: var(--color-surface-lighter);
+            --scoped-bg-color: var(--color-surface-mute);
             transform: translateY(-1px);
         }
 

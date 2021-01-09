@@ -38,7 +38,7 @@
     --color-on-background-mute: #{material-color('grey', '400')};
 
     --color-surface: #{white};
-    --color-surface-lighter: #{material-color('grey', '200')};
+    --color-surface-mute: #{material-color('grey', '200')};
     --color-surface-border: #{material-color('grey', '300')};
     --color-on-surface: #{material-color('grey', '900')};
     --color-on-surface-mute: #{material-color('grey', '400')};
@@ -66,7 +66,7 @@
     --color-on-background-mute: #{material-color('grey', '400')};
 
     --color-surface: #{material-color('grey', '900')};
-    --color-surface-lighter: #{material-color('grey', '800')};
+    --color-surface-mute: #{material-color('grey', '800')};
     --color-on-surface: #{material-color('grey', '100')};
     --color-on-surface-mute: #{material-color('grey', '400')};
     --color-surface-border: #{material-color('grey', '800')};
