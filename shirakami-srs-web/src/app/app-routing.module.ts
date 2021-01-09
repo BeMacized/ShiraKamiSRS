@@ -5,6 +5,7 @@ import { DashboardViewComponent } from './views/dashboard-view/dashboard-view.co
 import { DebugViewComponent } from './views/debug-view/debug-view.component';
 import { NonAuthGuardService } from './guards/non-auth-guard.service';
 import { AuthGuardService } from './guards/auth-guard.service';
+import { SetViewComponent } from './views/set-view/set-view.component';
 
 const routes: Routes = [
     {
@@ -16,6 +17,11 @@ const routes: Routes = [
         path: 'dashboard',
         canActivate: [AuthGuardService],
         component: DashboardViewComponent,
+    },
+    {
+        path: 'set/:id',
+        canActivate: [AuthGuardService],
+        component: SetViewComponent,
     },
     {
         path: 'debug',

@@ -11,6 +11,7 @@ import { fade, vshrink } from '../../utils/animations';
 import { EditSetModesModalComponent } from '../../components/modals/edit-set-modes-modal/edit-set-modes-modal.component';
 import { EditSetNameModalComponent } from '../../components/modals/edit-set-name-modal/edit-set-name-modal.component';
 import { DeleteSetModalComponent } from '../../components/modals/delete-set-modal/delete-set-modal.component';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-dashboard-view',
@@ -26,7 +27,8 @@ export class DashboardViewComponent implements OnInit {
     constructor(
         private contextMenu: ContextMenuService,
         private modalService: ModalService,
-        private setService: SetService
+        private setService: SetService,
+        private router: Router
     ) {}
 
     async ngOnInit() {
@@ -80,7 +82,7 @@ export class DashboardViewComponent implements OnInit {
         const set = await this.modalService
             .showModal<CreateSetModalComponent>(CreateSetModalComponent)
             .toPromise();
-        if (set) await this.refreshSets();
+        await this.router.navigate(['set', set.id]);
     };
 
     trackSetBy(index: number, item: SetEntity) {
@@ -94,6 +96,8 @@ export class DashboardViewComponent implements OnInit {
                 set
             )
             .toPromise();
+        const index = this.sets.findIndex((s) => s.id === set.id);
+        if (index >= 0) this.sets.splice(index, 1, set);
         if (set) await this.refreshSets();
     };
 
@@ -104,6 +108,8 @@ export class DashboardViewComponent implements OnInit {
                 set
             )
             .toPromise();
+        const index = this.sets.findIndex((s) => s.id === set.id);
+        if (index >= 0) this.sets.splice(index, 1, set);
         if (set) await this.refreshSets();
     };
 
@@ -114,6 +120,8 @@ export class DashboardViewComponent implements OnInit {
                 set
             )
             .toPromise();
+        const index = this.sets.findIndex((s) => s.id === set.id);
+        if (index >= 0) this.sets.splice(index, 1);
         if (deleted) await this.refreshSets();
-    }
+    };
 }

@@ -19,7 +19,6 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { SpinnerComponent } from './components/misc/spinner/spinner.component';
 import { AuthInterceptor } from './interceptors/auth-interceptor.service';
 import { ClickOutsideDirective } from './directives/click-outside.directive';
-import { SetCreationViewComponent } from './views/set-creation-view/set-creation-view.component';
 import { SafePopupBaseComponent } from './components/misc/safe-popup-base/safe-popup-base.component';
 import { GenericContextMenuComponent } from './components/misc/generic-context-menu/generic-context-menu.component';
 import { CreateSetModalComponent } from './components/modals/create-set-modal/create-set-modal.component';
@@ -28,6 +27,7 @@ import { EditSetModesModalComponent } from './components/modals/edit-set-modes-m
 import { SetModeTogglesComponent } from './components/misc/set-mode-toggles/set-mode-toggles.component';
 import { EditSetNameModalComponent } from './components/modals/edit-set-name-modal/edit-set-name-modal.component';
 import { DeleteSetModalComponent } from './components/modals/delete-set-modal/delete-set-modal.component';
+import { SetViewComponent } from './views/set-view/set-view.component';
 
 export function initializeApp(appInitService: AppInitService) {
     return () => appInitService.init();
@@ -46,7 +46,6 @@ export function initializeApp(appInitService: AppInitService) {
         LogoComponent,
         SpinnerComponent,
         ClickOutsideDirective,
-        SetCreationViewComponent,
         SafePopupBaseComponent,
         GenericContextMenuComponent,
         CreateSetModalComponent,
@@ -55,6 +54,7 @@ export function initializeApp(appInitService: AppInitService) {
         SetModeTogglesComponent,
         EditSetNameModalComponent,
         DeleteSetModalComponent,
+        SetViewComponent,
     ],
     imports: [
         BrowserModule,

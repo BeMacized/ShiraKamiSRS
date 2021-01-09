@@ -6,15 +6,19 @@
     align-items: center;
     justify-content: center;
 
-    &, span {
+    &, div {
         word-break: keep-all;
         white-space: nowrap;
+        overflow: hidden;
     }
 
-    span {
-        display: inline-block;
+    div {
         transition: all 0.15s ease;
         overflow: hidden;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
 
         &:nth-child(1),
         &:nth-child(2) {

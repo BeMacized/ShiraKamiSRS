@@ -4,6 +4,7 @@ import { ContextMenu } from '../generic-context-menu/generic-context-menu.compon
 import { ContextMenuService } from '../../../services/context-menu.service';
 import { DomComponent } from '../../../services/dom.service';
 import { CreateSetModalComponent } from '../../modals/create-set-modal/create-set-modal.component';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-card-set-card',
@@ -25,8 +26,10 @@ export class CardSetCardComponent implements OnInit {
     @Output()
     delete: EventEmitter<void> = new EventEmitter<void>();
 
-
-    constructor(private contextMenu: ContextMenuService) {}
+    constructor(
+        private contextMenu: ContextMenuService,
+        private router: Router
+    ) {}
 
     ngOnInit(): void {}
 
@@ -37,6 +40,12 @@ export class CardSetCardComponent implements OnInit {
             this.setActionsPopup = this.contextMenu.openMenu(
                 {
                     items: [
+                        {
+                            text: 'Manage Cards',
+                            icon: 'text_snippet',
+                            onClick: () =>
+                                this.router.navigate(['set', this.set.id]),
+                        },
                         {
                             text: 'Rename',
                             icon: 'text_format',
