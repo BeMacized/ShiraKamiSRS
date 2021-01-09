@@ -77,4 +77,26 @@
             margin-left: 0.5em;
         }
     }
+
+    &-status-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        .error-icon {
+            font-size: 7em;
+            color: var(--color-caution);
+        }
+
+        .success-icon {
+            font-size: 7em;
+            color: var(--color-success);
+        }
+
+        .status-message {
+            margin-top: 2em;
+            font-weight: 500;
+        }
+    }
 }

@@ -1,1 +1,5 @@
-<div class="logo"><span>白紙</span><span>SRS</span></div>
+<div class="logo" (mouseenter)="hover = true" (mouseleave)="hover = false">
+    <span *ngIf="!hover" @hshrink>白紙</span>
+    <span *ngIf="hover" @hshrink>ShiraKami</span>
+    <span>SRS</span>
+</div>

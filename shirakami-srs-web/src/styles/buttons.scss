@@ -60,6 +60,19 @@ button.btn {
         }
     }
 
+    &.btn-caution {
+        --scoped-bg-color: var(--color-caution);
+        --scoped-color: var(--color-on-caution);
+
+        &:not(:disabled):hover {
+            --scoped-bg-color: var(--color-caution-hover);
+        }
+
+        &:disabled {
+            opacity: 0.5;
+        }
+    }
+
     &.btn-transparent {
         --scoped-bg-color: transparent;
         --scoped-color: var(--color-on-surface);

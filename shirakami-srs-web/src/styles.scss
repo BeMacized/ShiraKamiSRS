@@ -32,6 +32,8 @@ a:hover,
 a:focus,
 a:active {
     color: var(--color-primary);
+    cursor: pointer;
+    text-decoration: underline;
 }
 
 i.material-icons {

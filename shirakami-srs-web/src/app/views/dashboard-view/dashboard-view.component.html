@@ -87,7 +87,7 @@
                             <br />
                             <span>
                                 Start by
-                                <a (click)="!!createSet()" href="#">creating</a>
+                                <a (click)="!!createSet()">creating</a>
                                 one!
                             </span>
                         </div>
@@ -97,14 +97,14 @@
                             Your sets could not be loaded.
                             <br />
                             You could try
-                            <a (click)="!!refreshSets()" href="#">refreshing</a>
+                            <a (click)="!!refreshSets()">refreshing</a>
                             the list.
                         </span>
                     </div>
                 </div>
 
                 <div *ngFor="let set of sets; trackBy: trackSetBy" @fade>
-                    <app-card-set-card [set]="set" (changeModes)='changeSetModes(set)' (rename)='renameSet(set)'></app-card-set-card>
+                    <app-card-set-card [set]="set" (changeModes)='changeSetModes(set)' (rename)='renameSet(set)' (delete)='deleteSet(set)'></app-card-set-card>
                 </div>
             </div>
             <!--/YOUR SETS-->

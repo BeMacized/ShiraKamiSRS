@@ -5,52 +5,66 @@
         (clickOutside)="close()"
         [smoothHeight]="page"
     >
-        <div class="modal-page" *ngIf="page === 'MODES'" @modalPage>
+        <div class="modal-page" *ngIf="page === 'VERIFICATION'" @modalPage>
             <div class="modal-header">
-                <h1>Change Set Modes</h1>
+                <h1>Remove Set</h1>
                 <h2>{{ set.name }}</h2>
             </div>
             <div class="modal-content ai-center">
-                <p>Select which modes you want to practice this set set for.</p>
-                <app-set-mode-toggles
-                    [(modes)]="modes"
-                    #setModeToggles
-                ></app-set-mode-toggles>
+                <div class="alert alert-error">
+                    WARNING: You are about to remove a set: "{{ set.name }}". Note that
+                    you will lose all your progress learning the cards from this
+                    set. This cannot be undone.
+                </div>
+                <p style='padding: 2em 0'>
+                    If you are absolutely sure you want to remove this set,
+                    please enter its name "<i>{{ set.name }}</i
+                    >" in the text field below, before continuing.
+                </p>
+                <input
+                    class="input input-large"
+                    type="text"
+                    placeholder="Set name"
+                    [(ngModel)]="setName"
+                    maxlength="128"
+                    (keyup.enter)="isSetNameValid && deleteSet()"
+                    #nameInput
+                />
             </div>
             <div class="modal-actions">
                 <button class="button btn btn-secondary" (click)="close()">
                     Cancel
                 </button>
                 <button
-                    class="button btn btn-primary"
-                    [disabled]="!setModeToggles.valid"
-                    (click)="updateSet()"
+                    class="button btn btn-caution"
+                    [disabled]="!isSetNameValid"
+                    (click)="deleteSet()"
                 >
-                    Save
+                    Delete
                 </button>
             </div>
         </div>
-        <div class="modal-page" *ngIf="page === 'UPDATING'" @modalPage>
+        <div class="modal-page" *ngIf="page === 'DELETION'" @modalPage>
             <div class="modal-header">
-                <h1>Change Set Modes</h1>
+                <h1>Change Set Name</h1>
                 <h2>{{ set.name }}</h2>
             </div>
             <div
                 class="modal-content ai-center no-padding"
-                [smoothHeight]="updateStatus"
+                [smoothHeight]="deletionStatus"
             >
                 <div
                     @crossFade
                     class="modal-status-container"
-                    *ngIf="updateStatus === 'IN_PROGRESS'"
+                    *ngIf="deletionStatus === 'IN_PROGRESS'"
                 >
                     <app-spinner size="NORMAL"></app-spinner>
-                    <span class="status-message">Updating set modes...</span>
+                    <span class="status-message">Removing set...</span>
                 </div>
                 <div
                     @crossFade
                     class="modal-status-container"
-                    *ngIf="updateStatus === 'ERROR'"
+                    *ngIf="deletionStatus === 'ERROR'"
                 >
                     <i class="material-icons error-icon">error_outline</i>
                     <span class="status-message">
@@ -60,21 +74,21 @@
                 <div
                     @crossFade
                     class="modal-status-container"
-                    *ngIf="updateStatus === 'SUCCESS'"
+                    *ngIf="deletionStatus === 'SUCCESS'"
                 >
                     <i class="material-icons success-icon"
                         >check_circle_outline</i
                     >
                     <span class="status-message">
-                        <span>Set '{{ set.name }}' updated successfully!</span>
+                        <span>Set '{{ set.name }}' removed successfully!</span>
                     </span>
                 </div>
             </div>
             <div class="modal-actions">
                 <button
                     class="button btn btn-secondary"
-                    (click)="updateSet()"
-                    *ngIf="updateStatus === 'ERROR'"
+                    (click)="deleteSet()"
+                    *ngIf="deletionStatus === 'ERROR'"
                     @hshrink
                 >
                     Retry
@@ -82,7 +96,7 @@
                 <button
                     class="button btn btn-secondary"
                     (click)="close()"
-                    [disabled]="updateStatus === 'IN_PROGRESS'"
+                    [disabled]="deletionStatus === 'IN_PROGRESS'"
                     @hshrink
                 >
                     Close

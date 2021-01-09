@@ -90,7 +90,7 @@ export class CreateSetModalComponent
             setTimeout(() => {
                 this.emit(set);
                 this.close();
-            }, 1500);
+            }, 1000);
         } catch (e) {
             this.creationStatus = 'ERROR';
             switch (e instanceof ServiceError ? e.code : '') {

@@ -79,7 +79,7 @@ export class EditSetModesModalComponent
             setTimeout(() => {
                 this.emit(set);
                 this.close();
-            }, 1500);
+            }, 1000);
         } catch (e) {
             this.updateStatus = 'ERROR';
             switch (e instanceof ServiceError ? e.code : '') {

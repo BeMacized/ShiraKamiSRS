@@ -1,22 +1,2 @@
-.status-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
 
-    .error-icon {
-        font-size: 7em;
-        color: var(--color-alert-error);
-    }
-
-    .success-icon {
-        font-size: 7em;
-        color: var(--color-alert-success);
-    }
-
-    .status-message {
-        margin-top: 2em;
-        font-weight: 500;
-    }
-}
 

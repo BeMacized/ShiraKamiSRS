@@ -1,4 +1,10 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Modal } from '../../../services/modal.service';
+import { SetEntity } from '../../../models/set.model';
+import { SetService } from '../../../services/set.service';
+import { OperationStatus } from '../../../models/operation-status.model';
+import { minPromiseDuration } from '../../../utils/promise-utils';
+import { ServiceError } from '../../../models/service-error.model';
 import {
     crossFade,
     fade,
@@ -9,19 +15,13 @@ import {
     vshrink,
 } from '../../../utils/animations';
 import { smoothHeight } from '../../../directives/smooth-height.directive';
-import { Modal } from '../../../services/modal.service';
-import { SetEntity, SetMode } from '../../../models/set.model';
-import { SetService } from '../../../services/set.service';
-import { OperationStatus } from '../../../models/operation-status.model';
-import { minPromiseDuration } from '../../../utils/promise-utils';
-import { ServiceError } from '../../../models/service-error.model';
 
-type Page = 'NAME' | 'UPDATING';
+type Page = 'VERIFICATION' | 'DELETION';
 
 @Component({
-    selector: 'app-edit-set-name-modal',
-    templateUrl: './edit-set-name-modal.component.html',
-    styleUrls: ['./edit-set-name-modal.component.scss'],
+    selector: 'app-delete-set-modal',
+    templateUrl: './delete-set-modal.component.html',
+    styleUrls: ['./delete-set-modal.component.scss'],
     animations: [
         triggerChildren('triggerModal', '@modal'),
         fade('bg', '0.4s ease'),
@@ -33,37 +33,34 @@ type Page = 'NAME' | 'UPDATING';
         hshrink(),
     ],
 })
-export class EditSetNameModalComponent
-    extends Modal<SetEntity, SetEntity>
+export class DeleteSetModalComponent
+    extends Modal<SetEntity, boolean>
     implements OnInit {
+
     constructor(private setService: SetService) {
         super();
     }
 
     @ViewChild('nameInput') nameInput: ElementRef;
-    page: Page = 'NAME';
+    page: Page = 'VERIFICATION';
     setName: string;
-    updateStatus: OperationStatus = 'IDLE';
+    deletionStatus: OperationStatus = 'IDLE';
     errorMessage: string;
     set: SetEntity;
 
     get isSetNameValid() {
-        return (
-            this.setName &&
-            this.setName.length > 0 &&
-            this.setName.length <= 128
-        );
+        return this.setName === this.set.name;
     }
 
     ngOnInit(): void {
-        this.goToPage('NAME');
+        this.goToPage('VERIFICATION');
     }
 
     goToPage(page: Page) {
         setTimeout(() => {
             this.page = page;
             switch (page) {
-                case 'NAME':
+                case 'VERIFICATION':
                     setTimeout(() => this.nameInput.nativeElement.focus(), 400);
                     break;
             }
@@ -73,32 +70,31 @@ export class EditSetNameModalComponent
     initModal(data: SetEntity | undefined) {
         if (!data) {
             console.warn(
-                'Attempted to open EditSetNameModal without providing an existing set'
+                'Attempted to open DeketeSetModal without providing an existing set'
             );
             this.close();
             return;
         }
         this.set = data;
-        this.setName = this.set.name;
     }
 
-    async updateSet() {
-        if (this.updateStatus === 'IN_PROGRESS') return;
-        this.updateStatus = 'IN_PROGRESS';
-        this.page = 'UPDATING';
+    async deleteSet() {
+        if (this.deletionStatus === 'IN_PROGRESS') return;
+        this.deletionStatus = 'IN_PROGRESS';
+        this.page = 'DELETION';
         this.errorMessage = null;
         try {
-            const set = await minPromiseDuration(
-                this.setService.updateSetName(this.set.id, this.setName),
+            await minPromiseDuration(
+                this.setService.deleteSet(this.set.id),
                 500
             );
-            this.updateStatus = 'SUCCESS';
+            this.deletionStatus = 'SUCCESS';
             setTimeout(() => {
-                this.emit(set);
+                this.emit(true);
                 this.close();
             }, 1000);
         } catch (e) {
-            this.updateStatus = 'ERROR';
+            this.deletionStatus = 'ERROR';
             switch (e instanceof ServiceError ? e.code : '') {
                 case 'SERVICE_UNAVAILABLE':
                     this.errorMessage =
@@ -106,7 +102,7 @@ export class EditSetNameModalComponent
                     break;
                 default:
                     this.errorMessage =
-                        'An unknown error occurred while trying to update the set.';
+                        'An unknown error occurred while trying to remove the set.';
             }
         }
     }

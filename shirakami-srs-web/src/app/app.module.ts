@@ -27,6 +27,7 @@ import { SmoothHeightDirective } from './directives/smooth-height.directive';
 import { EditSetModesModalComponent } from './components/modals/edit-set-modes-modal/edit-set-modes-modal.component';
 import { SetModeTogglesComponent } from './components/misc/set-mode-toggles/set-mode-toggles.component';
 import { EditSetNameModalComponent } from './components/modals/edit-set-name-modal/edit-set-name-modal.component';
+import { DeleteSetModalComponent } from './components/modals/delete-set-modal/delete-set-modal.component';
 
 export function initializeApp(appInitService: AppInitService) {
     return () => appInitService.init();
@@ -53,6 +54,7 @@ export function initializeApp(appInitService: AppInitService) {
         EditSetModesModalComponent,
         SetModeTogglesComponent,
         EditSetNameModalComponent,
+        DeleteSetModalComponent,
     ],
     imports: [
         BrowserModule,

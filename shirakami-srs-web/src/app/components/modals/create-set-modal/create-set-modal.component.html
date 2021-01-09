@@ -73,7 +73,7 @@
             >
                 <div
                     @crossFade
-                    class="status-container"
+                    class='modal-status-container'
                     *ngIf="creationStatus === 'IN_PROGRESS'"
                 >
                     <app-spinner size="NORMAL"></app-spinner>
@@ -81,7 +81,7 @@
                 </div>
                 <div
                     @crossFade
-                    class="status-container"
+                    class='modal-status-container'
                     *ngIf="creationStatus === 'ERROR'"
                 >
                     <i class="material-icons error-icon">error_outline</i>
@@ -91,7 +91,7 @@
                 </div>
                 <div
                     @crossFade
-                    class="status-container"
+                    class='modal-status-container'
                     *ngIf="creationStatus === 'SUCCESS'"
                 >
                     <i class="material-icons success-icon"

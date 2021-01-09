@@ -1,12 +1,23 @@
 .logo {
     font-size: 4em;
-    word-break: keep-all;
-    white-space: nowrap;
+    user-select: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    &, span {
+        word-break: keep-all;
+        white-space: nowrap;
+    }
 
     span {
+        display: inline-block;
         transition: all 0.15s ease;
+        overflow: hidden;
 
-        &:first-child {
+        &:nth-child(1),
+        &:nth-child(2) {
             color: var(--color-primary);
             font-weight: 200;
         }

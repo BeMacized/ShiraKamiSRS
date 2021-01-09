@@ -10,7 +10,6 @@ import { CreateSetDto, SetDto, UpdateSetDto } from '../models/set.model';
     providedIn: 'root',
 })
 export class SetRepositoryService {
-
     constructor(
         private http: HttpClient,
         private appSettings: AppSettingsService
@@ -40,6 +39,12 @@ export class SetRepositoryService {
         );
     }
 
+    public deleteSet(id: string): Observable<void> {
+        return this.getApiUrl(`/sets/${id}`).pipe(
+            switchMap((url) => this.http.delete<void>(url))
+        );
+    }
+
     private getApiUrl(resource: string) {
         return this.appSettings.appSettings.pipe(
             take(1),
@@ -51,5 +56,4 @@ export class SetRepositoryService {
             )
         );
     }
-
 }

@@ -89,4 +89,18 @@ export class SetService {
     async updateSetName(id: string, name: string): Promise<SetEntity> {
         return this.updateSet({ id, name });
     }
+
+    async deleteSet(id: string): Promise<void> {
+        try {
+            await this.setRepository.deleteSet(id).toPromise();
+        } catch (e) {
+            if (e instanceof HttpErrorResponse) {
+                switch (e.status) {
+                    case 0:
+                        throw new ServiceError('SERVICE_UNAVAILABLE');
+                }
+            }
+            throw e;
+        }
+    }
 }

@@ -22,6 +22,10 @@ export class CardSetCardComponent implements OnInit {
     @Output()
     rename: EventEmitter<void> = new EventEmitter<void>();
 
+    @Output()
+    delete: EventEmitter<void> = new EventEmitter<void>();
+
+
     constructor(private contextMenu: ContextMenuService) {}
 
     ngOnInit(): void {}
@@ -42,6 +46,11 @@ export class CardSetCardComponent implements OnInit {
                             text: 'Change Modes',
                             icon: 'edit',
                             onClick: () => this.changeModes.emit(),
+                        },
+                        {
+                            text: 'Remove',
+                            icon: 'delete_forever',
+                            onClick: () => this.delete.emit(),
                         },
                     ],
                 },
