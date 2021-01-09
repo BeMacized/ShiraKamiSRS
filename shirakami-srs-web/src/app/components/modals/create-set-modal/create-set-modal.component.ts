@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Modal } from '../../services/modal.service';
-import { SetEntity, SetMode } from '../../models/set.model';
+import { Modal } from '../../../services/modal.service';
+import { SetEntity, SetMode } from '../../../models/set.model';
 import {
     crossFade,
     fade,
@@ -9,13 +9,13 @@ import {
     modalPage,
     triggerChildren,
     vshrink,
-} from '../../utils/animations';
-import { smoothHeight } from '../../directives/smooth-height.directive';
-import { SetService } from '../../services/set.service';
-import { OperationStatus } from '../../models/operation-status.model';
+} from '../../../utils/animations';
+import { smoothHeight } from '../../../directives/smooth-height.directive';
+import { SetService } from '../../../services/set.service';
+import { OperationStatus } from '../../../models/operation-status.model';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ServiceError } from '../../models/service-error.model';
-import { minPromiseDuration } from '../../utils/promise-utils';
+import { ServiceError } from '../../../models/service-error.model';
+import { minPromiseDuration } from '../../../utils/promise-utils';
 
 type Page = 'NAME' | 'MODES' | 'CREATING';
 
@@ -55,9 +55,7 @@ export class CreateSetModalComponent
         );
     }
 
-    get areSetModesValid() {
-        return !!this.modes?.length;
-    }
+
 
     @ViewChild('nameInput') nameInput: ElementRef;
 
@@ -79,11 +77,7 @@ export class CreateSetModalComponent
         });
     }
 
-    toggleMode(mode: SetMode) {
-        if (this.modes.includes(mode))
-            this.modes = this.modes.filter((m) => m !== mode);
-        else this.modes.push(mode);
-    }
+
 
     async createSet() {
         if (this.creationStatus === 'IN_PROGRESS') return;

@@ -47,7 +47,7 @@ export class ModalService {
                         'global-overlay-container',
                         child
                     );
-                    if (input) modal.component.initModal(input);
+                    modal.component.initModal(input);
                     res(modal);
                 });
             })

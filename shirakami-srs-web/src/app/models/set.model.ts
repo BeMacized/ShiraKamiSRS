@@ -21,8 +21,11 @@ export class CreateSetDto {
     modes: SetMode[];
 }
 
-export class SetDto extends CreateSetDto {
+export class UpdateSetDto extends CreateSetDto {
     id: string;
     userId: string;
+}
+
+export class SetDto extends UpdateSetDto {
     // cards?: CardDto[];
 }

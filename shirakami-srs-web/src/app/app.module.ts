@@ -8,22 +8,24 @@ import { LoginViewComponent } from './views/login-view/login-view.component';
 import { ThemeService } from './services/theme.service';
 import { AppInitService } from './services/app-init.service';
 import { DebugViewComponent } from './views/debug-view/debug-view.component';
-import { CardSetCardComponent } from './components/card-set-card/card-set-card.component';
-import { ReviewForecastComponent } from './components/review-forecast/review-forecast.component';
-import { CollapsibleComponent } from './components/collapsible/collapsible.component';
+import { CardSetCardComponent } from './components/misc/card-set-card/card-set-card.component';
+import { ReviewForecastComponent } from './components/misc/review-forecast/review-forecast.component';
+import { CollapsibleComponent } from './components/misc/collapsible/collapsible.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MainNavComponent } from './components/main-nav/main-nav.component';
-import { LogoComponent } from './components/logo/logo.component';
+import { MainNavComponent } from './components/misc/main-nav/main-nav.component';
+import { LogoComponent } from './components/misc/logo/logo.component';
 import { FormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { SpinnerComponent } from './components/spinner/spinner.component';
+import { SpinnerComponent } from './components/misc/spinner/spinner.component';
 import { AuthInterceptor } from './interceptors/auth-interceptor.service';
 import { ClickOutsideDirective } from './directives/click-outside.directive';
 import { SetCreationViewComponent } from './views/set-creation-view/set-creation-view.component';
-import { SafePopupBaseComponent } from './components/safe-popup-base/safe-popup-base.component';
-import { GenericContextMenuComponent } from './components/generic-context-menu/generic-context-menu.component';
-import { CreateSetModalComponent } from './components/create-set-modal/create-set-modal.component';
+import { SafePopupBaseComponent } from './components/misc/safe-popup-base/safe-popup-base.component';
+import { GenericContextMenuComponent } from './components/misc/generic-context-menu/generic-context-menu.component';
+import { CreateSetModalComponent } from './components/modals/create-set-modal/create-set-modal.component';
 import { SmoothHeightDirective } from './directives/smooth-height.directive';
+import { EditSetModesModalComponent } from './components/modals/edit-set-modes-modal/edit-set-modes-modal.component';
+import { SetModeTogglesComponent } from './components/misc/set-mode-toggles/set-mode-toggles.component';
 
 export function initializeApp(appInitService: AppInitService) {
     return () => appInitService.init();
@@ -47,6 +49,8 @@ export function initializeApp(appInitService: AppInitService) {
         GenericContextMenuComponent,
         CreateSetModalComponent,
         SmoothHeightDirective,
+        EditSetModesModalComponent,
+        SetModeTogglesComponent,
     ],
     imports: [
         BrowserModule,

@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../../services/auth.service';
 import { Subject } from 'rxjs';
-import { UserService } from '../../services/user.service';
+import { UserService } from '../../../services/user.service';
 import { takeUntil } from 'rxjs/operators';
-import { User } from '../../models/user.model';
-import { fadeDown } from '../../utils/animations';
+import { User } from '../../../models/user.model';
+import { fadeDown } from '../../../utils/animations';
 
 @Component({
     selector: 'app-main-nav',

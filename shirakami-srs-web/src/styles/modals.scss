@@ -49,6 +49,18 @@
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
+
+        h1:first-child {
+            flex-shrink: 0;
+        }
+
+        *:last-child {
+            text-align: right;
+        }
+
+        >*:not(:first-child) {
+            margin-left: 1em;
+        }
     }
 
     &-content {

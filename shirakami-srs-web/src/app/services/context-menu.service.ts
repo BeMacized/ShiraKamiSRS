@@ -3,7 +3,7 @@ import { DomService } from './dom.service';
 import {
     ContextMenu,
     GenericContextMenuComponent,
-} from '../components/generic-context-menu/generic-context-menu.component';
+} from '../components/misc/generic-context-menu/generic-context-menu.component';
 
 @Injectable({
     providedIn: 'root',

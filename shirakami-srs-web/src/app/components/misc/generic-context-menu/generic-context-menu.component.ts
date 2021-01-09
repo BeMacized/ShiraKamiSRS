@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { SafePopupBaseComponent } from '../safe-popup-base/safe-popup-base.component';
 import { DomSanitizer } from '@angular/platform-browser';
-import { fadeUp } from '../../utils/animations';
+import { fadeUp } from '../../../utils/animations';
 
 export interface ContextMenu {
     items: ContextMenuContent[];

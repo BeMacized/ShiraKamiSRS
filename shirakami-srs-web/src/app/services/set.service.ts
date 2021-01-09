@@ -21,6 +21,22 @@ export class SetService {
                         throw new ServiceError('SERVICE_UNAVAILABLE');
                 }
             }
+            throw e;
+        }
+    }
+
+    async getSet(setId: string): Promise<SetEntity> {
+        try {
+            const set = await this.setRepository.getSet(setId).toPromise();
+            return set;
+        } catch (e) {
+            if (e instanceof HttpErrorResponse) {
+                switch (e.status) {
+                    case 0:
+                        throw new ServiceError('SERVICE_UNAVAILABLE');
+                }
+            }
+            throw e;
         }
     }
 
@@ -42,5 +58,31 @@ export class SetService {
             }
             throw e;
         }
+    }
+
+    async updateSet(
+        partialSet: Partial<SetEntity> & { id: string }
+    ): Promise<SetEntity> {
+        try {
+            const set = await this.setRepository
+                .updateSet({
+                    ...(await this.getSet(partialSet.id)),
+                    ...partialSet,
+                })
+                .toPromise();
+            return SetEntity.fromDto(set);
+        } catch (e) {
+            if (e instanceof HttpErrorResponse) {
+                switch (e.status) {
+                    case 0:
+                        throw new ServiceError('SERVICE_UNAVAILABLE');
+                }
+            }
+            throw e;
+        }
+    }
+
+    async updateSetModes(id: string, modes: SetMode[]): Promise<SetEntity> {
+        return this.updateSet({ id, modes });
     }
 }

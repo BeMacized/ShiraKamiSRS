@@ -4,7 +4,7 @@ import { AppSettingsService } from '../services/app-settings.service';
 import { Observable } from 'rxjs';
 import { User } from '../models/user.model';
 import { map, switchMap, take } from 'rxjs/operators';
-import { CreateSetDto, SetDto } from '../models/set.model';
+import { CreateSetDto, SetDto, UpdateSetDto } from '../models/set.model';
 
 @Injectable({
     providedIn: 'root',
@@ -22,9 +22,21 @@ export class SetRepositoryService {
         );
     }
 
+    public getSet(setId: string): Observable<SetDto> {
+        return this.getApiUrl(`/sets/${setId}`).pipe(
+            switchMap((url) => this.http.get<SetDto>(url))
+        );
+    }
+
     public createSet(data: CreateSetDto): Observable<SetDto> {
         return this.getApiUrl(`/sets`).pipe(
             switchMap((url) => this.http.post<SetDto>(url, data))
+        );
+    }
+
+    public updateSet(data: UpdateSetDto): Observable<SetDto> {
+        return this.getApiUrl(`/sets/${data.id}`).pipe(
+            switchMap((url) => this.http.put<SetDto>(url, data))
         );
     }
 
@@ -39,4 +51,5 @@ export class SetRepositoryService {
             )
         );
     }
+
 }

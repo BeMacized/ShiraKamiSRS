@@ -1,0 +1,93 @@
+<div class="modal-bg" @bg @triggerModal>
+    <div
+        class="modal modal-md"
+        @modal
+        (clickOutside)="close()"
+        [smoothHeight]="page"
+    >
+        <div class="modal-page" *ngIf="page === 'MODES'" @modalPage>
+            <div class="modal-header">
+                <h1>Change Set Modes</h1>
+                <h2>{{ set.name }}</h2>
+            </div>
+            <div class="modal-content ai-center">
+                <p>Select which modes you want to practice this set set for.</p>
+                <app-set-mode-toggles
+                    [(modes)]="modes"
+                    #setModeToggles
+                ></app-set-mode-toggles>
+            </div>
+            <div class="modal-actions">
+                <button class="button btn btn-secondary" (click)="close()">
+                    Cancel
+                </button>
+                <button
+                    class="button btn btn-primary"
+                    [disabled]="!setModeToggles.valid"
+                    (click)="updateSet()"
+                >
+                    Save
+                </button>
+            </div>
+        </div>
+        <div class="modal-page" *ngIf="page === 'UPDATING'" @modalPage>
+            <div class="modal-header">
+                <h1>Change Set Modes</h1>
+                <h2>{{ set.name }}</h2>
+            </div>
+            <div
+                class="modal-content ai-center no-padding"
+                [smoothHeight]="updateStatus"
+            >
+                <div
+                    @crossFade
+                    class="status-container"
+                    *ngIf="updateStatus === 'IN_PROGRESS'"
+                >
+                    <app-spinner size="NORMAL"></app-spinner>
+                    <span class="status-message">Updating set modes...</span>
+                </div>
+                <div
+                    @crossFade
+                    class="status-container"
+                    *ngIf="updateStatus === 'ERROR'"
+                >
+                    <i class="material-icons error-icon">error_outline</i>
+                    <span class="status-message">
+                        {{ errorMessage }}
+                    </span>
+                </div>
+                <div
+                    @crossFade
+                    class="status-container"
+                    *ngIf="updateStatus === 'SUCCESS'"
+                >
+                    <i class="material-icons success-icon"
+                        >check_circle_outline</i
+                    >
+                    <span class="status-message">
+                        <span>Set '{{ set.name }}' updated successfully!</span>
+                    </span>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button
+                    class="button btn btn-secondary"
+                    (click)="updateSet()"
+                    *ngIf="updateStatus === 'ERROR'"
+                    @hshrink
+                >
+                    Retry
+                </button>
+                <button
+                    class="button btn btn-secondary"
+                    (click)="close()"
+                    [disabled]="updateStatus === 'IN_PROGRESS'"
+                    @hshrink
+                >
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

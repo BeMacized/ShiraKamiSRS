@@ -1,28 +1,10 @@
-@import 'responsive.scss';
-@import 'shadows.scss';
+@import 'src/styles/responsive';
+@import 'src/styles/shadows';
 
-
-
-.status-container {
+:host {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    .error-icon {
-        font-size: 7em;
-        color: var(--color-alert-error);
-    }
-
-    .success-icon {
-        font-size: 7em;
-        color: var(--color-alert-success);
-    }
-
-    .status-message {
-        margin-top: 2em;
-        font-weight: 500;
-    }
+    align-items: stretch;
 }
 
 .set-modes {
@@ -56,6 +38,7 @@
         @include shadow(1, true);
         transition: all .15s ease;
         opacity: 0.6;
+        color: var(--color-on-surface);
 
         @include bp(sm) {
             &:not(:first-child) {

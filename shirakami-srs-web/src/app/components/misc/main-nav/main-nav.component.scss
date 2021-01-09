@@ -1,6 +1,6 @@
-@import 'node_modules/sass-material-colors/sass/sass-material-colors';
-@import 'layouts.scss';
-@import 'shadows.scss';
+@import '../../../../../node_modules/sass-material-colors/sass/sass-material-colors';
+@import 'src/styles/layouts';
+@import 'src/styles/shadows';
 
 $nav-height: 6em;
 

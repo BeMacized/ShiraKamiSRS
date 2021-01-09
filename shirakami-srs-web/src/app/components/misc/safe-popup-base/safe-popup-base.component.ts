@@ -6,7 +6,7 @@ import {
     OnDestroy,
     OnInit,
 } from '@angular/core';
-import { DomComponent } from '../../services/dom.service';
+import { DomComponent } from '../../../services/dom.service';
 import { interval, Subject } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
 import { takeUntil } from 'rxjs/operators';

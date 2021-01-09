@@ -1,0 +1,50 @@
+<div class="set-modes">
+    <button
+        class="set-mode"
+        [class.active]="modes.includes('jpToEn')"
+        (click)="toggleMode('jpToEn')"
+    >
+        <div class="set-mode-icon">
+            <span class="flag-icon flag-icon-jp"></span>
+            <i class="material-icons">arrow_forward</i>
+            <span class="flag-icon flag-icon-gb"></span>
+        </div>
+        <div class="set-mode-title">
+            Translate from Japanese
+        </div>
+    </button>
+    <button
+        class="set-mode"
+        [class.active]="modes.includes('enToJp')"
+        (click)="toggleMode('enToJp')"
+    >
+        <div class="set-mode-icon">
+            <span class="flag-icon flag-icon-gb"></span>
+            <i class="material-icons">arrow_forward</i>
+            <span class="flag-icon flag-icon-jp"></span>
+        </div>
+        <div class="set-mode-title">
+            Translate into Japanese
+        </div>
+    </button>
+    <button
+        class="set-mode"
+        [class.active]="modes.includes('kanjiToKana')"
+        (click)="toggleMode('kanjiToKana')"
+    >
+        <div class="set-mode-icon">
+            <span>漢字</span>
+            <i class="material-icons">arrow_forward</i>
+            <span>かな</span>
+        </div>
+        <div class="set-mode-title">Learn Kanji Readings</div>
+    </button>
+</div>
+<div
+    class="alert alert-warning"
+    style='margin-top: 1em'
+    *ngIf="!valid"
+    @vshrink
+>
+    You need to have at least one mode active.
+</div>

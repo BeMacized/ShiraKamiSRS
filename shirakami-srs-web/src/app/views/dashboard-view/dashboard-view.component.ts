@@ -2,12 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { ContextMenuService } from '../../services/context-menu.service';
 import { DomComponent } from '../../services/dom.service';
 import { ModalService } from '../../services/modal.service';
-import { CreateSetModalComponent } from '../../components/create-set-modal/create-set-modal.component';
+import { CreateSetModalComponent } from '../../components/modals/create-set-modal/create-set-modal.component';
 import { SetEntity } from '../../models/set.model';
 import { OperationStatus } from '../../models/operation-status.model';
 import { SetService } from '../../services/set.service';
 import { minPromiseDuration } from '../../utils/promise-utils';
 import { fade, vshrink } from '../../utils/animations';
+import { EditSetModesModalComponent } from '../../components/modals/edit-set-modes-modal/edit-set-modes-modal.component';
 
 @Component({
     selector: 'app-dashboard-view',
@@ -34,7 +35,10 @@ export class DashboardViewComponent implements OnInit {
         if (this.setsFetchStatus === 'IN_PROGRESS') return;
         this.setsFetchStatus = 'IN_PROGRESS';
         try {
-            this.sets = await minPromiseDuration(this.setService.getSets(), 400);
+            this.sets = await minPromiseDuration(
+                this.setService.getSets(),
+                400
+            );
             this.setsFetchStatus = 'SUCCESS';
         } catch (e) {
             console.error(e);
@@ -71,13 +75,23 @@ export class DashboardViewComponent implements OnInit {
     }
 
     createSet = async () => {
-        await this.modalService
+        const set = await this.modalService
             .showModal<CreateSetModalComponent>(CreateSetModalComponent)
             .toPromise();
-        await this.refreshSets();
+        if (set) await this.refreshSets();
     };
 
     trackSetBy(index: number, item: SetEntity) {
         return item.id;
     }
+
+    changeModes = async (set: SetEntity) => {
+        set = await this.modalService
+            .showModal<EditSetModesModalComponent, SetEntity, SetEntity>(
+                EditSetModesModalComponent,
+                set
+            )
+            .toPromise();
+        if (set) await this.refreshSets();
+    };
 }

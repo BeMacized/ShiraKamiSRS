@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { triggerChildren, vshrink } from '../../utils/animations';
+import { triggerChildren, vshrink } from '../../../utils/animations';
 
 @Component({
     selector: 'app-collapsible',
