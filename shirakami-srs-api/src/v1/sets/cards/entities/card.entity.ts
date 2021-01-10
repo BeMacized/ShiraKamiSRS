@@ -1,10 +1,20 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { SetEntity } from '../../entities/set.entity';
 import { SrsLevelEntity } from './srs-level.entity';
 
-class CardValue {
+export class CardValue {
+  @Column()
   english: string;
+  @Column()
   kana: string;
+  @Column()
   kanji?: string;
 }
 
@@ -13,7 +23,7 @@ export class CardEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('simple-json')
+  @Column((type) => CardValue)
   value: CardValue;
 
   @OneToOne(() => SrsLevelEntity, (level) => level.card, {
