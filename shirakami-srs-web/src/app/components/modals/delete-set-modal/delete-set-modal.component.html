@@ -12,11 +12,11 @@
             </div>
             <div class="modal-content ai-center">
                 <div class="alert alert-error">
-                    WARNING: You are about to remove a set: "{{ set.name }}". Note that
-                    you will lose all your progress learning the cards from this
-                    set. This cannot be undone.
+                    WARNING: You are about to remove a set: "{{ set.name }}".
+                    Note that you will lose all your progress learning the cards
+                    from this set. This cannot be undone.
                 </div>
-                <p style='padding: 2em 0'>
+                <p style="padding: 2em 0">
                     If you are absolutely sure you want to remove this set,
                     please enter its name "<i>{{ set.name }}</i
                     >" in the text field below, before continuing.
@@ -97,7 +97,7 @@
                     class="button btn btn-secondary"
                     (click)="close()"
                     [disabled]="deletionStatus === 'IN_PROGRESS'"
-                    *ngIf='deletionStatus !== "SUCCESS"'
+                    *ngIf="deletionStatus !== 'SUCCESS'"
                     @vshrink
                 >
                     Close

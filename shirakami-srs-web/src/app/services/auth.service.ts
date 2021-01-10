@@ -8,8 +8,8 @@ import {
 } from '../models/token-set.model';
 import { delay, filter, map, switchMap } from 'rxjs/operators';
 import {
-    AuthResponse,
     AuthRepositoryService,
+    AuthResponse,
 } from '../repositories/auth-repository.service';
 import jwt_decode from 'jwt-decode';
 import { HttpErrorResponse } from '@angular/common/http';

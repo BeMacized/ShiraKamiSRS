@@ -1255,6 +1255,11 @@
   resolved "https://registry.yarnpkg.com/@types/source-list-map/-/source-list-map-0.1.2.tgz#0078836063ffaf17412349bba364087e0ac02ec9"
   integrity sha512-K5K+yml8LTo9bWJI/rECfIPrGgxdpeNbj+d53lwN4QjW1MCwlkhUms+gtdzigTeUyBr09+u8BwOIY3MXvHdcsA==
 
+"@types/wanakana@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@types/wanakana/-/wanakana-4.0.0.tgz#8e8601c2380388512272e2e00b4e985c6e4b0726"
+  integrity sha512-UiPHsIbTz0hIGiv1eQzxNKJOYVRS1UzC/cZOuhhKyQZQsYo05kZzx1Ok7tnefD/eoUHmL9J+CdmwgOngMGA60g==
+
 "@types/webpack-sources@^0.1.5":
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/@types/webpack-sources/-/webpack-sources-0.1.8.tgz#078d75410435993ec8a0a2855e88706f3f751f81"
@@ -8664,6 +8669,11 @@ void-elements@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/void-elements/-/void-elements-2.0.1.tgz#c066afb582bb1cb4128d60ea92392e94d5e9dbec"
   integrity sha1-wGavtYK7HLQSjWDqkjkulNXp2+w=
+
+wanakana@^4.0.2:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/wanakana/-/wanakana-4.0.2.tgz#a7d60186724a56fd50e6e9c224628c09294901d8"
+  integrity sha512-lBFtnLJhTpp5wQBdH7TrOHhLxqmUabAfL86plNN8+iffyhosjZyx+kkO8KEBGR8zWH5nxSQ67oyx3W/lcEC8sg==
 
 watchpack-chokidar2@^2.0.1:
   version "2.0.1"

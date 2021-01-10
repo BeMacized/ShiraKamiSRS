@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DomComponent, DomService } from './dom.service';
-import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
+import { from, Observable, Subject } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 export abstract class Modal<I = any, O = any> {

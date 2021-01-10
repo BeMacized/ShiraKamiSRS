@@ -1,9 +1,10 @@
 import {
+    AfterViewInit,
     Directive,
-    OnChanges,
-    Input,
+    ElementRef,
     HostBinding,
-    ElementRef, AfterViewInit,
+    Input,
+    OnChanges,
 } from '@angular/core';
 import {
     animate,

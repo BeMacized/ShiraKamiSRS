@@ -1,0 +1,96 @@
+<div class="modal-bg" @bg @triggerModal>
+    <div class="modal modal-sm" @modal (clickOutside)="close()">
+        <div class="modal-header">
+            <h1 *ngIf="!isEditing">Create a new card</h1>
+            <h1 *ngIf="isEditing">Edit Card</h1>
+        </div>
+        <div class="status-overlay" *ngIf="showStatusOverlay" [@fade]>
+            <div class="status-overlay-bg"></div>
+            <div
+                class="status-overlay-content"
+                @fade
+                *ngIf="createOrUpdateStatus === 'IN_PROGRESS'"
+            >
+                <app-spinner></app-spinner>
+                <span *ngIf="!isEditing">Creating card...</span>
+                <span *ngIf="isEditing">Updating card...</span>
+            </div>
+            <div
+                class="status-overlay-content"
+                @fade
+                *ngIf="createOrUpdateStatus === 'SUCCESS'"
+            >
+                <i class="material-icons success">check_circle_outline</i>
+                <span *ngIf="!isEditing">Card created successfully!</span>
+                <span *ngIf="isEditing">Card updated successfully!</span>
+            </div>
+            <div
+                class="status-overlay-content"
+                @fade
+                *ngIf="createOrUpdateStatus === 'ERROR'"
+            >
+                <i class="material-icons success">error_outline</i>
+                <span *ngIf="!isEditing"
+                    >An error occurred while trying to create the card.</span
+                >
+                <span *ngIf="isEditing"
+                    >An error occurred while trying to update the card.</span
+                >
+            </div>
+        </div>
+        <div class="modal-content ai-center">
+            <div class="flex-column ai-stretch">
+                <label for="english-input">English</label>
+                <input
+                    id="english-input"
+                    class="input input-large"
+                    type="text"
+                    placeholder="English"
+                    (input)="englishWord = englishInput.value"
+                    (input)="onInput('english')"
+                    maxlength="255"
+                    #englishInput
+                    (keyup.enter)="isValidCardValues && createOrUpdateCard()"
+                />
+                <label for="english-input">Kana Only</label>
+                <input
+                    id="kana-input"
+                    class="input input-large"
+                    type="text"
+                    placeholder="かな"
+                    (input)="onInput('kana')"
+                    maxlength="255"
+                    #kanaInput
+                    (keyup.enter)="isValidCardValues && createOrUpdateCard()"
+                />
+                <label for="english-input">Kanji (Optional)</label>
+                <input
+                    id="kanji-input"
+                    class="input input-large"
+                    type="text"
+                    placeholder="漢字"
+                    (input)="onInput('kanji')"
+                    maxlength="255"
+                    #kanjiInput
+                    (keyup.enter)="isValidCardValues && createOrUpdateCard()"
+                />
+                <div class="flex-row ai-center" *ngIf="!isEditing">
+                    <app-checkbox [(checked)]="createAnother"></app-checkbox>
+                    <span>Create another card</span>
+                </div>
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button class="button btn btn-secondary" (click)="close()">
+                Cancel
+            </button>
+            <button
+                class="button btn btn-primary"
+                [disabled]="!isValidCardValues"
+                (click)="createOrUpdateCard()"
+            >
+                {{ isEditing ? 'Save' : 'Create' }}
+            </button>
+        </div>
+    </div>
+</div>

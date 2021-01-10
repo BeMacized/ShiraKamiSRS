@@ -1,5 +1,3 @@
-import { CardDto } from './card.model';
-
 export class SrsLevelEntity {
     level: number;
     lastUpdated: number;
@@ -7,7 +5,7 @@ export class SrsLevelEntity {
     static fromDto(dto: SrsLevelDto): SrsLevelEntity {
         return Object.assign(new SrsLevelEntity(), {
             level: dto.level,
-            lastUpdated: dto.lastUpdated
+            lastUpdated: dto.lastUpdated,
         });
     }
 }

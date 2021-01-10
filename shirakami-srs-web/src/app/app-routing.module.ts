@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { LoginViewComponent } from './views/login-view/login-view.component';
 import { DashboardViewComponent } from './views/dashboard-view/dashboard-view.component';
 import { DebugViewComponent } from './views/debug-view/debug-view.component';

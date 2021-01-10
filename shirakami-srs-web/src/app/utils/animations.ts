@@ -2,10 +2,7 @@ import {
     animate,
     animateChild,
     group,
-    keyframes,
     query,
-    stagger,
-    state,
     style,
     transition,
     trigger,
@@ -70,7 +67,16 @@ export function crossFade(name = 'crossFade', length = '.15s ease') {
         transition(':enter', [style({ opacity: 0 }), animate(length)]),
         transition(':leave', [
             style({ position: 'absolute', top: 0, left: 0, width: '100%' }),
-            animate(length, style({ opacity: 0, position: 'absolute', top: 0, left: 0, width: '100%' })),
+            animate(
+                length,
+                style({
+                    opacity: 0,
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                })
+            ),
         ]),
     ]);
 }

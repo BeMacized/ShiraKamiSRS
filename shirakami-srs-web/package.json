@@ -28,6 +28,7 @@
         "rxjs": "~6.6.0",
         "sass-material-colors": "^0.0.5",
         "tslib": "^2.0.0",
+        "wanakana": "^4.0.2",
         "zone.js": "~0.10.2"
     },
     "devDependencies": {
@@ -37,6 +38,7 @@
         "@types/jasmine": "~3.6.0",
         "@types/jdenticon": "^2.2.0",
         "@types/node": "^12.11.1",
+        "@types/wanakana": "^4.0.0",
         "codelyzer": "^6.0.0",
         "jasmine-core": "~3.6.0",
         "jasmine-spec-reporter": "~5.0.0",

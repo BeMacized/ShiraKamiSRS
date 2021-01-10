@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { hshrink, vshrink } from '../../../utils/animations';
+import { vshrink } from '../../../utils/animations';
 import {
     animate,
     state,

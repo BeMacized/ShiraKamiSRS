@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { User } from '../models/user.model';
 import { UserRepositoryService } from '../repositories/user-repository.service';
-import { AuthService } from './auth.service';
-import { filter } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root',

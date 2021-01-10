@@ -21,13 +21,13 @@
                         <span>{{ card.value.kana }}</span>
                     </div>
                 </div>
-                <div class="card-value" *ngIf="card.value.kanji">
+                <div class="card-value">
                     <div class="card-value-key">
                         <span class="flag-icon flag-icon-jp"></span>
                         <span>漢字</span>
                     </div>
                     <div class="card-value-value">
-                        <span>{{ card.value.kanji }}</span>
+                        <span>{{ card.value.kanji || '-' }}</span>
                     </div>
                 </div>
             </div>
@@ -79,10 +79,10 @@
         </div>
 
         <div class="action-row">
-            <button>
+            <button (click)="edit.emit()">
                 <i class="material-icons">edit</i>
             </button>
-            <button>
+            <button (click)="remove.emit()">
                 <i class="material-icons">delete_forever</i>
             </button>
         </div>

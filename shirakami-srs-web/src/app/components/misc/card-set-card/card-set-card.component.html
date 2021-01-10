@@ -28,21 +28,22 @@
             <div class="actions">
                 <button class="btn btn-primary btn-rect btn-count">
                     <span>Lessons</span>
-                    <span class='btn-counter-badge'>30</span>
+                    <span class="btn-counter-badge">30</span>
                 </button>
                 <button class="btn btn-unavailable btn-rect btn-count" disabled>
                     <span>Reviews</span>
-                    <span class='btn-counter-badge'>0</span>
+                    <span class="btn-counter-badge">0</span>
                 </button>
                 <button
                     class="btn btn-rect xs-hidden btn-transparent btn-settings"
-                    (click)='openSetActionsModal($event)'
+                    (click)="openSetActionsModal($event)"
                 >
                     <i class="material-icons">settings</i>
                 </button>
             </div>
-            <button class="btn btn-rect btn-xs-settings sm-hidden"
-                    (click)='openSetActionsModal($event)'
+            <button
+                class="btn btn-rect btn-xs-settings sm-hidden"
+                (click)="openSetActionsModal($event)"
             >
                 <i class="material-icons">settings</i>
             </button>
@@ -51,23 +52,23 @@
         <div class="srs-row">
             <div class="srs-group srs-group-1">
                 <span>1</span>
-                <span>{{srsService.srsGroupLabels[0]}}</span>
+                <span>{{ srsService.srsGroupLabels[0] }}</span>
             </div>
             <div class="srs-group srs-group-2">
                 <span>2</span>
-                <span>{{srsService.srsGroupLabels[1]}}</span>
+                <span>{{ srsService.srsGroupLabels[1] }}</span>
             </div>
             <div class="srs-group srs-group-3">
                 <span>3</span>
-                <span>{{srsService.srsGroupLabels[2]}}</span>
+                <span>{{ srsService.srsGroupLabels[2] }}</span>
             </div>
             <div class="srs-group srs-group-4">
                 <span>4</span>
-                <span>{{srsService.srsGroupLabels[3]}}</span>
+                <span>{{ srsService.srsGroupLabels[3] }}</span>
             </div>
             <div class="srs-group srs-group-5">
                 <span>5</span>
-                <span>{{srsService.srsGroupLabels[4]}}</span>
+                <span>{{ srsService.srsGroupLabels[4] }}</span>
             </div>
             <div class="srs-row-shadow"></div>
         </div>

@@ -1,0 +1,10 @@
+<label class="checkbox-container" (click)="onLabelClick($event)">
+    <input
+        class="entity-list-item-box"
+        type="checkbox"
+        [ngModel]="checked"
+        (ngModelChange)="onCheckChange($event)"
+        [disabled]="disabled"
+    />
+    <span class="checkmark" [class.highlighted]="highlighted"></span>
+</label>

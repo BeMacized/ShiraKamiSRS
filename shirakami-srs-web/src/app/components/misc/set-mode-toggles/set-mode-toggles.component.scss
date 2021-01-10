@@ -19,7 +19,6 @@
     }
 
     @include bp(xs) {
-
     }
 
     .set-mode {
@@ -36,7 +35,7 @@
         outline: none;
         border: 2px solid transparent;
         @include shadow(1, true);
-        transition: all .15s ease;
+        transition: all 0.15s ease;
         opacity: 0.6;
         color: var(--color-on-surface);
 

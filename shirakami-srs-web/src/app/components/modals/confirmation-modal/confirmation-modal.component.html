@@ -1,0 +1,33 @@
+<div class="modal-bg" @bg @triggerModal>
+    <div
+        class="modal modal-sm"
+        @modal
+        (clickOutside)="input.clickBgCancel && onCancel()"
+    >
+        <div class="modal-header">
+            <h1>{{ input.title }}</h1>
+        </div>
+        <div class="modal-content ai-center">
+            <div class="flex-column ai-stretch">
+                {{ input.message }}
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button
+                class="button btn"
+                [ngClass]="input.cancelButtonType"
+                (click)="onCancel()"
+                *ngIf="input.showCancel"
+            >
+                {{ input.cancelText }}
+            </button>
+            <button
+                class="button btn"
+                (click)="onConfirm()"
+                [ngClass]="input.confirmButtonType"
+            >
+                {{ input.confirmText }}
+            </button>
+        </div>
+    </div>
+</div>

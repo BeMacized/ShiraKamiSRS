@@ -10,12 +10,13 @@
         ></app-card-set-card>
         <div class="section-header">
             <h1 class="section-header-title">
-                Set Cards <span class='counter-badge'>{{ set.cards?.length || 0 }}</span>
+                Set Cards
+                <span class="counter-badge">{{ set.cards?.length || 0 }}</span>
             </h1>
             <div class="section-header-actions">
                 <button
                     class="btn btn-rect btn-transparent"
-                    (click)="addCard($event)"
+                    (click)="createCard()"
                 >
                     <i class="material-icons">add</i>
                 </button>
@@ -31,28 +32,14 @@
                 </span>
             </div>
         </div>
-        <div class="grid xs-1 sm-2 md-3 lg-4">
-            <app-card-card></app-card-card>
-            <app-card-card></app-card-card>
-            <app-card-card></app-card-card>
-            <app-card-card></app-card-card>
-            <app-card-card></app-card-card>
-            <app-card-card></app-card-card>
-            <app-card-card></app-card-card>
-            <app-card-card></app-card-card>
-            <app-card-card></app-card-card>
-            <app-card-card></app-card-card>
-            <app-card-card></app-card-card>
-            <app-card-card></app-card-card>
-            <app-card-card></app-card-card>
-            <app-card-card></app-card-card>
-            <app-card-card></app-card-card>
-            <app-card-card></app-card-card>
-            <app-card-card></app-card-card>
-            <app-card-card></app-card-card>
-            <app-card-card></app-card-card>
-            <app-card-card></app-card-card>
-            <app-card-card></app-card-card>
+        <div class="grid xs-1 sm-2 md-3 lg-4" *ngIf="set.cards?.length">
+            <div *ngFor="let card of set.cards; trackBy: trackCardBy" @fadeUp>
+                <app-card-card
+                    [card]="card"
+                    (edit)="editCard(card)"
+                    (remove)="removeCard(card)"
+                ></app-card-card>
+            </div>
         </div>
     </div>
 </div>

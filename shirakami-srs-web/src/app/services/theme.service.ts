@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { JSONSchema, StorageMap } from '@ngx-pwa/local-storage';
-import { catchError, map, take } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { of } from 'rxjs';
 
 type ThemingMode = 'SYSTEM' | 'LIGHT' | 'DARK';

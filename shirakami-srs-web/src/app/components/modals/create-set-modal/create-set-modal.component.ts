@@ -1,11 +1,17 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    HostListener,
+    OnInit,
+    ViewChild,
+} from '@angular/core';
 import { Modal } from '../../../services/modal.service';
 import { SetEntity, SetMode } from '../../../models/set.model';
 import {
     crossFade,
     fade,
-    fadeLeft,
-    fadeUp, hshrink,
+    fadeUp,
+    hshrink,
     modalPage,
     triggerChildren,
     vshrink,
@@ -13,7 +19,6 @@ import {
 import { smoothHeight } from '../../../directives/smooth-height.directive';
 import { SetService } from '../../../services/set.service';
 import { OperationStatus } from '../../../models/operation-status.model';
-import { HttpErrorResponse } from '@angular/common/http';
 import { ServiceError } from '../../../models/service-error.model';
 import { minPromiseDuration } from '../../../utils/promise-utils';
 
@@ -55,7 +60,10 @@ export class CreateSetModalComponent
         );
     }
 
-
+    @HostListener('document:keydown.escape', ['$event'])
+    onEscapeDown($event) {
+        this.close();
+    }
 
     @ViewChild('nameInput') nameInput: ElementRef;
 
@@ -82,10 +90,10 @@ export class CreateSetModalComponent
         this.page = 'CREATING';
         this.errorMessage = null;
         try {
-            const set = await minPromiseDuration(this.setService.createSet(
-                this.setName.trim(),
-                this.modes
-            ), 500);
+            const set = await minPromiseDuration(
+                this.setService.createSet(this.setName.trim(), this.modes),
+                500
+            );
             this.creationStatus = 'SUCCESS';
             setTimeout(() => {
                 this.emit(set);

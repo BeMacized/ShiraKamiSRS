@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { map, switchMap, take } from 'rxjs/operators';
 import { AppSettingsService } from '../services/app-settings.service';
 import { Observable } from 'rxjs';
-import { User } from '../models/user.model';
 
 export interface AuthResponse {
     accessToken: string;
@@ -19,10 +18,7 @@ export class AuthRepositoryService {
         private appSettings: AppSettingsService
     ) {}
 
-    public login(
-        email: string,
-        password: string
-    ): Observable<AuthResponse> {
+    public login(email: string, password: string): Observable<AuthResponse> {
         return this.getApiUrl(`/auth/login`).pipe(
             switchMap((url) =>
                 this.http.post<AuthResponse>(url, {
@@ -33,7 +29,10 @@ export class AuthRepositoryService {
         );
     }
 
-    public refresh(accessToken: string, refreshToken: string): Observable<AuthResponse> {
+    public refresh(
+        accessToken: string,
+        refreshToken: string
+    ): Observable<AuthResponse> {
         return this.getApiUrl(`/auth/refresh`).pipe(
             switchMap((url) =>
                 this.http.post<AuthResponse>(url, {

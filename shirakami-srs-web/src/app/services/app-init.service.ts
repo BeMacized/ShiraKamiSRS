@@ -10,7 +10,7 @@ export class AppInitService {
     constructor(
         private themeService: ThemeService,
         private appSettings: AppSettingsService,
-        private authService: AuthService,
+        private authService: AuthService
     ) {}
 
     async init(): Promise<void> {

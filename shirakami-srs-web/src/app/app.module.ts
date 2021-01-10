@@ -29,6 +29,9 @@ import { EditSetNameModalComponent } from './components/modals/edit-set-name-mod
 import { DeleteSetModalComponent } from './components/modals/delete-set-modal/delete-set-modal.component';
 import { SetViewComponent } from './views/set-view/set-view.component';
 import { CardCardComponent } from './components/misc/card-card/card-card.component';
+import { CreateEditCardModalComponent } from './components/modals/create-edit-card-modal/create-edit-card-modal.component';
+import { CheckboxComponent } from './components/inputs/checkbox/checkbox.component';
+import { ConfirmationModalComponent } from './components/modals/confirmation-modal/confirmation-modal.component';
 
 export function initializeApp(appInitService: AppInitService) {
     return () => appInitService.init();
@@ -57,6 +60,9 @@ export function initializeApp(appInitService: AppInitService) {
         DeleteSetModalComponent,
         SetViewComponent,
         CardCardComponent,
+        CreateEditCardModalComponent,
+        CheckboxComponent,
+        ConfirmationModalComponent,
     ],
     imports: [
         BrowserModule,

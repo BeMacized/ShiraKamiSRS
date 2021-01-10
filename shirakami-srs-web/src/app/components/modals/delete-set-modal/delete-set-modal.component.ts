@@ -1,4 +1,10 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    HostListener,
+    OnInit,
+    ViewChild,
+} from '@angular/core';
 import { Modal } from '../../../services/modal.service';
 import { SetEntity } from '../../../models/set.model';
 import { SetService } from '../../../services/set.service';
@@ -36,7 +42,6 @@ type Page = 'VERIFICATION' | 'DELETION';
 export class DeleteSetModalComponent
     extends Modal<SetEntity, boolean>
     implements OnInit {
-
     constructor(private setService: SetService) {
         super();
     }
@@ -50,6 +55,11 @@ export class DeleteSetModalComponent
 
     get isSetNameValid() {
         return this.setName === this.set.name;
+    }
+
+    @HostListener('document:keydown.escape', ['$event'])
+    onEscapeDown($event) {
+        this.close();
     }
 
     ngOnInit(): void {

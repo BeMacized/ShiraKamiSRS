@@ -41,7 +41,11 @@ export function routeFadeUpPush(
     ]);
 }
 
-export function routeFadeUpPop(from: string, to: string, duration = '.25s ease') {
+export function routeFadeUpPop(
+    from: string,
+    to: string,
+    duration = '.25s ease'
+) {
     return transition(`${from} => ${to}`, [
         query(':enter, :leave', style({ position: 'fixed', width: '100%' }), {
             optional: true,

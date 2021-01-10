@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AppSettingsService } from '../services/app-settings.service';
 import { Observable } from 'rxjs';
-import { User } from '../models/user.model';
 import { map, switchMap, take } from 'rxjs/operators';
 import { CreateSetDto, SetDto, UpdateSetDto } from '../models/set.model';
 

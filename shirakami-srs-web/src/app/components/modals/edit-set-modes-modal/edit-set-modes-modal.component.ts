@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Modal } from '../../../services/modal.service';
 import { SetEntity, SetMode } from '../../../models/set.model';
 import {
@@ -46,6 +46,11 @@ export class EditSetModesModalComponent
     set: SetEntity;
 
     ngOnInit(): void {}
+
+    @HostListener('document:keydown.escape', ['$event'])
+    onEscapeDown($event) {
+        this.close();
+    }
 
     initModal(data: SetEntity | undefined) {
         if (!data) {

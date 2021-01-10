@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 
-
 @Injectable({
     providedIn: 'root',
 })
@@ -10,7 +9,7 @@ export class SrsService {
         'Guru',
         'Master',
         'Enlightened',
-        'Burned'
+        'Burned',
     ];
     constructor() {}
 

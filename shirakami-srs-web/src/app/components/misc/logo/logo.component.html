@@ -2,13 +2,13 @@
     class="logo xs-hidden"
     (mouseenter)="hover = true"
     (mouseleave)="hover = false"
-    (dblclick)='fbkActivate()'
+    (dblclick)="fbkActivate()"
 >
     <div [@logo]="hover || fbkActive ? 'shown' : 'hidden'">ShiraKami</div>
     <div [@logoInv]="hover || fbkActive ? 'hidden' : 'shown'">白紙</div>
     <div>SRS</div>
 </div>
-<div class='fbk-tagline' @vshrink *ngIf='fbkActive'>{{fbkString}}</div>
+<div class="fbk-tagline" @vshrink *ngIf="fbkActive">{{ fbkString }}</div>
 <div class="logo sm-hidden">
     <div>白紙</div>
     <div>SRS</div>

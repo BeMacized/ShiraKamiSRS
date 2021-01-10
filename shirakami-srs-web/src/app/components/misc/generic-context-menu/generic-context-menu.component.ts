@@ -1,10 +1,4 @@
-import {
-    Component,
-    ElementRef,
-    HostBinding,
-    Input,
-    OnInit,
-} from '@angular/core';
+import { Component, ElementRef, HostBinding } from '@angular/core';
 import { SafePopupBaseComponent } from '../safe-popup-base/safe-popup-base.component';
 import { DomSanitizer } from '@angular/platform-browser';
 import { fadeUp } from '../../../utils/animations';

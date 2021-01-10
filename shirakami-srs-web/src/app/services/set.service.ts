@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SetRepositoryService } from '../repositories/set-repository.service';
-import { SetEntity, SetMode } from '../models/set.model';
+import { SetEntity, SetMode, UpdateSetDto } from '../models/set.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ServiceError } from '../models/service-error.model';
 
@@ -68,7 +68,7 @@ export class SetService {
                 .updateSet({
                     ...(await this.getSet(partialSet.id)),
                     ...partialSet,
-                })
+                } as UpdateSetDto)
                 .toPromise();
             return SetEntity.fromDto(set);
         } catch (e) {

@@ -1,9 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { SetEntity } from '../../../models/set.model';
-import { ContextMenu } from '../generic-context-menu/generic-context-menu.component';
 import { ContextMenuService } from '../../../services/context-menu.service';
 import { DomComponent } from '../../../services/dom.service';
-import { CreateSetModalComponent } from '../../modals/create-set-modal/create-set-modal.component';
 import { Router } from '@angular/router';
 import { SrsService } from '../../../services/srs.service';
 

@@ -1,4 +1,10 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    HostListener,
+    OnInit,
+    ViewChild,
+} from '@angular/core';
 import {
     crossFade,
     fade,
@@ -10,7 +16,7 @@ import {
 } from '../../../utils/animations';
 import { smoothHeight } from '../../../directives/smooth-height.directive';
 import { Modal } from '../../../services/modal.service';
-import { SetEntity, SetMode } from '../../../models/set.model';
+import { SetEntity } from '../../../models/set.model';
 import { SetService } from '../../../services/set.service';
 import { OperationStatus } from '../../../models/operation-status.model';
 import { minPromiseDuration } from '../../../utils/promise-utils';
@@ -53,6 +59,11 @@ export class EditSetNameModalComponent
             this.setName.trim().length > 0 &&
             this.setName.trim().length <= 128
         );
+    }
+
+    @HostListener('document:keydown.escape', ['$event'])
+    onEscapeDown($event) {
+        this.close();
     }
 
     ngOnInit(): void {
