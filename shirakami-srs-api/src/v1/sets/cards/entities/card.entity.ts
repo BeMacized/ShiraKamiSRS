@@ -14,7 +14,7 @@ export class CardValue {
   english: string;
   @Column()
   kana: string;
-  @Column()
+  @Column({ nullable: true })
   kanji?: string;
 }
 

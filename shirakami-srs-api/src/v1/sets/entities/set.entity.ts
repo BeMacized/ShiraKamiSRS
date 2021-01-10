@@ -10,6 +10,12 @@ import { UserEntity } from '../../users/entities/user.entity';
 
 export type SetMode = 'enToJp' | 'jpToEn' | 'kanjiToKana';
 
+export class SetSrsStatus {
+  lessons: number;
+  reviews: number;
+  levelItems: { [level: number]: number };
+}
+
 @Entity()
 export class SetEntity {
   @PrimaryGeneratedColumn('uuid')
@@ -29,5 +35,7 @@ export class SetEntity {
 
   @OneToMany(() => CardEntity, (card) => card.set)
   cards?: CardEntity[];
+
+  srsStatus?: SetSrsStatus;
 }
 export type CreateOrUpdateSetEntity = Omit<SetEntity, 'id' | 'cards' | 'user'>;

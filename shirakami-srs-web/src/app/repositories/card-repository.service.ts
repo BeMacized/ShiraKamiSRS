@@ -34,7 +34,7 @@ export class CardRepositoryService {
 
     public deleteCard(setId: string, id: string): Observable<void> {
         return this.getApiUrl(`/sets/${setId}/cards/${id}`).pipe(
-            switchMap((url) => this.http.delete(url))
+            switchMap((url) => this.http.delete<void>(url))
         );
     }
 

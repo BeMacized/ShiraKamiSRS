@@ -7,8 +7,9 @@ import {
   IsUUID,
   Length,
   MinLength,
+  ValidateNested,
 } from 'class-validator';
-import { SetEntity, SetMode } from '../entities/set.entity';
+import { SetEntity, SetMode, SetSrsStatus } from '../entities/set.entity';
 import { CardDto } from '../cards/dtos/card.dto';
 
 export class CreateOrUpdateSetDto {
@@ -30,12 +31,16 @@ export class SetDto extends CreateOrUpdateSetDto {
 
   public readonly cards?: CardDto[];
 
+  @ValidateNested()
+  public readonly srsStatus: SetSrsStatus;
+
   static fromEntity(entity: SetEntity): SetDto {
     return {
       id: entity.id,
       name: entity.name,
       cards: entity.cards ? entity.cards.map(CardDto.fromEntity) : undefined,
       modes: entity.modes,
+      srsStatus: entity.srsStatus,
     };
   }
 }

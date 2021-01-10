@@ -1,5 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateOrUpdateSetEntity, SetEntity } from './entities/set.entity';
 import { Repository } from 'typeorm';
@@ -16,7 +20,23 @@ export class SetsService {
    * @param userId - The id of the user for which to look up the sets.
    */
   async findAll(userId: string): Promise<SetEntity[]> {
-    return this.setRepository.find({ userId });
+    const sets = await this.setRepository.find({ userId });
+    try {
+      const res = await this.setRepository.query(
+        `
+SELECT card.*, srs.*
+FROM card_entity card
+INNER JOIN srs_level_entity srs ON card.srsLevelEnToJpId=srs.id;
+
+      `,
+        [],
+      );
+      console.log(res);
+    } catch (e) {
+      console.error(e);
+    }
+
+    return sets;
   }
 
   /**
