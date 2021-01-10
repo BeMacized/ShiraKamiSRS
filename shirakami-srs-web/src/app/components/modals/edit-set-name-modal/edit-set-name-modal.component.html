@@ -67,7 +67,7 @@
                     *ngIf="updateStatus === 'SUCCESS'"
                 >
                     <i class="material-icons success-icon"
-                    >check_circle_outline</i
+                        >check_circle_outline</i
                     >
                     <span class="status-message">
                         <span>Set '{{ set.name }}' updated successfully!</span>
@@ -87,7 +87,8 @@
                     class="button btn btn-secondary"
                     (click)="close()"
                     [disabled]="updateStatus === 'IN_PROGRESS'"
-                    @hshrink
+                    *ngIf="updateStatus !== 'SUCCESS'"
+                    @vshrink
                 >
                     Close
                 </button>

@@ -42,7 +42,10 @@
                     Select which modes you want to practice this set set for.
                     You can always change this later.
                 </p>
-                <app-set-mode-toggles [(modes)]="modes" #setModeToggles></app-set-mode-toggles>
+                <app-set-mode-toggles
+                    [(modes)]="modes"
+                    #setModeToggles
+                ></app-set-mode-toggles>
             </div>
             <div class="modal-actions">
                 <button class="button btn btn-secondary" (click)="close()">
@@ -73,7 +76,7 @@
             >
                 <div
                     @crossFade
-                    class='modal-status-container'
+                    class="modal-status-container"
                     *ngIf="creationStatus === 'IN_PROGRESS'"
                 >
                     <app-spinner size="NORMAL"></app-spinner>
@@ -81,7 +84,7 @@
                 </div>
                 <div
                     @crossFade
-                    class='modal-status-container'
+                    class="modal-status-container"
                     *ngIf="creationStatus === 'ERROR'"
                 >
                     <i class="material-icons error-icon">error_outline</i>
@@ -91,7 +94,7 @@
                 </div>
                 <div
                     @crossFade
-                    class='modal-status-container'
+                    class="modal-status-container"
                     *ngIf="creationStatus === 'SUCCESS'"
                 >
                     <i class="material-icons success-icon"
@@ -115,7 +118,8 @@
                     class="button btn btn-secondary"
                     (click)="close()"
                     [disabled]="creationStatus === 'IN_PROGRESS'"
-                    @hshrink
+                    *ngIf="creationStatus !== 'SUCCESS'"
+                    @vshrink
                 >
                     Close
                 </button>

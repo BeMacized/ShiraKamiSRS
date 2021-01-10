@@ -97,7 +97,8 @@
                     class="button btn btn-secondary"
                     (click)="close()"
                     [disabled]="deletionStatus === 'IN_PROGRESS'"
-                    @hshrink
+                    *ngIf='deletionStatus !== "SUCCESS"'
+                    @vshrink
                 >
                     Close
                 </button>

@@ -83,7 +83,8 @@
                     class="button btn btn-secondary"
                     (click)="close()"
                     [disabled]="updateStatus === 'IN_PROGRESS'"
-                    @hshrink
+                    *ngIf='updateStatus !== "SUCCESS"'
+                    @vshrink
                 >
                     Close
                 </button>
