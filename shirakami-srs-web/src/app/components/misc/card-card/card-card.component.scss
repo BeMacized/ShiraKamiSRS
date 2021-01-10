@@ -28,6 +28,7 @@
     display: flex;
     flex-direction: column;
     align-items: stretch;
+    overflow: hidden;
 
     &-row {
         display: flex;
@@ -42,6 +43,7 @@
         align-items: center;
         justify-content: space-between;
         padding: 1em;
+        overflow: hidden;
 
         &:not(:last-child) {
             border-bottom: 1px solid var(--color-surface-border);
@@ -54,6 +56,13 @@
             .flag-icon {
                 margin-right: 0.5em;
             }
+        }
+
+        &-value {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            word-break: keep-all;
+            white-space: nowrap;
         }
     }
 }
