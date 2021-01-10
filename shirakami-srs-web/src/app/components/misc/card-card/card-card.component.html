@@ -1,0 +1,90 @@
+<div class="card no-padding">
+    <div class="card-clipper">
+        <div class="card-values-row">
+            <div class="v-title">Words</div>
+            <div class="card-values">
+                <div class="card-value">
+                    <div class="card-value-key">
+                        <span class="flag-icon flag-icon-gb"></span>
+                        <span>EN</span>
+                    </div>
+                    <div class="card-value-value">
+                        <span>{{ card.value.english }}</span>
+                    </div>
+                </div>
+                <div class="card-value">
+                    <div class="card-value-key">
+                        <span class="flag-icon flag-icon-jp"></span>
+                        <span>かな</span>
+                    </div>
+                    <div class="card-value-value">
+                        <span>{{ card.value.kana }}</span>
+                    </div>
+                </div>
+                <div class="card-value" *ngIf="card.value.kanji">
+                    <div class="card-value-key">
+                        <span class="flag-icon flag-icon-jp"></span>
+                        <span>漢字</span>
+                    </div>
+                    <div class="card-value-value">
+                        <span>{{ card.value.kanji }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="srs-progress">
+            <div class="v-title">SRS</div>
+            <div class="srs-progress-items">
+                <div
+                    class="srs-progress-item"
+                    [style]="getSrsLevelStyles(card.srsLevelJpToEn.level)"
+                >
+                    <div class="srs-progress-mode">
+                        <span class="flag-icon flag-icon-jp"></span>
+                        <i class="material-icons">arrow_forward</i>
+                        <span class="flag-icon flag-icon-gb"></span>
+                    </div>
+                    <div class="srs-progress-label">
+                        {{ getSrsLevelLabel(card.srsLevelJpToEn.level) }}
+                    </div>
+                </div>
+                <div
+                    class="srs-progress-item"
+                    [style]="getSrsLevelStyles(card.srsLevelEnToJp.level)"
+                >
+                    <div class="srs-progress-mode">
+                        <span class="flag-icon flag-icon-gb"></span>
+                        <i class="material-icons">arrow_forward</i>
+                        <span class="flag-icon flag-icon-jp"></span>
+                    </div>
+                    <div class="srs-progress-label">
+                        {{ getSrsLevelLabel(card.srsLevelEnToJp.level) }}
+                    </div>
+                </div>
+                <div
+                    class="srs-progress-item"
+                    [style]="getSrsLevelStyles(card.srsLevelKanjiToKana.level)"
+                >
+                    <div class="srs-progress-mode">
+                        <span>漢字</span>
+                        <i class="material-icons">arrow_forward</i>
+                        <span>かな</span>
+                    </div>
+                    <div class="srs-progress-label">
+                        {{ getSrsLevelLabel(card.srsLevelKanjiToKana.level) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-row">
+            <button>
+                <i class="material-icons">edit</i>
+            </button>
+            <button>
+                <i class="material-icons">delete_forever</i>
+            </button>
+        </div>
+    </div>
+</div>

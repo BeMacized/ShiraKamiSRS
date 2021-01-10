@@ -50,8 +50,8 @@ export class EditSetNameModalComponent
     get isSetNameValid() {
         return (
             this.setName &&
-            this.setName.length > 0 &&
-            this.setName.length <= 128
+            this.setName.trim().length > 0 &&
+            this.setName.trim().length <= 128
         );
     }
 
@@ -89,7 +89,7 @@ export class EditSetNameModalComponent
         this.errorMessage = null;
         try {
             const set = await minPromiseDuration(
-                this.setService.updateSetName(this.set.id, this.setName),
+                this.setService.updateSetName(this.set.id, this.setName.trim()),
                 500
             );
             this.updateStatus = 'SUCCESS';

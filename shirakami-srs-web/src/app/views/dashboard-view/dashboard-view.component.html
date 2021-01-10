@@ -12,7 +12,7 @@
                     <button class="btn btn-primary btn-rect">
                         <div class="btn-content">
                             <span>Lessons</span>
-                            <span class="counter-badge">0</span>
+                            <span class='btn-counter-badge'>0</span>
                         </div>
                     </button>
                     <button
@@ -21,7 +21,7 @@
                     >
                         <div class="btn-content">
                             <span>Reviews</span>
-                            <span class="counter-badge">0</span>
+                            <span class='btn-counter-badge'>0</span>
                         </div>
                     </button>
                 </div>
@@ -29,23 +29,23 @@
             <div class="srs-groups grid xs-2 sm-5">
                 <div class="card srs-group srs-group-1 xs-span-2">
                     <span>1</span>
-                    <span>Apprentice</span>
+                    <span>{{srsService.srsGroupLabels[0]}}</span>
                 </div>
                 <div class="card srs-group srs-group-2">
                     <span>2</span>
-                    <span>Guru</span>
+                    <span>{{srsService.srsGroupLabels[1]}}</span>
                 </div>
                 <div class="card srs-group srs-group-3">
                     <span>3</span>
-                    <span>Master</span>
+                    <span>{{srsService.srsGroupLabels[2]}}</span>
                 </div>
                 <div class="card srs-group srs-group-4">
                     <span>4</span>
-                    <span>Enlightened</span>
+                    <span>{{srsService.srsGroupLabels[3]}}</span>
                 </div>
                 <div class="card srs-group srs-group-5">
                     <span>5</span>
-                    <span>Burned</span>
+                    <span>{{srsService.srsGroupLabels[4]}}</span>
                 </div>
             </div>
             <!--/ALL SETS-->
@@ -64,7 +64,7 @@
             </div>
             <div class="set-list">
                 <div
-                    class="set-list-issue"
+                    class="card-flat-outline set-list-issue"
                     *ngIf="
                         setsFetchStatus === 'IN_PROGRESS' ||
                         (setsFetchStatus === 'SUCCESS' && !sets?.length) ||
@@ -104,7 +104,12 @@
                 </div>
 
                 <div *ngFor="let set of sets; trackBy: trackSetBy" @fade>
-                    <app-card-set-card [set]="set" (changeModes)='changeSetModes(set)' (rename)='renameSet(set)' (delete)='deleteSet(set)'></app-card-set-card>
+                    <app-card-set-card
+                        [set]="set"
+                        (changeModes)="changeSetModes(set)"
+                        (rename)="renameSet(set)"
+                        (delete)="deleteSet(set)"
+                    ></app-card-set-card>
                 </div>
             </div>
             <!--/YOUR SETS-->

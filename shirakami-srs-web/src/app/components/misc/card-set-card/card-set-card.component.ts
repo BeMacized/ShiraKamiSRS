@@ -5,6 +5,15 @@ import { ContextMenuService } from '../../../services/context-menu.service';
 import { DomComponent } from '../../../services/dom.service';
 import { CreateSetModalComponent } from '../../modals/create-set-modal/create-set-modal.component';
 import { Router } from '@angular/router';
+import { SrsService } from '../../../services/srs.service';
+
+export interface CardSetCardConfig {
+    showManageAction: boolean;
+}
+
+const defaultConfig: CardSetCardConfig = {
+    showManageAction: true,
+};
 
 @Component({
     selector: 'app-card-set-card',
@@ -14,6 +23,12 @@ import { Router } from '@angular/router';
 export class CardSetCardComponent implements OnInit {
     @Input()
     set: SetEntity;
+
+    config: CardSetCardConfig = defaultConfig;
+    @Input('config')
+    set setConfig(config: Partial<CardSetCardConfig>) {
+        this.config = { ...defaultConfig, ...config };
+    }
 
     setActionsPopup: DomComponent;
 
@@ -28,7 +43,8 @@ export class CardSetCardComponent implements OnInit {
 
     constructor(
         private contextMenu: ContextMenuService,
-        private router: Router
+        private router: Router,
+        public srsService: SrsService
     ) {}
 
     ngOnInit(): void {}
@@ -40,12 +56,17 @@ export class CardSetCardComponent implements OnInit {
             this.setActionsPopup = this.contextMenu.openMenu(
                 {
                     items: [
-                        {
-                            text: 'Manage Cards',
-                            icon: 'text_snippet',
-                            onClick: () =>
-                                this.router.navigate(['set', this.set.id]),
-                        },
+                        this.config.showManageAction
+                            ? {
+                                  text: 'Manage Cards',
+                                  icon: 'text_snippet',
+                                  onClick: () =>
+                                      this.router.navigate([
+                                          'set',
+                                          this.set.id,
+                                      ]),
+                              }
+                            : null,
                         {
                             text: 'Rename',
                             icon: 'text_format',
@@ -61,7 +82,7 @@ export class CardSetCardComponent implements OnInit {
                             icon: 'delete_forever',
                             onClick: () => this.delete.emit(),
                         },
-                    ],
+                    ].filter((i) => !!i),
                 },
                 $event
             );

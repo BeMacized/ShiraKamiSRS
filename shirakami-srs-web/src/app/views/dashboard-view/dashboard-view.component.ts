@@ -12,6 +12,7 @@ import { EditSetModesModalComponent } from '../../components/modals/edit-set-mod
 import { EditSetNameModalComponent } from '../../components/modals/edit-set-name-modal/edit-set-name-modal.component';
 import { DeleteSetModalComponent } from '../../components/modals/delete-set-modal/delete-set-modal.component';
 import { Router } from '@angular/router';
+import { SrsService } from '../../services/srs.service';
 
 @Component({
     selector: 'app-dashboard-view',
@@ -28,7 +29,8 @@ export class DashboardViewComponent implements OnInit {
         private contextMenu: ContextMenuService,
         private modalService: ModalService,
         private setService: SetService,
-        private router: Router
+        private router: Router,
+        public srsService: SrsService
     ) {}
 
     async ngOnInit() {

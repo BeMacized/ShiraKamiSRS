@@ -14,12 +14,14 @@
     </div>
     <div class="left">
         <div
-            class="nav-item xs-hidden"
+            class="nav-item"
             *ngIf="user"
             (clickOutside)="showAccountDropdown = false"
         >
             <button class="nav-item-content account" (click)="clickAccount()">
-                <span class="username">{{ user.username }}</span>
+                <span class="username xs-hidden">
+                    {{ user.username }}
+                </span>
                 <div class="avatar">
                     <svg
                         [attr.data-jdenticon-value]="

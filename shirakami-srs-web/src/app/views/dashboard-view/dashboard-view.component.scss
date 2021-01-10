@@ -5,24 +5,6 @@
     display: block;
 }
 
-.section-header {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin-top: 1em;
-
-    &-title {
-        flex: 1;
-    }
-
-    &-actions {
-        flex-shrink: 0;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-    }
-}
-
 .lessons-reviews-card {
     button {
         height: 100px;
@@ -75,13 +57,6 @@
 
 .set-list {
     &-issue {
-        border: 1px solid var(--color-surface-border);
-        border-radius: 0.25em;
-        padding: 2em;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        overflow: hidden;
         margin-bottom: $layout-gap;
 
         app-spinner {

@@ -50,16 +50,22 @@
         align-items: center;
         justify-content: space-between;
 
+        @include bp(xs) {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
         h1:first-child {
             flex-shrink: 0;
         }
 
-        *:last-child {
-            text-align: right;
-        }
-
-        >*:not(:first-child) {
-            margin-left: 1em;
+        @include bp(sm) {
+            *:last-child {
+                text-align: right;
+            }
+            > *:not(:first-child) {
+                margin-left: 1em;
+            }
         }
     }
 

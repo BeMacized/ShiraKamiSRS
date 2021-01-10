@@ -28,6 +28,7 @@ import { SetModeTogglesComponent } from './components/misc/set-mode-toggles/set-
 import { EditSetNameModalComponent } from './components/modals/edit-set-name-modal/edit-set-name-modal.component';
 import { DeleteSetModalComponent } from './components/modals/delete-set-modal/delete-set-modal.component';
 import { SetViewComponent } from './views/set-view/set-view.component';
+import { CardCardComponent } from './components/misc/card-card/card-card.component';
 
 export function initializeApp(appInitService: AppInitService) {
     return () => appInitService.init();
@@ -55,6 +56,7 @@ export function initializeApp(appInitService: AppInitService) {
         EditSetNameModalComponent,
         DeleteSetModalComponent,
         SetViewComponent,
+        CardCardComponent,
     ],
     imports: [
         BrowserModule,

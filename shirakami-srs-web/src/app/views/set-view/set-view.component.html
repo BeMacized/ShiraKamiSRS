@@ -1,2 +1,58 @@
 <app-main-nav [backRoute]="['dashboard']"></app-main-nav>
-<div class="page-container"></div>
+<div class="page-container">
+    <div class="grid xs-1 sm-1" *ngIf="set">
+        <app-card-set-card
+            [set]="set"
+            [config]="{ showManageAction: false }"
+            (changeModes)="changeSetModes(set)"
+            (rename)="renameSet(set)"
+            (delete)="deleteSet(set)"
+        ></app-card-set-card>
+        <div class="section-header">
+            <h1 class="section-header-title">
+                Set Cards <span class='counter-badge'>{{ set.cards?.length || 0 }}</span>
+            </h1>
+            <div class="section-header-actions">
+                <button
+                    class="btn btn-rect btn-transparent"
+                    (click)="addCard($event)"
+                >
+                    <i class="material-icons">add</i>
+                </button>
+            </div>
+        </div>
+        <div class="grid xs-1 sm-1" *ngIf="!set.cards?.length" @vshrink>
+            <div class="card-flat-outline no-cards">
+                <span> This set currently doesn't have any cards. </span>
+                <span>
+                    Start by
+                    <a (click)="createCard()">creating</a>
+                    one!
+                </span>
+            </div>
+        </div>
+        <div class="grid xs-1 sm-2 md-3 lg-4">
+            <app-card-card></app-card-card>
+            <app-card-card></app-card-card>
+            <app-card-card></app-card-card>
+            <app-card-card></app-card-card>
+            <app-card-card></app-card-card>
+            <app-card-card></app-card-card>
+            <app-card-card></app-card-card>
+            <app-card-card></app-card-card>
+            <app-card-card></app-card-card>
+            <app-card-card></app-card-card>
+            <app-card-card></app-card-card>
+            <app-card-card></app-card-card>
+            <app-card-card></app-card-card>
+            <app-card-card></app-card-card>
+            <app-card-card></app-card-card>
+            <app-card-card></app-card-card>
+            <app-card-card></app-card-card>
+            <app-card-card></app-card-card>
+            <app-card-card></app-card-card>
+            <app-card-card></app-card-card>
+            <app-card-card></app-card-card>
+        </div>
+    </div>
+</div>

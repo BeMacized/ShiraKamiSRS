@@ -1,3 +1,16 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+}
+
+.fbk-tagline {
+    margin-top: -0.5em;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
 .logo {
     font-size: 4em;
     user-select: none;
@@ -6,7 +19,8 @@
     align-items: center;
     justify-content: center;
 
-    &, div {
+    &,
+    div {
         word-break: keep-all;
         white-space: nowrap;
         overflow: hidden;

@@ -7,7 +7,12 @@ import { NonAuthGuardService } from './guards/non-auth-guard.service';
 import { AuthGuardService } from './guards/auth-guard.service';
 import { SetViewComponent } from './views/set-view/set-view.component';
 import { trigger } from '@angular/animations';
-import { routeFadeUpPop, routeFadeUpPush, routeSlidePop, routeSlidePush } from './utils/route-transitions';
+import {
+    routeFadeUpPop,
+    routeFadeUpPush,
+    routeSlidePop,
+    routeSlidePush,
+} from './utils/route-transitions';
 
 const routes: Routes = [
     {
@@ -41,8 +46,8 @@ const routes: Routes = [
 export const routeAnimations = trigger('routeAnimations', [
     routeSlidePush('dashboard', 'setDetails'),
     routeSlidePop('setDetails', 'dashboard'),
-    routeFadeUpPush('login', 'dashboard'),
-    routeFadeUpPop('dashboard', 'login'),
+    routeFadeUpPush('login', '*'),
+    routeFadeUpPop('*', 'login'),
 ]);
 
 @NgModule({

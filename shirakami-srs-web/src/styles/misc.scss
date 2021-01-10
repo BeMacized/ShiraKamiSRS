@@ -1,6 +1,5 @@
-
-.counter-badge {
-    display: block;
+.btn-counter-badge {
+    display: inline-block;
     flex-shrink: 0;
     background: white;
     border-radius: 9999999px;
@@ -11,6 +10,38 @@
     font-weight: 600;
 }
 
+.counter-badge {
+    background: var(--scoped-bg-color, var(--color-secondary));
+    color: var(--scoped-color, var(--color-on-secondary));
+    border-radius: 9999999px;
+    padding: 0.125em 0.5em;
+    font-weight: 500;
+    font-size: 0.75em;
+}
+
 .no-padding {
     padding: 0 !important;
+}
+
+.section-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 1em;
+
+    &-title {
+        flex: 1;
+
+        .counter-badge {
+            --scoped-bg-color: var(--color-surface);
+            --scoped-color: var(--color-on-surface);
+        }
+    }
+
+    &-actions {
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
 }

@@ -2,6 +2,7 @@
 @import 'shadows.scss';
 
 @mixin baseTheme() {
+
     --color-primary: #{material-color('cyan', '400')};
     --color-primary-dark: #{material-color('cyan', '800')};
     --color-primary-hover: #{material-color('cyan', '300')};
@@ -63,7 +64,7 @@
 
     --color-warning: #{material-color('amber', '600')};
     --color-warning-hover: #{material-color('amber', '500')};
-    --color-on-warning:    #{material-color('grey', '900')};
+    --color-on-warning: #{material-color('grey', '900')};
 
     --color-success: #{material-color('light-green', '500')};
     --color-success-hover: #{material-color('light-green', '400')};

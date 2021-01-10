@@ -50,8 +50,8 @@ export class CreateSetModalComponent
     get isSetNameValid() {
         return (
             this.setName &&
-            this.setName.length > 0 &&
-            this.setName.length <= 128
+            this.setName.trim().length > 0 &&
+            this.setName.trim().length <= 128
         );
     }
 
@@ -83,7 +83,7 @@ export class CreateSetModalComponent
         this.errorMessage = null;
         try {
             const set = await minPromiseDuration(this.setService.createSet(
-                this.setName,
+                this.setName.trim(),
                 this.modes
             ), 500);
             this.creationStatus = 'SUCCESS';

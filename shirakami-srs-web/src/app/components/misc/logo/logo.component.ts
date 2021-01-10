@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { hshrink } from '../../../utils/animations';
+import { hshrink, vshrink } from '../../../utils/animations';
 import {
     animate,
     state,
@@ -8,11 +8,14 @@ import {
     trigger,
 } from '@angular/animations';
 
+const fbk = '猫じゃないですよ~';
+
 @Component({
     selector: 'app-logo',
     templateUrl: './logo.component.html',
     styleUrls: ['./logo.component.scss'],
     animations: [
+        vshrink('vshrink', '0.5s ease'),
         trigger('logo', [
             state(
                 '*',
@@ -57,8 +60,26 @@ import {
 })
 export class LogoComponent implements OnInit {
     hover = false;
+    fbkActive = false;
+    fbkString: string;
 
     constructor() {}
 
     ngOnInit(): void {}
+
+    fbkActivate() {
+        if (this.fbkActive) return;
+        this.fbkActive = true;
+        let totalDelay = 0;
+        this.fbkString = '⠀';
+        for (let i = 0; i < fbk.length; i++) {
+            const delay = Math.random() * 150 + 25;
+            totalDelay += delay;
+            setTimeout(
+                () => (this.fbkString = fbk.substring(0, i + 1)),
+                totalDelay
+            );
+        }
+        setTimeout(() => (this.fbkActive = false), totalDelay + 5000);
+    }
 }

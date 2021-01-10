@@ -114,6 +114,7 @@ app-logo {
         width: 4.5em;
         height: 4.5em;
         overflow: hidden;
+        flex-shrink: 0;
 
         img,
         svg {
