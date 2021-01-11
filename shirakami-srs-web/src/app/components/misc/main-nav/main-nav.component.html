@@ -20,17 +20,48 @@
         >
             <button class="nav-item-content account" (click)="clickAccount()">
                 <span class="username xs-hidden">
-                    {{ user.username }}
+                    <span>{{ user.username }}</span>
+                    <span
+                        >#{{ (user.discriminator + '').padStart(4, '0') }}</span
+                    >
                 </span>
                 <div class="avatar">
                     <svg
                         [attr.data-jdenticon-value]="
-                            user.username + '#' + user.discriminator
+                            user.username +
+                            '#' +
+                            (user.discriminator + '').padStart(4, '0')
                         "
                     ></svg>
                 </div>
             </button>
             <div class="dropdown card" *ngIf="showAccountDropdown" @dropdown>
+                <div class="dropdown-theme">
+                    <button
+                        [class.active]="theme.settings.mode === 'SYSTEM'"
+                        (click)="theme.setMode('SYSTEM')"
+                    >
+                        <i class="material-icons">brightness_auto</i>
+                    </button>
+                    <button
+                        [class.active]="theme.settings.mode === 'LIGHT'"
+                        (click)="theme.setMode('LIGHT')"
+                    >
+                        <i class="material-icons">brightness_5</i>
+                    </button>
+                    <button
+                        [class.active]="theme.settings.mode === 'DARK'"
+                        (click)="theme.setMode('DARK')"
+                    >
+                        <i class="material-icons">nights_stay</i>
+                    </button>
+                </div>
+                <div class="dropdown-username username sm-hidden">
+                    <span>{{ user.username }}</span>
+                    <span
+                    >#{{ (user.discriminator + '').padStart(4, '0') }}</span
+                    >
+                </div>
                 <div class="dropdown-item" (click)="authService.logout()">
                     <i class="material-icons">exit_to_app</i>
                     <span>Log out</span>

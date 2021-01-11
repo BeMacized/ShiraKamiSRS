@@ -6,6 +6,7 @@ import { takeUntil } from 'rxjs/operators';
 import { User } from '../../../models/user.model';
 import { fadeDown, hshrink } from '../../../utils/animations';
 import { Router } from '@angular/router';
+import {ThemeService} from '../../../services/theme.service';
 
 @Component({
     selector: 'app-main-nav',
@@ -22,7 +23,8 @@ export class MainNavComponent implements OnInit, OnDestroy {
     constructor(
         public authService: AuthService,
         private userService: UserService,
-        private router: Router
+        private router: Router,
+        public theme: ThemeService
     ) {
         this.userService.user
             .pipe(takeUntil(this.destroy$))
