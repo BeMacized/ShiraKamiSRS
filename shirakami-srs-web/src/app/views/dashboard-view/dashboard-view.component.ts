@@ -3,7 +3,7 @@ import { ContextMenuService } from '../../services/context-menu.service';
 import { DomComponent } from '../../services/dom.service';
 import { ModalService } from '../../services/modal.service';
 import { CreateSetModalComponent } from '../../components/modals/create-set-modal/create-set-modal.component';
-import { SetEntity } from '../../models/set.model';
+import { SetEntity, SetSrsStatusEntity } from '../../models/set.model';
 import { OperationStatus } from '../../models/operation-status.model';
 import { SetService } from '../../services/set.service';
 import { minPromiseDuration } from '../../utils/promise-utils';
@@ -24,6 +24,7 @@ export class DashboardViewComponent implements OnInit {
     setActionsPopup: DomComponent;
     sets: SetEntity[] = [];
     setsFetchStatus: OperationStatus = 'IDLE';
+    srsStatus: SetSrsStatusEntity = { lessons: 0, reviews: 0, levelItems: {} };
 
     constructor(
         private contextMenu: ContextMenuService,
@@ -44,6 +45,24 @@ export class DashboardViewComponent implements OnInit {
             this.sets = await minPromiseDuration(
                 this.setService.getSets(),
                 400
+            );
+            this.srsStatus = this.sets.reduce(
+                (acc, e) => {
+                    acc.lessons += e.srsStatus.lessons;
+                    acc.reviews += e.srsStatus.reviews;
+                    for (const entry of Object.entries(
+                        e.srsStatus.levelItems
+                    )) {
+                        acc.levelItems[entry[0]] =
+                            (acc.levelItems[entry[0]] || 0) + entry[1];
+                    }
+                    return acc;
+                },
+                {
+                    lessons: 0,
+                    reviews: 0,
+                    levelItems: {},
+                }
             );
             this.setsFetchStatus = 'SUCCESS';
         } catch (e) {

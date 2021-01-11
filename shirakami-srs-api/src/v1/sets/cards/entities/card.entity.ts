@@ -7,7 +7,6 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { SetEntity } from '../../entities/set.entity';
-import { SrsLevelEntity } from './srs-level.entity';
 
 export class CardValue {
   @Column()
@@ -18,34 +17,34 @@ export class CardValue {
   kanji?: string;
 }
 
+export class SrsLevel {
+  @Column({ default: -1 })
+  level: number;
+
+  @Column()
+  lastChanged: Date;
+
+  static getDefault(): Readonly<SrsLevel> {
+    return { level: -1, lastChanged: new Date() };
+  }
+}
+
 @Entity()
 export class CardEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column((type) => CardValue)
+  @Column(() => CardValue)
   value: CardValue;
 
-  @OneToOne(() => SrsLevelEntity, (level) => level.card, {
-    cascade: true,
-    eager: true,
-  })
-  @JoinColumn()
-  srsLevelEnToJp: SrsLevelEntity;
+  @Column(() => SrsLevel)
+  srsLevelEnToJp: SrsLevel;
 
-  @OneToOne(() => SrsLevelEntity, (level) => level.card, {
-    cascade: true,
-    eager: true,
-  })
-  @JoinColumn()
-  srsLevelJpToEn: SrsLevelEntity;
+  @Column(() => SrsLevel)
+  srsLevelJpToEn: SrsLevel;
 
-  @OneToOne(() => SrsLevelEntity, (level) => level.card, {
-    cascade: true,
-    eager: true,
-  })
-  @JoinColumn()
-  srsLevelKanjiToKana: SrsLevelEntity;
+  @Column(() => SrsLevel)
+  srsLevelKanjiToKana: SrsLevel;
 
   @Column()
   setId: string;

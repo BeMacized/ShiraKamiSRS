@@ -26,9 +26,19 @@
                 <div class="info-next-review">Time until next review: Now</div>
             </div>
             <div class="actions">
-                <button class="btn btn-primary btn-rect btn-count">
+                <button
+                    class="btn btn-rect btn-count"
+                    [ngClass]="
+                        !!set.srsStatus?.lessons
+                            ? 'btn-primary'
+                            : 'btn-unavailable'
+                    "
+                    [disabled]="!set.srsStatus?.lessons"
+                >
                     <span>Lessons</span>
-                    <span class="btn-counter-badge">30</span>
+                    <span class="btn-counter-badge">{{
+                        set.srsStatus?.lessons || 0
+                    }}</span>
                 </button>
                 <button class="btn btn-unavailable btn-rect btn-count" disabled>
                     <span>Reviews</span>
@@ -50,25 +60,16 @@
         </div>
 
         <div class="srs-row">
-            <div class="srs-group srs-group-1">
-                <span>1</span>
-                <span>{{ srsService.srsGroupLabels[0] }}</span>
-            </div>
-            <div class="srs-group srs-group-2">
-                <span>2</span>
-                <span>{{ srsService.srsGroupLabels[1] }}</span>
-            </div>
-            <div class="srs-group srs-group-3">
-                <span>3</span>
-                <span>{{ srsService.srsGroupLabels[2] }}</span>
-            </div>
-            <div class="srs-group srs-group-4">
-                <span>4</span>
-                <span>{{ srsService.srsGroupLabels[3] }}</span>
-            </div>
-            <div class="srs-group srs-group-5">
-                <span>5</span>
-                <span>{{ srsService.srsGroupLabels[4] }}</span>
+            <div
+                class="srs-group"
+                *ngFor="let group of srsService.srsGroups; let index = index"
+                [style.background-color]="group.bgColor"
+                [style.color]="group.fgColor"
+            >
+                <span>
+                    {{ srsService.getCountForGroup(index, set.srsStatus) }}
+                </span>
+                <span>{{ group.name }}</span>
             </div>
             <div class="srs-row-shadow"></div>
         </div>

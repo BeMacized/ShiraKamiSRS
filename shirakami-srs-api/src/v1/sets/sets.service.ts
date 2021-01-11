@@ -5,7 +5,11 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateOrUpdateSetEntity, SetEntity } from './entities/set.entity';
+import {
+  CreateOrUpdateSetEntity,
+  SetEntity,
+  SetSrsStatus,
+} from './entities/set.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -21,21 +25,9 @@ export class SetsService {
    */
   async findAll(userId: string): Promise<SetEntity[]> {
     const sets = await this.setRepository.find({ userId });
-    try {
-      const res = await this.setRepository.query(
-        `
-SELECT card.*, srs.*
-FROM card_entity card
-INNER JOIN srs_level_entity srs ON card.srsLevelEnToJpId=srs.id;
-
-      `,
-        [],
-      );
-      console.log(res);
-    } catch (e) {
-      console.error(e);
+    for (const set of sets) {
+      set.srsStatus = await this.getSrsStatusForSet(set);
     }
-
     return sets;
   }
 
@@ -54,6 +46,7 @@ INNER JOIN srs_level_entity srs ON card.srsLevelEnToJpId=srs.id;
     if (!entity) throw new NotFoundException('Set not found');
     if (userId && entity.userId !== userId)
       throw new ForbiddenException('Set does not belong to user');
+    entity.srsStatus = await this.getSrsStatusForSet(entity);
     return entity;
   }
 
@@ -94,6 +87,61 @@ INNER JOIN srs_level_entity srs ON card.srsLevelEnToJpId=srs.id;
     // Update the set
     await this.setRepository.update(id, set);
     // Find the set
-    return this.findOneById(id, set.userId);
+    const entity = await this.findOneById(id, set.userId);
+    if (entity) entity.srsStatus = await this.getSrsStatusForSet(entity);
+    return entity;
+  }
+
+  private async getSrsStatusForSet(set: SetEntity): Promise<SetSrsStatus> {
+    // Construct the query
+    let query = '';
+    query += `
+select level, sum(count) as count
+from (
+`;
+    query += set.modes
+      .map((mode) => {
+        switch (mode) {
+          case 'enToJp':
+            return `
+SELECT card.srsLevelEnToJpLevel as level, count(card.srsLevelEnToJpLevel) as count
+FROM card_entity card
+WHERE card.setId = $1
+GROUP BY card.srsLevelEnToJpLevel    
+`;
+          case 'jpToEn':
+            return `
+SELECT card.srsLevelJpToEnLevel as level, count(card.srsLevelJpToEnLevel) as count
+FROM card_entity card
+WHERE card.setId = $1 
+GROUP BY card.srsLevelJpToEnLevel
+`;
+          case 'kanjiToKana':
+            return `
+SELECT card.srsLevelKanjiToKanaLevel as level, count(card.srsLevelKanjiToKanaLevel) as count
+FROM card_entity card
+WHERE card.setId = $1 AND card.valueKanji IS NOT NULL 
+GROUP BY card.srsLevelKanjiToKanaLevel
+`;
+        }
+      })
+      .join('\nUNION ALL\n');
+    query += `
+) x
+group by level    
+    `;
+    // Execute the query
+    const levelCounts: Array<{
+      level: number;
+      count: number;
+    }> = await this.setRepository.query(query, [set.id]);
+    // Map the data into a SetSrsStatus.
+    return {
+      lessons: levelCounts.find((l) => l.level === -1)?.count || 0,
+      reviews: 0,
+      levelItems: levelCounts
+        .filter((l) => l.level !== -1)
+        .reduce((acc, e) => ((acc[e.level] = e.count), acc), {}),
+    };
   }
 }

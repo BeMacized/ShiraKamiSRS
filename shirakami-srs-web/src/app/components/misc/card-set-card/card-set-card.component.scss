@@ -140,13 +140,6 @@
                 padding: 0.5em;
                 position: relative;
 
-                @for $i from 1 through 5 {
-                    &-#{$i} {
-                        background-color: var(--color-srs-group-#{$i});
-                        color: var(--color-on-srs-group-#{$i});
-                    }
-                }
-
                 span:first-child {
                     font-size: 1.5em;
                     font-weight: 400;

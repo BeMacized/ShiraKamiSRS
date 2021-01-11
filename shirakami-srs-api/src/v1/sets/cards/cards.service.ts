@@ -1,17 +1,22 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CardEntity, CreateOrUpdateCardEntity } from './entities/card.entity';
+import {
+  CardEntity,
+  CreateOrUpdateCardEntity,
+  SrsLevel,
+} from './entities/card.entity';
 import { SetsService } from '../sets.service';
-import { SrsLevelEntity } from './entities/srs-level.entity';
 
 @Injectable()
 export class CardsService {
   constructor(
     @InjectRepository(CardEntity)
     private cardRepository: Repository<CardEntity>,
-    @InjectRepository(SrsLevelEntity)
-    private srsLevelRepository: Repository<SrsLevelEntity>,
     private setsService: SetsService,
   ) {}
 
@@ -25,6 +30,7 @@ export class CardsService {
    */
   async findBySetId(setId: string, userId?: string): Promise<CardEntity[]> {
     const set = await this.setsService.findOneById(setId, userId);
+
     return set.cards;
   }
 
@@ -77,15 +83,9 @@ export class CardsService {
     // Create the card
     const result = await this.cardRepository.insert({
       ...card,
-      srsLevelJpToEn: await this.srsLevelRepository.save(
-        SrsLevelEntity.getDefaultEntity(),
-      ),
-      srsLevelEnToJp: await this.srsLevelRepository.save(
-        SrsLevelEntity.getDefaultEntity(),
-      ),
-      srsLevelKanjiToKana: await this.srsLevelRepository.save(
-        SrsLevelEntity.getDefaultEntity(),
-      ),
+      srsLevelJpToEn: SrsLevel.getDefault(),
+      srsLevelEnToJp: SrsLevel.getDefault(),
+      srsLevelKanjiToKana: SrsLevel.getDefault(),
     });
     // Find and return the card
     return this.findOneById(result.identifiers[0]['id']);

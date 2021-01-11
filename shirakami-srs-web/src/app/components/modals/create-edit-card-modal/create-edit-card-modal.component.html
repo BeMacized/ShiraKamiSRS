@@ -46,13 +46,12 @@
                     class="input input-large"
                     type="text"
                     placeholder="English"
-                    (input)="englishWord = englishInput.value"
                     (input)="onInput('english')"
                     maxlength="255"
                     #englishInput
                     (keyup.enter)="isValidCardValues && createOrUpdateCard()"
                 />
-                <label for="english-input">Kana Only</label>
+                <label for="kana-input">Kana Only</label>
                 <input
                     id="kana-input"
                     class="input input-large"
@@ -63,7 +62,7 @@
                     #kanaInput
                     (keyup.enter)="isValidCardValues && createOrUpdateCard()"
                 />
-                <label for="english-input">Kanji (Optional)</label>
+                <label for="kanji-input">Kanji (Optional)</label>
                 <input
                     id="kanji-input"
                     class="input input-large"

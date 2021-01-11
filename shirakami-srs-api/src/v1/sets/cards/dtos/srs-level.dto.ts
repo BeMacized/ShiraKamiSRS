@@ -1,14 +1,14 @@
-import { SrsLevelEntity } from '../entities/srs-level.entity';
+import { SrsLevel } from '../entities/card.entity';
 
 export class SrsLevelDto {
   level: number;
 
   lastUpdated: number;
 
-  static fromEntity(entity: SrsLevelEntity): SrsLevelDto {
+  static fromSrsLevel(data: SrsLevel): SrsLevelDto {
     return {
-      level: entity.level,
-      lastUpdated: Math.floor(entity.lastChanged.getTime() / 1000),
+      level: data.level,
+      lastUpdated: Math.floor(data.lastChanged.getTime() / 1000),
     };
   }
 }

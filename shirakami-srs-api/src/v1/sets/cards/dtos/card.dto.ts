@@ -30,9 +30,9 @@ export class CardDto extends CreateOrUpdateCardDto {
       id: entity.id,
       setId: entity.setId,
       value: entity.value,
-      srsLevelEnToJp: SrsLevelDto.fromEntity(entity.srsLevelEnToJp),
-      srsLevelJpToEn: SrsLevelDto.fromEntity(entity.srsLevelJpToEn),
-      srsLevelKanjiToKana: SrsLevelDto.fromEntity(entity.srsLevelKanjiToKana),
+      srsLevelEnToJp: SrsLevelDto.fromSrsLevel(entity.srsLevelEnToJp),
+      srsLevelJpToEn: SrsLevelDto.fromSrsLevel(entity.srsLevelJpToEn),
+      srsLevelKanjiToKana: SrsLevelDto.fromSrsLevel(entity.srsLevelKanjiToKana),
     };
   }
 }
