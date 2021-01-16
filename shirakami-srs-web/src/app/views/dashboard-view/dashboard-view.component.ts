@@ -25,11 +25,11 @@ import moment from 'moment';
 })
 export class DashboardViewComponent implements OnInit {
     setActionsPopup: DomComponent;
+    refreshStatus: OperationStatus = 'IDLE';
+
     sets: SetEntity[] = [];
-    setsFetchStatus: OperationStatus = 'IDLE';
-    reviewsFetchStatus: OperationStatus = 'IDLE';
-    srsStatus: SetSrsStatusEntity = { lessons: 0, reviews: 0, levelItems: {} };
     reviews: ReviewEntity[] = [];
+    srsStatus: SetSrsStatusEntity = { lessons: 0, reviews: 0, levelItems: {} };
 
     constructor(
         private contextMenu: ContextMenuService,
@@ -41,18 +41,39 @@ export class DashboardViewComponent implements OnInit {
     ) {}
 
     async ngOnInit() {
-        // TODO: MERGE REFRESH FUNCTIONS INTO ONE
-        this.refreshSets().then(this.refreshReviews);
+        await this.refreshData();
     }
 
-    refreshSets = async () => {
-        if (this.setsFetchStatus === 'IN_PROGRESS') return;
-        this.setsFetchStatus = 'IN_PROGRESS';
+    refreshData = async () => {
+        // Only do one refresh simultaneously
+        if (this.refreshStatus === 'IN_PROGRESS') return;
+        this.refreshStatus = 'IN_PROGRESS';
         try {
-            this.sets = await minPromiseDuration(
-                this.setService.getSets(),
+            // Determine the timespan to fetch reviews for
+            const reviewTimespan = Math.abs(
+                moment()
+                    .add(1, 'week')
+                    .add(1, 'day')
+                    .startOf('day')
+                    .diff(moment(), 'seconds')
+            );
+            // Fetch sets and reviews
+            await minPromiseDuration(
+                Promise.all([
+                    this.setService
+                        .getSets()
+                        .then((sets) => (this.sets = sets)),
+                    this.reviewService
+                        .getAvailableReviews(reviewTimespan)
+                        .then((reviews) => (this.reviews = reviews)),
+                ]),
                 400
             );
+            // Determine the available reviews right now
+            const availableReviews = this.reviews.filter(
+                (r) => r.reviewTime <= new Date()
+            );
+            // Determine the global srs status
             this.srsStatus = this.sets.reduce(
                 (acc, e) => {
                     acc.lessons += e.srsStatus.lessons;
@@ -66,38 +87,11 @@ export class DashboardViewComponent implements OnInit {
                 },
                 {
                     lessons: 0,
-                    reviews: 0,
+                    reviews: availableReviews.length,
                     levelItems: {},
                 }
             );
-            this.setsFetchStatus = 'SUCCESS';
-        } catch (e) {
-            console.error(e);
-            this.setsFetchStatus = 'ERROR';
-        }
-    }
-
-    refreshReviews = async () => {
-        if (this.reviewsFetchStatus === 'IN_PROGRESS') return;
-        this.reviewsFetchStatus = 'IN_PROGRESS';
-        try {
-            const timespan = Math.abs(
-                moment()
-                    .add(1, 'week')
-                    .add(1, 'day')
-                    .startOf('day')
-                    .diff(moment(), 'seconds')
-            );
-            this.reviews = await this.reviewService.getAvailableReviews(
-                timespan
-            );
-            const availableReviews = this.reviews.filter(
-                (r) => r.reviewTime <= new Date()
-            );
-            this.srsStatus = {
-                ...this.srsStatus,
-                reviews: availableReviews.length,
-            };
+            // Patch review count srs status of sets
             this.sets = this.sets.map((set) => ({
                 ...set,
                 srsStatus: {
@@ -106,12 +100,12 @@ export class DashboardViewComponent implements OnInit {
                         .length,
                 },
             }));
-            this.reviewsFetchStatus = 'SUCCESS';
+            this.refreshStatus = 'SUCCESS';
         } catch (e) {
             console.error(e);
-            this.reviewsFetchStatus = 'ERROR';
+            this.refreshStatus = 'ERROR';
         }
-    }
+    };
 
     openSetActionsModal($event: MouseEvent) {
         if (this.setActionsPopup) {
@@ -123,12 +117,12 @@ export class DashboardViewComponent implements OnInit {
                         {
                             text: 'Refresh',
                             icon: 'cached',
-                            onClick: () => this.refreshSets().then(this.refreshReviews),
+                            onClick: this.refreshData,
                         },
                         {
                             text: 'Create Set',
                             icon: 'add',
-                            onClick: () => this.createSet(),
+                            onClick: this.createSet,
                         },
                     ],
                 },
@@ -161,7 +155,7 @@ export class DashboardViewComponent implements OnInit {
             .toPromise();
         const index = this.sets.findIndex((s) => set && s.id === set.id);
         if (index >= 0) this.sets.splice(index, 1, set);
-        if (set) await this.refreshSets();
+        await this.refreshData();
     };
 
     renameSet = async (set: SetEntity) => {
@@ -173,7 +167,7 @@ export class DashboardViewComponent implements OnInit {
             .toPromise();
         const index = this.sets.findIndex((s) => set && s.id === set.id);
         if (index >= 0) this.sets.splice(index, 1, set);
-        if (set) await this.refreshSets();
+        await this.refreshData();
     };
 
     deleteSet = async (set: SetEntity) => {
@@ -185,6 +179,6 @@ export class DashboardViewComponent implements OnInit {
             .toPromise();
         const index = this.sets.findIndex((s) => set && s.id === set.id);
         if (index >= 0) this.sets.splice(index, 1);
-        if (deleted) await this.refreshSets();
+        if (deleted) await this.refreshData();
     };
 }

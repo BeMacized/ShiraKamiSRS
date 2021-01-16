@@ -32,6 +32,7 @@ import { CardCardComponent } from './components/misc/card-card/card-card.compone
 import { CreateEditCardModalComponent } from './components/modals/create-edit-card-modal/create-edit-card-modal.component';
 import { CheckboxComponent } from './components/inputs/checkbox/checkbox.component';
 import { ConfirmationModalComponent } from './components/modals/confirmation-modal/confirmation-modal.component';
+import {MomentModule} from 'ngx-moment';
 
 export function initializeApp(appInitService: AppInitService) {
     return () => appInitService.init();
@@ -70,6 +71,7 @@ export function initializeApp(appInitService: AppInitService) {
         HttpClientModule,
         FormsModule,
         AppRoutingModule,
+        MomentModule
     ],
     providers: [
         ThemeService,

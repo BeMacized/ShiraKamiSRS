@@ -77,20 +77,20 @@
                 <div
                     class="card-flat-outline set-list-issue"
                     *ngIf="
-                        setsFetchStatus === 'IN_PROGRESS' ||
-                        (setsFetchStatus === 'SUCCESS' && !sets?.length) ||
-                        setsFetchStatus === 'ERROR'
+                        refreshStatus === 'IN_PROGRESS' ||
+                        (refreshStatus === 'SUCCESS' && !sets?.length) ||
+                        refreshStatus === 'ERROR'
                     "
                     @vshrink
                 >
-                    <div *ngIf="setsFetchStatus === 'IN_PROGRESS'" @vshrink>
+                    <div *ngIf="refreshStatus === 'IN_PROGRESS'" @vshrink>
                         <app-spinner></app-spinner>
                         <span class="set-list-issue-description">
                             Loading your sets...
                         </span>
                     </div>
                     <div
-                        *ngIf="setsFetchStatus === 'SUCCESS' && !sets?.length"
+                        *ngIf="refreshStatus === 'SUCCESS' && !sets?.length"
                         @vshrink
                     >
                         <div class="set-list-issue-description">
@@ -103,12 +103,12 @@
                             </span>
                         </div>
                     </div>
-                    <div *ngIf="setsFetchStatus === 'ERROR'" @vshrink>
+                    <div *ngIf="refreshStatus === 'ERROR'" @vshrink>
                         <span class="set-list-issue-description">
                             Your sets could not be loaded.
                             <br />
                             You could try
-                            <a (click)="!!refreshSets()">refreshing</a>
+                            <a (click)="!!refreshData()">refreshing</a>
                             the list.
                         </span>
                     </div>
@@ -133,7 +133,7 @@
             <div class="section-header">
                 <h1 class="section-header-title">Review Forecast</h1>
             </div>
-            <app-review-forecast></app-review-forecast>
+            <app-review-forecast [reviews]="reviews"></app-review-forecast>
             <!--/REVIEW FORECAST -->
         </div>
         <!--/SIDE COLUMN -->

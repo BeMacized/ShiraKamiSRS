@@ -2,7 +2,7 @@ app-collapsible {
     display: block;
 
     &:not(:first-child) {
-        margin-top: 1em;
+        margin-top: 0.5em;
     }
 }
 
@@ -20,6 +20,7 @@ app-collapsible {
         $border-radius: 0.5em;
         display: flex;
         flex-direction: row;
+        padding: 0.5em 0 0.5em 0.25em;
         align-items: center;
         font-size: 1.2em;
         transition: background-color 0.15s ease, border-radius 0.15s ease;
@@ -55,6 +56,7 @@ app-collapsible {
             user-select: none;
             transition: transform 0.25s ease;
             transform: rotate(calc(var(--collapsible-collapsed) * 180deg));
+            opacity: calc(1.0 - var(--collapsible-locked) * 0.8);
         }
     }
 
@@ -67,7 +69,9 @@ app-collapsible {
     }
 
     .time {
-        margin-right: 1em;
+        margin-right: 0.5em;
+        width: 3em;
+        text-align: right;
     }
 
     .bar {

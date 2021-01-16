@@ -11,15 +11,18 @@ export class CollapsibleComponent implements OnInit {
     @Input()
     public title: string;
     @Input('collapsed')
-    public isCollapsed: boolean;
+    public collapsed: boolean;
+    @Input('locked')
+    public locked: boolean;
 
     ngOnInit(): void {
-        if (this.isCollapsed === undefined) {
-            this.isCollapsed = true;
+        if (this.collapsed === undefined) {
+            this.collapsed = true;
         }
     }
 
     public toggle(): void {
-        this.isCollapsed = !this.isCollapsed;
+        if (this.locked) return;
+        this.collapsed = !this.collapsed;
     }
 }
