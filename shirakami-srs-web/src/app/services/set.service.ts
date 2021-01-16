@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { SetRepositoryService } from '../repositories/set-repository.service';
-import { SetEntity, SetMode, UpdateSetDto } from '../models/set.model';
+import { SetEntity, UpdateSetDto } from '../models/set.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ServiceError } from '../models/service-error.model';
+import {ReviewMode} from '../models/review.model';
 
 @Injectable({
     providedIn: 'root',
@@ -28,7 +29,7 @@ export class SetService {
     async getSet(setId: string): Promise<SetEntity> {
         try {
             const set = await this.setRepository.getSet(setId).toPromise();
-            return set;
+            return SetEntity.fromDto(set);
         } catch (e) {
             if (e instanceof HttpErrorResponse) {
                 switch (e.status) {
@@ -40,7 +41,7 @@ export class SetService {
         }
     }
 
-    async createSet(name: string, modes: SetMode[]): Promise<SetEntity> {
+    async createSet(name: string, modes: ReviewMode[]): Promise<SetEntity> {
         try {
             const set = await this.setRepository
                 .createSet({
@@ -82,7 +83,7 @@ export class SetService {
         }
     }
 
-    async updateSetModes(id: string, modes: SetMode[]): Promise<SetEntity> {
+    async updateSetModes(id: string, modes: ReviewMode[]): Promise<SetEntity> {
         return this.updateSet({ id, modes });
     }
 

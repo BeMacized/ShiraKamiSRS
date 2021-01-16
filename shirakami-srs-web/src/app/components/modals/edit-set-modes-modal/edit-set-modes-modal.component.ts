@@ -1,6 +1,6 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { Modal } from '../../../services/modal.service';
-import { SetEntity, SetMode } from '../../../models/set.model';
+import { SetEntity } from '../../../models/set.model';
 import {
     crossFade,
     fade,
@@ -15,6 +15,7 @@ import { OperationStatus } from '../../../models/operation-status.model';
 import { minPromiseDuration } from '../../../utils/promise-utils';
 import { ServiceError } from '../../../models/service-error.model';
 import { SetService } from '../../../services/set.service';
+import {ReviewMode} from '../../../models/review.model';
 
 type Page = 'MODES' | 'UPDATING';
 
@@ -40,7 +41,7 @@ export class EditSetModesModalComponent
         super();
     }
     page: Page = 'MODES';
-    modes: SetMode[] = ['jpToEn'];
+    modes: ReviewMode[] = ['jpToEn'];
     updateStatus: OperationStatus = 'IDLE';
     errorMessage: string;
     set: SetEntity;
@@ -64,7 +65,7 @@ export class EditSetModesModalComponent
         this.modes = this.set.modes.slice();
     }
 
-    toggleMode(mode: SetMode) {
+    toggleMode(mode: ReviewMode) {
         if (this.modes.includes(mode))
             this.modes = this.modes.filter((m) => m !== mode);
         else this.modes.push(mode);

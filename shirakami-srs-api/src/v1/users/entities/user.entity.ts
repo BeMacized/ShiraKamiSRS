@@ -1,5 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { RefreshTokenEntity } from '../../authentication/entities/refresh-token.entity';
+import { SrsSettings } from '../models/srs-settings';
 
 @Entity()
 export class UserEntity {
@@ -20,11 +21,15 @@ export class UserEntity {
 
   @OneToMany(() => RefreshTokenEntity, (entity) => entity.user)
   refreshTokens?: RefreshTokenEntity[];
+
+  // Currently standard for all users.
+  // Could be made customizable later on.
+  srsSettings: SrsSettings = SrsSettings.defaults;
 }
 
 export type CreateUserEntity = Omit<
   UserEntity,
-  'id' | 'discriminator' | 'passwordHash'
+  'id' | 'discriminator' | 'passwordHash' | 'srsSettings'
 > & {
   password: string;
 };

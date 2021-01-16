@@ -1,25 +1,29 @@
 import { CardDto, CardEntity } from './card.model';
-
-export type SetMode = 'enToJp' | 'jpToEn' | 'kanjiToKana';
+import { ReviewMode } from './review.model';
 
 export class SetSrsStatusEntity {
     public readonly lessons: number;
-    public readonly reviews: number;
     public readonly levelItems: Readonly<{ [level: number]: number }>;
+    public readonly reviews: number;
 
     static fromDto(dto: SetSrsStatusDto): SetSrsStatusEntity {
         return Object.assign(new SetEntity(), {
             lessons: dto.lessons,
-            reviews: dto.reviews,
             levelItems: dto.levelItems,
+            reviews: 0
         });
     }
+}
+
+export class SetSrsStatusDto {
+    lessons: number;
+    levelItems: Readonly<{ [level: number]: number }>;
 }
 
 export class SetEntity {
     public readonly id: string;
     public readonly name: string;
-    public readonly modes: SetMode[];
+    public readonly modes: ReviewMode[];
     public readonly userId: string;
     public readonly cards?: CardEntity[];
     public readonly srsStatus?: SetSrsStatusEntity;
@@ -31,20 +35,14 @@ export class SetEntity {
             name: dto.name,
             modes: dto.modes,
             cards: dto.cards?.map((card) => CardEntity.fromDto(card)),
-            srsStatus: SetSrsStatusEntity.fromDto(dto.srsStatus)
+            srsStatus: SetSrsStatusEntity.fromDto(dto.srsStatus),
         });
     }
 }
 
-export class SetSrsStatusDto {
-    lessons: number;
-    reviews: number;
-    levelItems: Readonly<{ [level: number]: number }>;
-}
-
 export class CreateSetDto {
     name: string;
-    modes: SetMode[];
+    modes: ReviewMode[];
 }
 
 export class UpdateSetDto extends CreateSetDto {

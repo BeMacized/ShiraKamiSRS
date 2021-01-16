@@ -4,9 +4,16 @@ import { CardsModule } from './sets/cards/cards.module';
 import { UsersModule } from './users/users.module';
 import { V1Controller } from './v1.controller';
 import { AuthenticationModule } from './authentication/authentication.module';
+import { ReviewsModule } from './reviews/reviews.module';
 
 @Module({
-  imports: [SetsModule, CardsModule, UsersModule, AuthenticationModule],
+  imports: [
+    SetsModule,
+    CardsModule,
+    UsersModule,
+    AuthenticationModule,
+    ReviewsModule,
+  ],
   controllers: [V1Controller],
   providers: [],
 })

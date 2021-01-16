@@ -40,9 +40,19 @@
                         set.srsStatus?.lessons || 0
                     }}</span>
                 </button>
-                <button class="btn btn-unavailable btn-rect btn-count" disabled>
+                <button
+                    class="btn btn-rect btn-count"
+                    [ngClass]="
+                        !!set.srsStatus?.reviews
+                            ? 'btn-primary'
+                            : 'btn-unavailable'
+                    "
+                    [disabled]="!set.srsStatus?.reviews"
+                >
                     <span>Reviews</span>
-                    <span class="btn-counter-badge">0</span>
+                    <span class="btn-counter-badge">{{
+                        set.srsStatus?.reviews
+                    }}</span>
                 </button>
                 <button
                     class="btn btn-rect xs-hidden btn-transparent btn-settings"

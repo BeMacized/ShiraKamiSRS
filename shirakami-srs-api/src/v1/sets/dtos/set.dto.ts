@@ -6,11 +6,11 @@ import {
   IsString,
   IsUUID,
   Length,
-  MinLength,
   ValidateNested,
 } from 'class-validator';
-import { SetEntity, SetMode, SetSrsStatus } from '../entities/set.entity';
+import { SetEntity, SetSrsStatus } from '../entities/set.entity';
 import { CardDto } from '../cards/dtos/card.dto';
+import { ReviewMode } from '../../reviews/dtos/review.dto';
 
 export class CreateOrUpdateSetDto {
   @IsNotEmpty()
@@ -21,7 +21,7 @@ export class CreateOrUpdateSetDto {
   @ArrayMinSize(1)
   @ArrayUnique()
   @IsEnum(['enToJp', 'jpToEn', 'kanjiToKana'], { each: true })
-  public readonly modes: SetMode[];
+  public readonly modes: ReviewMode[];
 }
 
 export class SetDto extends CreateOrUpdateSetDto {

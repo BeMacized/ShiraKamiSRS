@@ -6,7 +6,7 @@ import {
     ViewChild,
 } from '@angular/core';
 import { Modal } from '../../../services/modal.service';
-import { SetEntity, SetMode } from '../../../models/set.model';
+import { SetEntity } from '../../../models/set.model';
 import {
     crossFade,
     fade,
@@ -21,6 +21,7 @@ import { SetService } from '../../../services/set.service';
 import { OperationStatus } from '../../../models/operation-status.model';
 import { ServiceError } from '../../../models/service-error.model';
 import { minPromiseDuration } from '../../../utils/promise-utils';
+import { ReviewMode } from '../../../models/review.model';
 
 type Page = 'NAME' | 'MODES' | 'CREATING';
 
@@ -44,9 +45,11 @@ export class CreateSetModalComponent
     implements OnInit {
     page: Page = 'NAME';
     setName = '';
-    modes: SetMode[] = ['jpToEn'];
+    modes: ReviewMode[] = ['jpToEn'];
     creationStatus: OperationStatus = 'IDLE';
     errorMessage: string;
+
+    @ViewChild('nameInput') nameInput: ElementRef;
 
     constructor(private setService: SetService) {
         super();
@@ -64,8 +67,6 @@ export class CreateSetModalComponent
     onEscapeDown($event) {
         this.close();
     }
-
-    @ViewChild('nameInput') nameInput: ElementRef;
 
     ngOnInit(): void {
         this.goToPage('NAME');

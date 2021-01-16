@@ -13,6 +13,9 @@ import { EditSetNameModalComponent } from '../../components/modals/edit-set-name
 import { DeleteSetModalComponent } from '../../components/modals/delete-set-modal/delete-set-modal.component';
 import { Router } from '@angular/router';
 import { SrsService } from '../../services/srs.service';
+import { ReviewEntity } from '../../models/review.model';
+import { ReviewService } from '../../services/review.service';
+import moment from 'moment';
 
 @Component({
     selector: 'app-dashboard-view',
@@ -24,21 +27,25 @@ export class DashboardViewComponent implements OnInit {
     setActionsPopup: DomComponent;
     sets: SetEntity[] = [];
     setsFetchStatus: OperationStatus = 'IDLE';
+    reviewsFetchStatus: OperationStatus = 'IDLE';
     srsStatus: SetSrsStatusEntity = { lessons: 0, reviews: 0, levelItems: {} };
+    reviews: ReviewEntity[] = [];
 
     constructor(
         private contextMenu: ContextMenuService,
         private modalService: ModalService,
         private setService: SetService,
         private router: Router,
+        private reviewService: ReviewService,
         public srsService: SrsService
     ) {}
 
     async ngOnInit() {
-        await this.refreshSets();
+        // TODO: MERGE REFRESH FUNCTIONS INTO ONE
+        this.refreshSets().then(this.refreshReviews);
     }
 
-    async refreshSets() {
+    refreshSets = async () => {
         if (this.setsFetchStatus === 'IN_PROGRESS') return;
         this.setsFetchStatus = 'IN_PROGRESS';
         try {
@@ -49,7 +56,6 @@ export class DashboardViewComponent implements OnInit {
             this.srsStatus = this.sets.reduce(
                 (acc, e) => {
                     acc.lessons += e.srsStatus.lessons;
-                    acc.reviews += e.srsStatus.reviews;
                     for (const entry of Object.entries(
                         e.srsStatus.levelItems
                     )) {
@@ -71,6 +77,42 @@ export class DashboardViewComponent implements OnInit {
         }
     }
 
+    refreshReviews = async () => {
+        if (this.reviewsFetchStatus === 'IN_PROGRESS') return;
+        this.reviewsFetchStatus = 'IN_PROGRESS';
+        try {
+            const timespan = Math.abs(
+                moment()
+                    .add(1, 'week')
+                    .add(1, 'day')
+                    .startOf('day')
+                    .diff(moment(), 'seconds')
+            );
+            this.reviews = await this.reviewService.getAvailableReviews(
+                timespan
+            );
+            const availableReviews = this.reviews.filter(
+                (r) => r.reviewTime <= new Date()
+            );
+            this.srsStatus = {
+                ...this.srsStatus,
+                reviews: availableReviews.length,
+            };
+            this.sets = this.sets.map((set) => ({
+                ...set,
+                srsStatus: {
+                    ...set.srsStatus,
+                    reviews: availableReviews.filter((r) => r.setId === set.id)
+                        .length,
+                },
+            }));
+            this.reviewsFetchStatus = 'SUCCESS';
+        } catch (e) {
+            console.error(e);
+            this.reviewsFetchStatus = 'ERROR';
+        }
+    }
+
     openSetActionsModal($event: MouseEvent) {
         if (this.setActionsPopup) {
             this.setActionsPopup.remove();
@@ -81,7 +123,7 @@ export class DashboardViewComponent implements OnInit {
                         {
                             text: 'Refresh',
                             icon: 'cached',
-                            onClick: () => this.refreshSets(),
+                            onClick: () => this.refreshSets().then(this.refreshReviews),
                         },
                         {
                             text: 'Create Set',

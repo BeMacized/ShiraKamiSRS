@@ -25,7 +25,15 @@
                             </span>
                         </div>
                     </button>
-                    <button class="btn btn-rect btn-unavailable" disabled>
+                    <button
+                        class="btn btn-rect"
+                        [ngClass]="
+                            !!srsStatus.reviews
+                                ? 'btn-primary'
+                                : 'btn-unavailable'
+                        "
+                        [disabled]="!srsStatus.reviews"
+                    >
                         <div class="btn-content">
                             <span>Reviews</span>
                             <span class="btn-counter-badge">

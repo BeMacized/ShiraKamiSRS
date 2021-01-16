@@ -36,10 +36,10 @@ export class CardService {
 
     async getCard(setId: string, cardId: string): Promise<CardEntity> {
         try {
-            const set = await this.cardRepository
+            const card = await this.cardRepository
                 .getCard(setId, cardId)
                 .toPromise();
-            return set;
+            return CardEntity.fromDto(card);
         } catch (e) {
             if (e instanceof HttpErrorResponse) {
                 switch (e.status) {

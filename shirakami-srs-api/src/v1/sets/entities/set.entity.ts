@@ -7,12 +7,10 @@ import {
 } from 'typeorm';
 import { CardEntity } from '../cards/entities/card.entity';
 import { UserEntity } from '../../users/entities/user.entity';
-
-export type SetMode = 'enToJp' | 'jpToEn' | 'kanjiToKana';
+import { ReviewMode } from '../../reviews/dtos/review.dto';
 
 export class SetSrsStatus {
   lessons: number;
-  reviews: number;
   levelItems: { [level: number]: number };
 }
 
@@ -31,7 +29,7 @@ export class SetEntity {
   name: string;
 
   @Column('simple-json')
-  modes: SetMode[];
+  modes: ReviewMode[];
 
   @OneToMany(() => CardEntity, (card) => card.set)
   cards?: CardEntity[];

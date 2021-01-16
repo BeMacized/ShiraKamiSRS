@@ -1,11 +1,11 @@
 export class SrsLevelEntity {
     level: number;
-    lastUpdated: number;
+    lastUpdated: Date;
 
     static fromDto(dto: SrsLevelDto): SrsLevelEntity {
         return Object.assign(new SrsLevelEntity(), {
             level: dto.level,
-            lastUpdated: dto.lastUpdated,
+            lastUpdated: new Date(dto.lastUpdated * 1000),
         });
     }
 }

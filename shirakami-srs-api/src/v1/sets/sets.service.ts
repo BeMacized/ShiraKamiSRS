@@ -106,21 +106,21 @@ from (
             return `
 SELECT card.srsLevelEnToJpLevel as level, count(card.srsLevelEnToJpLevel) as count
 FROM card_entity card
-WHERE card.setId = $1
+WHERE card.setId = ?
 GROUP BY card.srsLevelEnToJpLevel    
 `;
           case 'jpToEn':
             return `
 SELECT card.srsLevelJpToEnLevel as level, count(card.srsLevelJpToEnLevel) as count
 FROM card_entity card
-WHERE card.setId = $1 
+WHERE card.setId = ?
 GROUP BY card.srsLevelJpToEnLevel
 `;
           case 'kanjiToKana':
             return `
 SELECT card.srsLevelKanjiToKanaLevel as level, count(card.srsLevelKanjiToKanaLevel) as count
 FROM card_entity card
-WHERE card.setId = $1 AND card.valueKanji IS NOT NULL 
+WHERE card.setId = ? AND card.valueKanji IS NOT NULL 
 GROUP BY card.srsLevelKanjiToKanaLevel
 `;
         }
@@ -138,7 +138,6 @@ group by level
     // Map the data into a SetSrsStatus.
     return {
       lessons: levelCounts.find((l) => l.level === -1)?.count || 0,
-      reviews: 0,
       levelItems: levelCounts
         .filter((l) => l.level !== -1)
         .reduce((acc, e) => ((acc[e.level] = e.count), acc), {}),
