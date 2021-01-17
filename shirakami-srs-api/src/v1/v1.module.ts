@@ -5,6 +5,7 @@ import { UsersModule } from './users/users.module';
 import { V1Controller } from './v1.controller';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { ReviewsModule } from './reviews/reviews.module';
+import { LessonsModule } from './lessons/lessons.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { ReviewsModule } from './reviews/reviews.module';
     UsersModule,
     AuthenticationModule,
     ReviewsModule,
+    LessonsModule,
   ],
   controllers: [V1Controller],
   providers: [],

@@ -106,21 +106,21 @@ from (
             return `
 SELECT card.srsLevelEnToJpLevel as level, count(card.srsLevelEnToJpLevel) as count
 FROM card_entity card
-WHERE card.setId = ?
+WHERE card.setId = $1
 GROUP BY card.srsLevelEnToJpLevel    
 `;
           case 'jpToEn':
             return `
 SELECT card.srsLevelJpToEnLevel as level, count(card.srsLevelJpToEnLevel) as count
 FROM card_entity card
-WHERE card.setId = ?
+WHERE card.setId = $1
 GROUP BY card.srsLevelJpToEnLevel
 `;
           case 'kanjiToKana':
             return `
 SELECT card.srsLevelKanjiToKanaLevel as level, count(card.srsLevelKanjiToKanaLevel) as count
 FROM card_entity card
-WHERE card.setId = ? AND card.valueKanji IS NOT NULL 
+WHERE card.setId = $1 AND card.valueKanji IS NOT NULL 
 GROUP BY card.srsLevelKanjiToKanaLevel
 `;
         }

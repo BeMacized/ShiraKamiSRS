@@ -26,13 +26,17 @@ export class CardDto extends CreateOrUpdateCardDto {
   public readonly srsLevelKanjiToKana: SrsLevelDto;
 
   static fromEntity(entity: CardEntity): CardDto {
+    if (!entity) return undefined;
     return {
       id: entity.id,
       setId: entity.setId,
       value: entity.value,
-      srsLevelEnToJp: SrsLevelDto.fromSrsLevel(entity.srsLevelEnToJp),
-      srsLevelJpToEn: SrsLevelDto.fromSrsLevel(entity.srsLevelJpToEn),
-      srsLevelKanjiToKana: SrsLevelDto.fromSrsLevel(entity.srsLevelKanjiToKana),
+      srsLevelEnToJp:
+        SrsLevelDto.fromSrsLevel(entity.srsLevelEnToJp) || undefined,
+      srsLevelJpToEn:
+        SrsLevelDto.fromSrsLevel(entity.srsLevelJpToEn) || undefined,
+      srsLevelKanjiToKana:
+        SrsLevelDto.fromSrsLevel(entity.srsLevelKanjiToKana) || undefined,
     };
   }
 }
