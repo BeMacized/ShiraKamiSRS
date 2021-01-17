@@ -1,10 +1,7 @@
 import {
-  BadRequestException,
   Controller,
   DefaultValuePipe,
   Get,
-  ParseIntPipe,
-  ParseUUIDPipe,
   Query,
   UseGuards,
 } from '@nestjs/common';

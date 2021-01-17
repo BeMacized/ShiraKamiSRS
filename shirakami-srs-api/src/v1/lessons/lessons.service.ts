@@ -7,12 +7,15 @@ import { SetEntity } from '../sets/entities/set.entity';
 import { flatten } from 'lodash';
 import { CardDto } from '../sets/cards/dtos/card.dto';
 import { ReviewMode, ReviewModes } from '../reviews/dtos/review.dto';
+import { ReviewEntity } from '../reviews/entities/review.entity';
 
 @Injectable()
 export class LessonsService {
   constructor(
     @InjectRepository(CardEntity)
     private cardRepository: Repository<CardEntity>,
+    @InjectRepository(ReviewEntity)
+    private reviewRepository: Repository<ReviewEntity>,
     @InjectRepository(SetEntity)
     private setRepository: Repository<SetEntity>,
   ) {}
@@ -22,74 +25,58 @@ export class LessonsService {
     setId?: string,
     limit?: number,
   ): Promise<LessonSetDto> {
-    const query = `
-SELECT c.id,
-       c.setId,
-       c.valueEnglish,
-       c.valueKana,
-       c.valueKanji,
-       CASE
-           WHEN s.modes LIKE '%enToJp%'
-               AND c.srsLevelEnToJpLevel = -1
-               THEN true
-           ELSE false
-           END enToJp,
-       CASE
-           WHEN s.modes LIKE '%jpToEn%'
-               AND c.srsLevelJpToEnLevel = -1
-               THEN true
-           ELSE false
-           END jpToEn,
-       CASE
-           WHEN s.modes LIKE '%kanjiToKana%'
-               AND c.srsLevelKanjiToKanaLevel = -1
-               AND c.valueKanji IS NOT NULL
-               THEN true
-           ELSE false
-           END kanjiToKana
-
-FROM card_entity c
-         INNER JOIN set_entity s on c.setId = s.id
-
-WHERE c.setId IN (
-    SELECT id
-    FROM set_entity
-    WHERE userId = ?
-    ${setId ? 'AND id = ?' : ''}
-)   
-AND (enToJp = true OR jpToEn = true OR kanjiToKana = true)
-${limit ? 'LIMIT ?' : ''}
+    const lessonQuery = `
+SELECT ce.id cardId, setModes.mode mode
+FROM card_entity ce
+         LEFT JOIN (
+    SELECT *
+    FROM (
+             SELECT se.id setId, IIF(se.modes LIKE '%enToJp%', 'enToJp', null) mode
+             FROM set_entity se
+             WHERE se.userId = ?
+               ${setId ? 'AND se.setId = ?' : ''}
+             UNION ALL
+             SELECT se.id setId, IIF(se.modes LIKE '%jpToEn%', 'jpToEn', null) mode
+             FROM set_entity se
+             WHERE se.userId = ?
+               ${setId ? 'AND se.setId = ?' : ''}
+             UNION ALL
+             SELECT se.id setId, IIF(se.modes LIKE '%kanjiToKana%', 'kanjiToKana', null) mode
+             FROM set_entity se
+             WHERE se.userId = ?
+               ${setId ? 'AND se.setId = ?' : ''}
+         )
+    WHERE mode IS NOT NULL
+) setModes ON setModes.setId = ce.setId
+WHERE cardId NOT IN (
+    SELECT cardId
+    FROM review_entity
+    WHERE cardId = ce.id
+      AND mode = setModes.mode
+)
+${limit ? `LIMIT ?` : ``}     
     `;
-    const params: any[] = [userId];
-    if (setId) params.push(setId);
-    if (limit) params.push(limit);
-    const cards: Array<
-      CardEntity &
-        {
-          [reviewMode in ReviewMode]: boolean;
-        }
-    > = await this.cardRepository.query(query, params).then((rows) =>
-      rows.map((row) => ({
-        ...row,
-        value: {
-          english: row['valueEnglish'],
-          kana: row['valueKana'],
-          kanji: row['valueKanji'],
-        },
-      })),
+    const lessonParameters: any[] = [userId];
+    if (setId) lessonParameters.push(setId);
+    lessonParameters.push(...lessonParameters, ...lessonParameters);
+    if (limit) lessonParameters.push(limit);
+    console.log('PARAMETERS', lessonParameters);
+    const lessons: Array<LessonDto> = await this.cardRepository.query(
+      lessonQuery,
+      lessonParameters,
     );
 
+    const cards: CardDto[] = await this.cardRepository
+      .createQueryBuilder('card')
+      .where('card.id IN (:...cardIds)', {
+        cardIds: lessons.map((l) => l.cardId),
+      })
+      .getMany()
+      .then((entities) => entities.map((entity) => CardDto.fromEntity(entity)));
+
     return {
-      lessons: flatten(
-        cards.map((row) => {
-          const rowLessons: LessonDto[] = [];
-          for (const mode of ReviewModes) {
-            if (row[mode]) rowLessons.push({ cardId: row.id, mode });
-          }
-          return rowLessons;
-        }),
-      ),
-      cards: cards.map((row) => CardDto.fromEntity(row)),
+      cards,
+      lessons,
     };
   }
 }

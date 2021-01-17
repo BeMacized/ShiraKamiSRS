@@ -26,9 +26,9 @@ export class SetService {
         }
     }
 
-    async getSet(setId: string): Promise<SetEntity> {
+    async getSet(setId: string, shallow = false): Promise<SetEntity> {
         try {
-            const set = await this.setRepository.getSet(setId).toPromise();
+            const set = await this.setRepository.getSet(setId, shallow).toPromise();
             return SetEntity.fromDto(set);
         } catch (e) {
             if (e instanceof HttpErrorResponse) {

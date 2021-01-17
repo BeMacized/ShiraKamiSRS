@@ -5,11 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import {
-  CardEntity,
-  CreateOrUpdateCardEntity,
-  SrsLevel,
-} from './entities/card.entity';
+import { CardEntity, CreateOrUpdateCardEntity } from './entities/card.entity';
 import { SetsService } from '../sets.service';
 
 @Injectable()
@@ -81,12 +77,7 @@ export class CardsService {
     // Ensure the set exists
     if (userId) await this.setsService.findOneById(card.setId, userId);
     // Create the card
-    const result = await this.cardRepository.insert({
-      ...card,
-      srsLevelJpToEn: SrsLevel.getDefault(),
-      srsLevelEnToJp: SrsLevel.getDefault(),
-      srsLevelKanjiToKana: SrsLevel.getDefault(),
-    });
+    const result = await this.cardRepository.insert(card);
     // Find and return the card
     return this.findOneById(result.identifiers[0]['id']);
   }

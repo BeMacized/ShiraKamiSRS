@@ -38,7 +38,7 @@
             <div class="srs-progress-items">
                 <div
                     class="srs-progress-item"
-                    [style]="getSrsLevelStyles(card.srsLevelJpToEn.level)"
+                    [style]="getSrsLevelStyles(getSrsLevel('jpToEn'))"
                 >
                     <div class="srs-progress-mode">
                         <span class="flag-icon flag-icon-jp"></span>
@@ -46,12 +46,12 @@
                         <span class="flag-icon flag-icon-gb"></span>
                     </div>
                     <div class="srs-progress-label">
-                        {{ getSrsLevelLabel(card.srsLevelJpToEn.level) }}
+                        {{ getSrsLevelLabel(getSrsLevel('jpToEn')) }}
                     </div>
                 </div>
                 <div
                     class="srs-progress-item"
-                    [style]="getSrsLevelStyles(card.srsLevelEnToJp.level)"
+                    [style]="getSrsLevelStyles(getSrsLevel('enToJp'))"
                 >
                     <div class="srs-progress-mode">
                         <span class="flag-icon flag-icon-gb"></span>
@@ -59,12 +59,12 @@
                         <span class="flag-icon flag-icon-jp"></span>
                     </div>
                     <div class="srs-progress-label">
-                        {{ getSrsLevelLabel(card.srsLevelEnToJp.level) }}
+                        {{ getSrsLevelLabel(getSrsLevel('enToJp')) }}
                     </div>
                 </div>
                 <div
                     class="srs-progress-item"
-                    [style]="getSrsLevelStyles(card.srsLevelKanjiToKana.level)"
+                    [style]="getSrsLevelStyles(getSrsLevel('kanjiToKana'))"
                 >
                     <div class="srs-progress-mode">
                         <span>漢字</span>
@@ -72,7 +72,7 @@
                         <span>かな</span>
                     </div>
                     <div class="srs-progress-label">
-                        {{ getSrsLevelLabel(card.srsLevelKanjiToKana.level) }}
+                        {{ getSrsLevelLabel(getSrsLevel('kanjiToKana')) }}
                     </div>
                 </div>
             </div>

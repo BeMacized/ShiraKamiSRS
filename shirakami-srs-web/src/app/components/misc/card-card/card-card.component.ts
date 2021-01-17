@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CardEntity } from '../../../models/card.model';
 import { SrsService } from '../../../services/srs.service';
+import { ReviewMode } from '../../../models/review.model';
 
 @Component({
     selector: 'app-card-card',
@@ -18,6 +19,12 @@ export class CardCardComponent implements OnInit {
     constructor(private srsService: SrsService) {}
 
     ngOnInit(): void {}
+
+    getSrsLevel(mode: ReviewMode) {
+        return (
+            this.card?.reviews?.find((r) => r.mode === mode)?.currentLevel || -1
+        );
+    }
 
     getSrsLevelLabel(level: number) {
         return this.srsService.getLabelForLevel(level);

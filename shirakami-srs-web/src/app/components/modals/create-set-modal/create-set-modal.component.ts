@@ -108,6 +108,7 @@ export class CreateSetModalComponent
                         'Could not reach the server. Please verify your connection, or try again later.';
                     break;
                 default:
+                    console.error(e);
                     this.errorMessage =
                         'An unknown error occurred while trying to create the set.';
             }

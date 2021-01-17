@@ -94,6 +94,7 @@ export class EditSetModesModalComponent
                         'Could not reach the server. Please verify your connection, or try again later.';
                     break;
                 default:
+                    console.error(e);
                     this.errorMessage =
                         'An unknown error occurred while trying to update the set.';
             }

@@ -1,4 +1,16 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  DefaultValuePipe,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { SetsService } from './sets.service';
 import { JWTGuard } from '../authentication/guards/jwt.guard';
 import { User } from '../common/user.decorator';
@@ -22,8 +34,13 @@ export class SetsController {
   async getSet(
     @Param('id') id: string,
     @User() user: UserEntity,
+    @Query('shallow', new DefaultValuePipe('0'), ParseIntPipe) shallow,
   ): Promise<SetDto> {
-    const entity = await this.setsService.findOneById(id, user.id);
+    const entity = await this.setsService.findOneById(
+      id,
+      user.id,
+      shallow !== 1,
+    );
     return SetDto.fromEntity(entity);
   }
 

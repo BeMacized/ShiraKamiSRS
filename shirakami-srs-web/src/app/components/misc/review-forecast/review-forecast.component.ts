@@ -49,7 +49,7 @@ export class ReviewForecastComponent {
             .map((i) => {
                 const dayStart = moment().startOf('day').add(i, 'days');
                 const dayReviews = this._reviews.filter((r) => {
-                    const unix = moment(r.reviewTime).unix();
+                    const unix = moment(r.reviewDate).unix();
                     return (
                         unix >= dayStart.unix() &&
                         unix < dayStart.clone().add(1, 'day').unix()
@@ -59,12 +59,12 @@ export class ReviewForecastComponent {
                     title: i === 0 ? 'Today' : dayStart.format('dddd'),
                     total: this._reviews.filter(
                         (r) =>
-                            moment(r.reviewTime).unix() <
+                            moment(r.reviewDate).unix() <
                             dayStart.clone().add(1, 'day').unix()
                     ).length,
                     mod: dayReviews.length,
                     hourItems: dayReviews.reduce((hourItems, review) => {
-                        const hour = moment(review.reviewTime).startOf('hour');
+                        const hour = moment(review.reviewDate).startOf('hour');
                         const hourItem = hourItems.find(
                             (item) => item.time === hour.unix()
                         );
@@ -75,7 +75,7 @@ export class ReviewForecastComponent {
                                 time: hour.unix(),
                                 total: this._reviews.filter(
                                     (r) =>
-                                        moment(r.reviewTime)
+                                        moment(r.reviewDate)
                                             .startOf('hour')
                                             .unix() <= hour.unix()
                                 ).length,

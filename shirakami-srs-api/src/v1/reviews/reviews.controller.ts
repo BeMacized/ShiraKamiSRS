@@ -2,7 +2,6 @@ import {
   Controller,
   DefaultValuePipe,
   Get,
-  Param,
   ParseIntPipe,
   Query,
   UseGuards,
@@ -11,6 +10,7 @@ import { JWTGuard } from '../authentication/guards/jwt.guard';
 import { User } from '../common/user.decorator';
 import { UserEntity } from '../users/entities/user.entity';
 import { ReviewsService } from './reviews.service';
+import { ReviewDto } from './dtos/review.dto';
 
 @Controller()
 export class ReviewsController {
@@ -21,7 +21,11 @@ export class ReviewsController {
   async debug(
     @User() user: UserEntity,
     @Query('timespan', new DefaultValuePipe(3600), ParseIntPipe) timespan,
-  ) {
-    return this.reviewsService.getAvailableReviews(user, timespan);
+  ): Promise<ReviewDto[]> {
+    const reviews = await this.reviewsService.getAvailableReviews(
+      user,
+      timespan,
+    );
+    return reviews.map((review) => ReviewDto.fromEntity(review));
   }
 }

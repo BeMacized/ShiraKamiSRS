@@ -69,14 +69,11 @@ export class DashboardViewComponent implements OnInit {
                 ]),
                 400
             );
-            // Determine the available reviews right now
-            const availableReviews = this.reviews.filter(
-                (r) => r.reviewTime <= new Date()
-            );
             // Determine the global srs status
             this.srsStatus = this.sets.reduce(
                 (acc, e) => {
                     acc.lessons += e.srsStatus.lessons;
+                    acc.reviews += e.srsStatus.reviews;
                     for (const entry of Object.entries(
                         e.srsStatus.levelItems
                     )) {
@@ -87,19 +84,10 @@ export class DashboardViewComponent implements OnInit {
                 },
                 {
                     lessons: 0,
-                    reviews: availableReviews.length,
+                    reviews: 0,
                     levelItems: {},
                 }
             );
-            // Patch review count srs status of sets
-            this.sets = this.sets.map((set) => ({
-                ...set,
-                srsStatus: {
-                    ...set.srsStatus,
-                    reviews: availableReviews.filter((r) => r.setId === set.id)
-                        .length,
-                },
-            }));
             this.refreshStatus = 'SUCCESS';
         } catch (e) {
             console.error(e);

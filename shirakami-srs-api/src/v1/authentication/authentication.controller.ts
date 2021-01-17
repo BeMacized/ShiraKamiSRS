@@ -11,7 +11,6 @@ import { AuthResponseDto } from './dtos/auth-response.dto';
 import { RegisterRequestDto } from './dtos/register-request.dto';
 import { LoginRequestDto } from './dtos/login-request.dto';
 import { RefreshRequestDto } from './dtos/refresh-request.dto';
-import { UserEntity } from '../users/entities/user.entity';
 
 @Controller()
 export class AuthenticationController {

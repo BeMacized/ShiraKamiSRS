@@ -11,6 +11,7 @@ import { ReviewMode } from '../../reviews/dtos/review.dto';
 
 export class SetSrsStatus {
   lessons: number;
+  reviews: number;
   levelItems: { [level: number]: number };
 }
 

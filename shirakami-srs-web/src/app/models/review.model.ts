@@ -7,27 +7,30 @@ export const ReviewModes: Readonly<ReviewMode[]> = [
 ];
 
 export class ReviewEntity {
-    setId: string;
+    id: string;
     cardId: string;
-    reviewTime: Date;
     mode: ReviewMode;
-    srsLevel: number;
+    creationDate: Date;
+    reviewDate: Date;
+    currentLevel: number;
 
     static fromDto(dto: ReviewDto): ReviewEntity {
         return Object.assign(new ReviewEntity(), {
-            setId: dto.setId,
+            id: dto.id,
             cardId: dto.cardId,
             mode: dto.mode,
-            srsLevel: dto.srsLevel,
-            reviewTime: new Date(dto.reviewTime * 1000),
+            creationDate: new Date(dto.creationDate * 1000),
+            reviewDate: new Date(dto.reviewDate * 1000),
+            currentLevel: dto.currentLevel,
         });
     }
 }
 
 export class ReviewDto {
-    setId: string;
+    id: string;
     cardId: string;
-    reviewTime: number;
     mode: ReviewMode;
-    srsLevel: number;
+    creationDate: number;
+    reviewDate: number;
+    currentLevel: number;
 }

@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { CardDto, CreateOrUpdateCardDto } from './dtos/card.dto';
 import { CardsService } from './cards.service';
 import { JWTGuard } from '../../authentication/guards/jwt.guard';
@@ -45,7 +55,6 @@ export class CardsController {
       },
       user.id,
     );
-    console.log('CREATED CARD', entity);
     return CardDto.fromEntity(entity);
   }
 
@@ -70,7 +79,7 @@ export class CardsController {
 
   @Delete(':id')
   @UseGuards(JWTGuard)
-  async deleteSet(@Param('id') id, @User() user: UserEntity) {
+  async deleteCard(@Param('id') id, @User() user: UserEntity) {
     await this.cardsService.removeById(id, user.id);
     return { success: true };
   }

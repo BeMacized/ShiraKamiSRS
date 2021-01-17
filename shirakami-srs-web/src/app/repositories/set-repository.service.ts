@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { AppSettingsService } from '../services/app-settings.service';
 import { Observable } from 'rxjs';
 import { map, switchMap, take } from 'rxjs/operators';
@@ -20,9 +20,11 @@ export class SetRepositoryService {
         );
     }
 
-    public getSet(setId: string): Observable<SetDto> {
+    public getSet(setId: string, shallow: boolean = false): Observable<SetDto> {
+        let params = new HttpParams();
+        if (shallow) params = params.append('shallow', '1');
         return this.getApiUrl(`/sets/${setId}`).pipe(
-            switchMap((url) => this.http.get<SetDto>(url))
+            switchMap((url) => this.http.get<SetDto>(url, { params }))
         );
     }
 

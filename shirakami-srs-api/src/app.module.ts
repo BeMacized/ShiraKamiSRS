@@ -10,13 +10,20 @@ import { UserEntity } from './v1/users/entities/user.entity';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { RefreshTokenEntity } from './v1/authentication/entities/refresh-token.entity';
+import { ReviewEntity } from './v1/reviews/entities/review.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: './sqlite.db',
-      entities: [SetEntity, CardEntity, UserEntity, RefreshTokenEntity],
+      entities: [
+        SetEntity,
+        CardEntity,
+        UserEntity,
+        RefreshTokenEntity,
+        ReviewEntity,
+      ],
       synchronize: true,
       logging: true,
     }),

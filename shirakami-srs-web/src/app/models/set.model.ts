@@ -1,24 +1,9 @@
 import { CardDto, CardEntity } from './card.model';
 import { ReviewMode } from './review.model';
 
-export class SetSrsStatusEntity {
-    public readonly lessons: number;
-    public readonly levelItems: Readonly<{ [level: number]: number }>;
-    public readonly reviews: number;
-
-    static fromDto(dto: SetSrsStatusDto): SetSrsStatusEntity {
-        return Object.assign(new SetEntity(), {
-            lessons: dto.lessons,
-            levelItems: dto.levelItems,
-            reviews: 0
-        });
-    }
-}
-
-export class SetSrsStatusDto {
-    lessons: number;
-    levelItems: Readonly<{ [level: number]: number }>;
-}
+//
+// ENTITIES
+//
 
 export class SetEntity {
     public readonly id: string;
@@ -40,6 +25,24 @@ export class SetEntity {
     }
 }
 
+export class SetSrsStatusEntity {
+    public readonly lessons: number;
+    public readonly levelItems: Readonly<{ [level: number]: number }>;
+    public readonly reviews: number;
+
+    static fromDto(dto: SetSrsStatusDto): SetSrsStatusEntity {
+        return Object.assign(new SetEntity(), {
+            lessons: dto.lessons,
+            reviews: dto.reviews,
+            levelItems: dto.levelItems,
+        });
+    }
+}
+
+//
+// DTOS
+//
+
 export class CreateSetDto {
     name: string;
     modes: ReviewMode[];
@@ -53,4 +56,10 @@ export class UpdateSetDto extends CreateSetDto {
 export class SetDto extends UpdateSetDto {
     cards?: CardDto[];
     srsStatus?: SetSrsStatusDto;
+}
+
+export class SetSrsStatusDto {
+    lessons: number;
+    reviews: number;
+    levelItems: Readonly<{ [level: number]: number }>;
 }

@@ -1,5 +1,3 @@
-import { CardEntity } from '../../sets/cards/entities/card.entity';
-import { SrsLevelDto } from '../../sets/cards/dtos/srs-level.dto';
 import { UserEntity } from '../entities/user.entity';
 
 export class UserResponseDto {

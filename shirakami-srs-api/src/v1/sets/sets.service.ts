@@ -25,8 +25,9 @@ export class SetsService {
    */
   async findAll(userId: string): Promise<SetEntity[]> {
     const sets = await this.setRepository.find({ userId });
+    const statuses = await this.getSrsStatus(userId);
     for (const set of sets) {
-      set.srsStatus = await this.getSrsStatusForSet(set);
+      set.srsStatus = statuses.find((status) => status.setId === set.id).status;
     }
     return sets;
   }
@@ -34,19 +35,24 @@ export class SetsService {
   /**
    * Find a specific set by its id.
    * @param id - The id of the set to find.
-   * @param userId - The id of the user for which to look up the set. (optional)
+   * @param userId - The id of the user for which to look up the set. (Optional)
+   * @param includeCards - Whether to include cards with the set. (Optional, Default: false)
    * @returns The found set.
    * @throws {NotFoundException} when no set was found for the given id.
    * @throws {ForbiddenException} when the set does not belong to the specified user id.
    */
-  async findOneById(id: string, userId?: string): Promise<SetEntity> {
+  async findOneById(
+    id: string,
+    userId?: string,
+    includeCards = false,
+  ): Promise<SetEntity> {
     const entity = await this.setRepository.findOne(id, {
-      relations: ['cards'],
+      relations: includeCards ? ['cards'] : [],
     });
     if (!entity) throw new NotFoundException('Set not found');
     if (userId && entity.userId !== userId)
       throw new ForbiddenException('Set does not belong to user');
-    entity.srsStatus = await this.getSrsStatusForSet(entity);
+    entity.srsStatus = (await this.getSrsStatus(userId, entity.id))[0].status;
     return entity;
   }
 
@@ -88,59 +94,99 @@ export class SetsService {
     await this.setRepository.update(id, set);
     // Find the set
     const entity = await this.findOneById(id, set.userId);
-    if (entity) entity.srsStatus = await this.getSrsStatusForSet(entity);
+    if (entity)
+      entity.srsStatus = (
+        await this.getSrsStatus(set.userId, entity.id)
+      )[0].status;
     return entity;
   }
 
-  private async getSrsStatusForSet(set: SetEntity): Promise<SetSrsStatus> {
-    // Construct the query
-    let query = '';
-    query += `
-select level, sum(count) as count
-from (
-`;
-    query += set.modes
-      .map((mode) => {
-        switch (mode) {
-          case 'enToJp':
-            return `
-SELECT card.srsLevelEnToJpLevel as level, count(card.srsLevelEnToJpLevel) as count
-FROM card_entity card
-WHERE card.setId = $1
-GROUP BY card.srsLevelEnToJpLevel    
-`;
-          case 'jpToEn':
-            return `
-SELECT card.srsLevelJpToEnLevel as level, count(card.srsLevelJpToEnLevel) as count
-FROM card_entity card
-WHERE card.setId = $1
-GROUP BY card.srsLevelJpToEnLevel
-`;
-          case 'kanjiToKana':
-            return `
-SELECT card.srsLevelKanjiToKanaLevel as level, count(card.srsLevelKanjiToKanaLevel) as count
-FROM card_entity card
-WHERE card.setId = $1 AND card.valueKanji IS NOT NULL 
-GROUP BY card.srsLevelKanjiToKanaLevel
-`;
-        }
-      })
-      .join('\nUNION ALL\n');
-    query += `
-) x
-group by level    
+  private async getSrsStatus(
+    userId?: string,
+    setId?: string,
+  ): Promise<Array<{ setId: string; status: SetSrsStatus }>> {
+    const countQuery = `
+SELECT sets.id as setId, COALESCE(SUM(reviews), 0) reviews, COALESCE(SUM(lessons), 0) lessons
+FROM set_entity sets
+         LEFT JOIN (
+-- GET LESSON AND REVIEW COUNTS PER CARD
+    SELECT cards.id                               cardId,
+           cards.setId                            setId,
+           coalesce(cardReviews.reviews, 0) as    reviews,
+           IIF(se.modes LIKE '%enToJp%', 1, 0)
+               + IIF(se.modes LIKE '%jpToEn%', 1, 0)
+               + IIF(se.modes LIKE '%kanjiToKana%' AND cards.valueKanji IS NOT NULL, 1, 0)
+               - coalesce(cardReviews.reviews, 0) lessons
+    FROM card_entity cards
+             LEFT JOIN (
+-- GET REVIEW COUNTS PER CARD
+        SELECT cardId,
+               setId,
+               COUNT(cardId) as reviews
+        FROM (
+                 SELECT cardId, ce.setId setId
+                 FROM review_entity
+                          INNER JOIN card_entity ce on review_entity.cardId = ce.id
+                 GROUP BY cardId, mode
+             ) cardsWithAReview
+                 LEFT JOIN set_entity ON set_entity.id = cardsWithAReview.setId
+        ${userId ? 'WHERE set_entity.userId = ?' : ''}
+        GROUP BY cardId, setId
+        ORDER BY reviews DESC
+    ) cardReviews ON cardReviews.cardId = cards.id
+             INNER JOIN set_entity se on cards.setId = se.id
+) cardsWithReviewAndLessonCounts on cardsWithReviewAndLessonCounts.setId = sets.id
+${userId || setId ? 'WHERE' : ''}
+${[userId ? 'sets.userId = ?' : null, setId ? 'sets.id = ?' : null]
+  .filter((l) => !!l)
+  .join(' AND ')}
+GROUP BY sets.id
     `;
-    // Execute the query
-    const levelCounts: Array<{
-      level: number;
-      count: number;
-    }> = await this.setRepository.query(query, [set.id]);
-    // Map the data into a SetSrsStatus.
-    return {
-      lessons: levelCounts.find((l) => l.level === -1)?.count || 0,
-      levelItems: levelCounts
-        .filter((l) => l.level !== -1)
-        .reduce((acc, e) => ((acc[e.level] = e.count), acc), {}),
-    };
+    const countParameters = [];
+    if (userId) countParameters.push(userId, userId);
+    if (setId) countParameters.push(setId);
+    const countResults: Array<{
+      setId: string;
+      reviews: number;
+      lessons: number;
+    }> = await this.setRepository.query(countQuery, countParameters);
+
+    const levelQuery = `
+SELECT se.id setId, re.currentLevel as srsLevel, COUNT() reviews
+FROM review_entity re
+         INNER JOIN card_entity ce on ce.id = re.cardId
+         INNER JOIN set_entity se on ce.setId = se.id
+WHERE CAST(strftime('%s', re.reviewDate) AS INT) <= CAST(strftime('%s', datetime('now')) AS INT)
+${[userId ? 'AND se.userId = ?' : null, setId ? 'AND setId = ?' : null]
+  .filter((l) => !!l)
+  .join(' ')}
+
+GROUP BY setId, srsLevel
+`;
+    const levelParameters = [];
+    if (userId) levelParameters.push(userId);
+    if (setId) levelParameters.push(setId);
+    const levelResults: Array<{
+      setId: string;
+      srsLevel: number;
+      reviews: number;
+    }> = await this.setRepository.query(levelQuery, levelParameters);
+
+    return countResults.map((countResult) => ({
+      setId: countResult.setId,
+      status: {
+        lessons: countResult.lessons,
+        reviews: countResult.reviews,
+        levelItems: levelResults
+          .filter((levelResult) => levelResult.setId === countResult.setId)
+          .reduce(
+            (levelItems, levelResult) => (
+              (levelItems[levelResult.srsLevel] = levelResult.reviews),
+              levelItems
+            ),
+            {},
+          ),
+      },
+    }));
   }
 }

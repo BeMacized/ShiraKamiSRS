@@ -1,8 +1,8 @@
 import { CardValueDto } from './card-value.dto';
-import { IsNumber, IsUUID, ValidateNested } from 'class-validator';
+import { IsUUID, ValidateNested } from 'class-validator';
 import { CardEntity } from '../entities/card.entity';
 import { Type } from 'class-transformer';
-import { SrsLevelDto } from './srs-level.dto';
+import { ReviewDto } from '../../../reviews/dtos/review.dto';
 
 export class CreateOrUpdateCardDto {
   @ValidateNested()
@@ -15,28 +15,18 @@ export class CardDto extends CreateOrUpdateCardDto {
   public readonly id: string;
   @IsUUID()
   public readonly setId: string;
-  @IsNumber()
-  @ValidateNested()
-  public readonly srsLevelEnToJp: SrsLevelDto;
-  @IsNumber()
-  @ValidateNested()
-  public readonly srsLevelJpToEn: SrsLevelDto;
-  @IsNumber()
-  @ValidateNested()
-  public readonly srsLevelKanjiToKana: SrsLevelDto;
+  @ValidateNested({ each: true })
+  public readonly reviews: ReviewDto[];
 
   static fromEntity(entity: CardEntity): CardDto {
-    if (!entity) return undefined;
+    if (!entity) return null;
     return {
       id: entity.id,
       setId: entity.setId,
       value: entity.value,
-      srsLevelEnToJp:
-        SrsLevelDto.fromSrsLevel(entity.srsLevelEnToJp) || undefined,
-      srsLevelJpToEn:
-        SrsLevelDto.fromSrsLevel(entity.srsLevelJpToEn) || undefined,
-      srsLevelKanjiToKana:
-        SrsLevelDto.fromSrsLevel(entity.srsLevelKanjiToKana) || undefined,
+      reviews:
+        entity.reviews?.map((review) => ReviewDto.fromEntity(review)) ||
+        undefined,
     };
   }
 }
