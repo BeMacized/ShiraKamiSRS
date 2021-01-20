@@ -2,23 +2,28 @@ import { Injectable } from '@angular/core';
 import { AppSettingsService } from '../services/app-settings.service';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map, switchMap, take } from 'rxjs/operators';
 import { ReviewDto } from '../models/review.model';
+import { map, switchMap, take } from 'rxjs/operators';
+import { LessonSetDto } from '../models/lesson.model';
 
 @Injectable({
     providedIn: 'root',
 })
-export class ReviewRepositoryService {
+export class LessonRepositoryService {
     constructor(
         private appSettings: AppSettingsService,
         private http: HttpClient
     ) {}
 
-    public getAvailableReviews(timespan?: number): Observable<ReviewDto[]> {
+    public getLessons(
+        setId?: string,
+        limit?: number
+    ): Observable<LessonSetDto> {
         let params = new HttpParams();
-        if (timespan) params = params.append('timespan', timespan.toString());
-        return this.getApiUrl(`/reviews`).pipe(
-            switchMap((url) => this.http.get<ReviewDto[]>(url, { params }))
+        if (setId) params = params.append('setId', setId);
+        if (limit) params = params.append('limit', limit.toString());
+        return this.getApiUrl(`/lessons`).pipe(
+            switchMap((url) => this.http.get<LessonSetDto>(url, { params }))
         );
     }
 

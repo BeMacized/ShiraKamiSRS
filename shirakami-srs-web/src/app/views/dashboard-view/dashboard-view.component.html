@@ -17,6 +17,7 @@
                                 : 'btn-unavailable'
                         "
                         [disabled]="!srsStatus.lessons"
+                        [routerLink]="['/lessons']"
                     >
                         <div class="btn-content">
                             <span>Lessons</span>
@@ -33,6 +34,7 @@
                                 : 'btn-unavailable'
                         "
                         [disabled]="!srsStatus.reviews"
+                        [routerLink]="['/reviews']"
                     >
                         <div class="btn-content">
                             <span>Reviews</span>

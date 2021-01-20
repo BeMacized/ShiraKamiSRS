@@ -13,6 +13,7 @@ import {
     routeSlidePop,
     routeSlidePush,
 } from './utils/route-transitions';
+import { LessonReviewViewComponent } from './views/lesson-review-view/lesson-review-view.component';
 
 const routes: Routes = [
     {
@@ -26,6 +27,18 @@ const routes: Routes = [
         canActivate: [AuthGuardService],
         component: DashboardViewComponent,
         data: { animation: 'dashboard' },
+    },
+    {
+        path: 'lessons',
+        canActivate: [AuthGuardService],
+        component: LessonReviewViewComponent,
+        data: { mode: 'LESSONS', animation: 'lessons' },
+    },
+    {
+        path: 'reviews',
+        canActivate: [AuthGuardService],
+        component: LessonReviewViewComponent,
+        data: { mode: 'REVIEWS', animation: 'reviews' },
     },
     {
         path: 'set/:id',
@@ -46,8 +59,15 @@ const routes: Routes = [
 export const routeAnimations = trigger('routeAnimations', [
     routeSlidePush('dashboard', 'setDetails'),
     routeSlidePop('setDetails', 'dashboard'),
+
     routeFadeUpPush('login', '*'),
     routeFadeUpPop('*', 'login'),
+
+    routeFadeUpPush('dashboard', 'lessons'),
+    routeFadeUpPop('lessons', 'dashboard'),
+
+    routeFadeUpPush('dashboard', 'reviews'),
+    routeFadeUpPop('reviews', 'dashboard'),
 ]);
 
 @NgModule({

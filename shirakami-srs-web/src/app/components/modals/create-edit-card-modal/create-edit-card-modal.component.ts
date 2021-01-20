@@ -16,7 +16,6 @@ import {
 import { Modal } from '../../../services/modal.service';
 import { CardEntity } from '../../../models/card.model';
 import { CardService } from '../../../services/card.service';
-import * as wanakana from 'wanakana';
 import { OperationStatus } from '../../../models/operation-status.model';
 import { minPromiseDuration } from '../../../utils/promise-utils';
 
@@ -65,8 +64,6 @@ export class CreateEditCardModalComponent
 
     ngAfterViewInit() {
         setTimeout(() => {
-            wanakana.bind(this.kanaInput.nativeElement);
-            wanakana.bind(this.kanjiInput.nativeElement);
             this.englishInput.nativeElement.focus();
         });
     }
@@ -160,21 +157,5 @@ export class CreateEditCardModalComponent
         this.englishInput.nativeElement.value = this.englishWord;
         this.kanaInput.nativeElement.value = this.kanaWord;
         this.kanjiInput.nativeElement.value = this.kanjiWord;
-    }
-
-    onInput(input: 'english' | 'kana' | 'kanji') {
-        setTimeout(() => {
-            switch (input) {
-                case 'english':
-                    this.englishWord = this.englishInput.nativeElement.value;
-                    break;
-                case 'kana':
-                    this.kanaWord = this.kanaInput.nativeElement.value;
-                    break;
-                case 'kanji':
-                    this.kanjiWord = this.kanjiInput.nativeElement.value;
-                    break;
-            }
-        });
     }
 }

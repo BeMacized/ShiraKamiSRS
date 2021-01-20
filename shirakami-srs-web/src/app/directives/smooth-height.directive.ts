@@ -63,7 +63,7 @@ export class SmoothHeightDirective implements OnChanges, AfterViewInit {
     ngOnChanges(changes) {
         if (this.initialized) {
             const startHeight = this.element.nativeElement.clientHeight;
-            requestAnimationFrame(() => {
+            setTimeout(() => {
                 this.startHeight = startHeight;
                 this.pulse = !this.pulse;
             });

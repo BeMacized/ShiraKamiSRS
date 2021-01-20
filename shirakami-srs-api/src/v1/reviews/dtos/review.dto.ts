@@ -1,4 +1,5 @@
 import { ReviewEntity } from '../entities/review.entity';
+import { IsEnum, IsNumber, IsUUID } from 'class-validator';
 
 export type ReviewMode = 'enToJp' | 'jpToEn' | 'kanjiToKana';
 export const ReviewModes: Readonly<ReviewMode[]> = [
@@ -26,4 +27,17 @@ export class ReviewDto {
       currentLevel: entity.currentLevel,
     };
   }
+}
+
+export class CreateReviewDto {
+  @IsUUID()
+  cardId: string;
+
+  @IsEnum(['enToJp', 'jpToEn', 'kanjiToKana'])
+  mode: ReviewMode;
+}
+
+export class SubmitReviewDto {
+  @IsNumber()
+  score: number;
 }

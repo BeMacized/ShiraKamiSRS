@@ -15,8 +15,7 @@ import {
 import { map, take } from 'rxjs/operators';
 import {
     ConfirmationModalComponent,
-    ConfirmationModalInput,
-    ConfirmationModalOutput,
+    ConfirmationModalInput, ConfirmationModalOutput,
 } from '../../components/modals/confirmation-modal/confirmation-modal.component';
 import { CardService } from '../../services/card.service';
 
@@ -155,7 +154,7 @@ export class SetViewComponent implements OnInit {
                 confirmButtonType: 'btn-caution',
             })
             .toPromise();
-        if (result !== 'CONFIRMED') return;
+        if (!result) return;
         try {
             await this.cardService.deleteCard(card.setId, card.id);
         } catch (e) {

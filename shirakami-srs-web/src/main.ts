@@ -5,6 +5,7 @@ import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
 
 import jdenticon from 'jdenticon/dist/jdenticon.min';
+
 jdenticon.config = {
     replaceMode: 'observe',
 };

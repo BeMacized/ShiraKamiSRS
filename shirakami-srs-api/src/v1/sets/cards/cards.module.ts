@@ -9,5 +9,6 @@ import { SetsModule } from '../sets.module';
   imports: [TypeOrmModule.forFeature([CardEntity]), SetsModule],
   controllers: [CardsController],
   providers: [CardsService],
+  exports: [CardsService],
 })
 export class CardsModule {}

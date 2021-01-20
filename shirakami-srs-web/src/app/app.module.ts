@@ -32,7 +32,11 @@ import { CardCardComponent } from './components/misc/card-card/card-card.compone
 import { CreateEditCardModalComponent } from './components/modals/create-edit-card-modal/create-edit-card-modal.component';
 import { CheckboxComponent } from './components/inputs/checkbox/checkbox.component';
 import { ConfirmationModalComponent } from './components/modals/confirmation-modal/confirmation-modal.component';
-import {MomentModule} from 'ngx-moment';
+import { MomentModule } from 'ngx-moment';
+import { LessonReviewViewComponent } from './views/lesson-review-view/lesson-review-view.component';
+import { Ng2FittextModule } from 'ng2-fittext';
+import { NgPipesModule } from 'ngx-pipes';
+import { WanakanaDirective } from './directives/wanakana.directive';
 
 export function initializeApp(appInitService: AppInitService) {
     return () => appInitService.init();
@@ -64,6 +68,8 @@ export function initializeApp(appInitService: AppInitService) {
         CreateEditCardModalComponent,
         CheckboxComponent,
         ConfirmationModalComponent,
+        LessonReviewViewComponent,
+        WanakanaDirective,
     ],
     imports: [
         BrowserModule,
@@ -71,7 +77,9 @@ export function initializeApp(appInitService: AppInitService) {
         HttpClientModule,
         FormsModule,
         AppRoutingModule,
-        MomentModule
+        MomentModule,
+        Ng2FittextModule,
+        NgPipesModule,
     ],
     providers: [
         ThemeService,

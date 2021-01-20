@@ -26,7 +26,7 @@ const defaultInput: ConfirmationModalInput = {
     cancelButtonType: 'btn-secondary',
 };
 
-export type ConfirmationModalOutput = 'CANCELLED' | 'CONFIRMED';
+export type ConfirmationModalOutput = boolean;
 
 @Component({
     selector: 'app-confirmation-modal',
@@ -55,12 +55,12 @@ export class ConfirmationModalComponent
     }
 
     onCancel() {
-        this.emit('CANCELLED');
+        this.emit(false);
         this.close();
     }
 
     onConfirm() {
-        this.emit('CONFIRMED');
+        this.emit(true);
         this.close();
     }
 

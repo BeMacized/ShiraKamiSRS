@@ -1,3 +1,6 @@
+@import '~flag-icon-css/css/flag-icon.css';
+@import '~material-icons/iconfont/material-icons.css';
+@import '~animate.css/animate.min.css';
 @import 'themes.scss';
 @import 'buttons.scss';
 @import 'inputs.scss';
@@ -8,12 +11,11 @@
 @import 'misc.scss';
 @import 'alerts.scss';
 @import 'modals.scss';
-@import '~flag-icon-css/css/flag-icon.css';
-@import '~material-icons/iconfont/material-icons.css';
 
 html,
 body {
     margin: 0;
+    height: 0;
     background-color: var(--color-background);
     color: var(--color-on-background);
     font-size: 12px;

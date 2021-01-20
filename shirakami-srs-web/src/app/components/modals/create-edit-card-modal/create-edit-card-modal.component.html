@@ -46,7 +46,7 @@
                     class="input input-large"
                     type="text"
                     placeholder="English"
-                    (input)="onInput('english')"
+                    (input)="englishWord = englishInput.value"
                     maxlength="255"
                     #englishInput
                     (keyup.enter)="isValidCardValues && createOrUpdateCard()"
@@ -57,9 +57,10 @@
                     class="input input-large"
                     type="text"
                     placeholder="かな"
-                    (input)="onInput('kana')"
                     maxlength="255"
                     #kanaInput
+                    [wanakana]="true"
+                    (wkInput)="kanaWord = $event"
                     (keyup.enter)="isValidCardValues && createOrUpdateCard()"
                 />
                 <label for="kanji-input">Kanji (Optional)</label>
@@ -68,9 +69,10 @@
                     class="input input-large"
                     type="text"
                     placeholder="漢字"
-                    (input)="onInput('kanji')"
                     maxlength="255"
                     #kanjiInput
+                    [wanakana]="true"
+                    (wkInput)="kanjiWord = $event"
                     (keyup.enter)="isValidCardValues && createOrUpdateCard()"
                 />
                 <div class="flex-row ai-center" *ngIf="!isEditing">

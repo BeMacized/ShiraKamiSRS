@@ -34,6 +34,7 @@
                             : 'btn-unavailable'
                     "
                     [disabled]="!set.srsStatus?.lessons"
+                    [routerLink]="['/lessons', { setId: set.id }]"
                 >
                     <span>Lessons</span>
                     <span class="btn-counter-badge">{{
@@ -48,6 +49,7 @@
                             : 'btn-unavailable'
                     "
                     [disabled]="!set.srsStatus?.reviews"
+                    [routerLink]="['/reviews', { setId: set.id }]"
                 >
                     <span>Reviews</span>
                     <span class="btn-counter-badge">{{
