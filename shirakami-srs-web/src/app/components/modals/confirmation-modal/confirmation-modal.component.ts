@@ -1,6 +1,10 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { Modal } from '../../../services/modal.service';
 import { fade, fadeUp, triggerChildren } from '../../../utils/animations';
+import {
+    KeyboardService,
+    KeyboardUnlisten,
+} from '../../../services/keyboard.service';
 
 export type ConfirmationModalInput = Partial<{
     title: string;
@@ -12,6 +16,7 @@ export type ConfirmationModalInput = Partial<{
     pressEscCancel: boolean;
     confirmButtonType: string;
     cancelButtonType: string;
+    pressEnterConfirm: boolean;
 }>;
 
 const defaultInput: ConfirmationModalInput = {
@@ -24,6 +29,7 @@ const defaultInput: ConfirmationModalInput = {
     pressEscCancel: true,
     confirmButtonType: 'btn-primary',
     cancelButtonType: 'btn-secondary',
+    pressEnterConfirm: true,
 };
 
 export type ConfirmationModalOutput = boolean;
@@ -40,18 +46,32 @@ export type ConfirmationModalOutput = boolean;
 })
 export class ConfirmationModalComponent
     extends Modal<ConfirmationModalInput, ConfirmationModalOutput>
-    implements OnInit {
+    implements OnInit, OnDestroy {
     input: ConfirmationModalInput = defaultInput;
+    private keyboardUnlisten: KeyboardUnlisten;
 
-    constructor() {
+    constructor(private keyboard: KeyboardService) {
         super();
     }
 
-    ngOnInit(): void {}
+    ngOnInit(): void {
+        this.keyboardUnlisten = this.keyboard.listen(
+            {
+                Escape: () => {
+                    if (this.input.pressEscCancel) this.onCancel();
+                },
+                Enter: () => {
+                    if (this.input.pressEnterConfirm) this.onConfirm();
+                },
+            },
+            {
+                priority: 100,
+            }
+        );
+    }
 
-    @HostListener('document:keydown.escape', ['$event'])
-    onEscapeDown($event) {
-        if (this.input.pressEscCancel) this.onCancel();
+    ngOnDestroy() {
+        if (this.keyboardUnlisten) this.keyboardUnlisten();
     }
 
     onCancel() {

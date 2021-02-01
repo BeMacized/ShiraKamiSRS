@@ -31,7 +31,7 @@
     position: relative;
 
     .progress-bar {
-        @include shadow(2, true);
+        @include shadow(2);
         position: absolute;
         top: 0;
         left: 0;
@@ -49,8 +49,8 @@
             height: 100%;
             width: 0;
             background: white;
-            transition: width 0.15s ease;
-            @include shadow(2, true);
+            transition: all 0.15s ease;
+            @include shadow(2);
         }
     }
 
@@ -213,11 +213,11 @@
             opacity: 1;
             background: var(--color-primary);
             color: var(--color-on-primary);
-            border-color: transparent
+            border-color: transparent;
         }
 
         &:hover {
-           opacity: 1;
+            opacity: 1;
         }
     }
 
@@ -259,6 +259,7 @@
             color: var(--color-on-surface-mute);
         }
         font-size: 1.5em;
+        transition: all 0.15s ease;
     }
 
     button.btn-submit {
@@ -272,6 +273,26 @@
         &:hover,
         &:active {
             background: transparent;
+        }
+    }
+
+    &.success {
+        button.btn-submit {
+            color: var(--color-on-success);
+        }
+        input {
+            background: var(--color-success);
+            color: var(--color-on-success);
+        }
+    }
+
+    &.failure {
+        button.btn-submit {
+            color: var(--color-on-caution);
+        }
+        input {
+            background: var(--color-caution);
+            color: var(--color-on-caution);
         }
     }
 }

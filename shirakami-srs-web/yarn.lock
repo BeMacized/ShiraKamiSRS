@@ -1232,6 +1232,11 @@
   dependencies:
     moment "*"
 
+"@types/mousetrap@^1.6.5":
+  version "1.6.5"
+  resolved "https://registry.yarnpkg.com/@types/mousetrap/-/mousetrap-1.6.5.tgz#e95569aa6273dbe0ed1814f86287547cc06e93c9"
+  integrity sha512-OwVhKFim9Y/MprzCe4I6a59p31pMy8+LrtP6qS7J0kaOxYmW6VVJPBw5NYm+g7nSbgPUz22FvqU1F1hC5YGTfg==
+
 "@types/node@*":
   version "14.14.16"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.16.tgz#3cc351f8d48101deadfed4c9e4f116048d437b4b"
@@ -2997,6 +3002,11 @@ d@1, d@^1.0.1:
   dependencies:
     es5-ext "^0.10.50"
     type "^1.0.1"
+
+damerau-levenshtein-js@^1.1.7:
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/damerau-levenshtein-js/-/damerau-levenshtein-js-1.1.7.tgz#ccbe2ec30eb3b481db306499ceaa892821060056"
+  integrity sha512-io79tCe+UBbLRZRlTf6W/NmpSh2tzFXX8YeWTDfSNauq1JaXPPrkOTkZT6fXZEvJgM2MWD4Yz+t5XBC+8/xnCg==
 
 damerau-levenshtein@^1.0.4:
   version "1.0.6"

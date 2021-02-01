@@ -2,19 +2,17 @@ import {
     Component,
     ElementRef,
     HostListener,
+    OnDestroy,
     OnInit,
     ViewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest } from 'rxjs';
-import { debounceTime, map, take } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 import { CardEntity } from '../../models/card.model';
 import { OperationStatus } from '../../models/operation-status.model';
 import { LessonService } from '../../services/lesson.service';
 import { fade, hshrink } from '../../utils/animations';
 import { ReviewMode } from '../../models/review.model';
-import { smoothHeight } from '../../directives/smooth-height.directive';
-import { LessonEntity } from '../../models/lesson.model';
 import {
     ConfirmationModalComponent,
     ConfirmationModalInput,
@@ -22,6 +20,12 @@ import {
 } from '../../components/modals/confirmation-modal/confirmation-modal.component';
 import { ModalService } from '../../services/modal.service';
 import { shuffle } from 'lodash';
+import * as wanakana from 'wanakana';
+import { matchAnswer } from '../../utils/answer-matcher';
+import {
+    KeyboardService,
+    KeyboardUnlisten,
+} from '../../services/keyboard.service';
 
 export type LessonReviewMode = 'LESSONS' | 'REVIEWS';
 
@@ -44,9 +48,12 @@ class LessonInputPage extends BasePage {
 class ReviewPage extends BasePage {
     type: 'REVIEW';
     mode: ReviewMode;
+    score: number;
 }
 
 type Page = LessonPage | LessonInputPage | ReviewPage;
+type InputStage = 'INPUT' | 'FEEDBACK';
+type InputFeedback = 'CORRECT' | 'INCORRECT';
 
 @Component({
     selector: 'app-lesson-review-view',
@@ -54,7 +61,7 @@ type Page = LessonPage | LessonInputPage | ReviewPage;
     styleUrls: ['./lesson-review-view.component.scss'],
     animations: [fade(), hshrink()],
 })
-export class LessonReviewViewComponent implements OnInit {
+export class LessonReviewViewComponent implements OnInit, OnDestroy {
     mode: LessonReviewMode;
     setId: string;
     pages: Page[] = [];
@@ -67,16 +74,19 @@ export class LessonReviewViewComponent implements OnInit {
     }
     set pageIndex(value: number) {
         this._pageIndex = value;
-        this.configureAnswerInput();
+        this.onPageLoad();
     }
     loadStatus: OperationStatus = 'IDLE';
-    lessonsCorrect = 0;
-    lessonsRemaining = 0;
-    totalLessonsRemaining = 0;
     shakeInputAnimation = false;
+    itemsCorrect = 0;
+    itemsInSession = 0;
+    totalItemsRemaining = 0;
+    inputStage: InputStage = 'INPUT';
+    inputFeedback: InputFeedback;
+    keyboardUnlisten: KeyboardUnlisten;
 
-    @ViewChild('answerInput') answerInputEl: ElementRef;
     answer = '';
+    @ViewChild('answerInput') answerInputEl: ElementRef;
     get enableIME(): boolean {
         if (
             !this.page ||
@@ -93,12 +103,9 @@ export class LessonReviewViewComponent implements OnInit {
                 return '0%';
             case 'REVIEW':
             case 'LESSON_INPUT':
-                const pages = this.pages.filter(
-                    (p) => p.type === this.page.type
-                );
                 return (
                     Math.floor(
-                        (pages.indexOf(this.page) / pages.length) * 100
+                        (this.itemsCorrect / this.itemsInSession) * 100
                     ) + '%'
                 );
         }
@@ -108,10 +115,26 @@ export class LessonReviewViewComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private lessonService: LessonService,
-        private modalService: ModalService
+        private modalService: ModalService,
+        private keyboard: KeyboardService
     ) {}
 
     async ngOnInit() {
+        this.keyboardUnlisten = this.keyboard.listen(
+            {
+                Enter: () => void this.onEnterKey(),
+                ArrowRight: () => void this.onRightKey(),
+                l: () => void this.onRightKey(),
+                d: () => void this.onRightKey(),
+                ArrowLeft: () => void this.onLeftKey(),
+                h: () => void this.onLeftKey(),
+                a: () => void this.onLeftKey(),
+            },
+            {
+                priority: 0,
+                inputs: true,
+            }
+        );
         await this.loadRouteData();
         switch (this.mode) {
             case 'LESSONS':
@@ -121,6 +144,10 @@ export class LessonReviewViewComponent implements OnInit {
                 await this.loadReviews();
                 break;
         }
+    }
+
+    ngOnDestroy() {
+        if (this.keyboardUnlisten) this.keyboardUnlisten();
     }
 
     shakeInput() {
@@ -167,13 +194,13 @@ export class LessonReviewViewComponent implements OnInit {
                 pages.push({ type: 'LESSON_INPUT', card: l.card, mode: l.mode })
             );
             // Reset stats
-            this.lessonsCorrect = 0;
-            this.lessonsRemaining = lessonSet.lessons.length;
-            this.totalLessonsRemaining = lessonSet.total;
+            this.itemsCorrect = 0;
+            this.itemsInSession = lessonSet.lessons.length;
+            this.totalItemsRemaining = lessonSet.total;
             // Set pages & current page
             this.pages = pages;
-            // this.pageIndex = 0;
-            this.pageIndex = 8;
+            this.pageIndex = 0;
+            // this.pageIndex = 8;
             this.loadStatus = 'SUCCESS';
         } catch (e) {
             console.error(e);
@@ -186,6 +213,7 @@ export class LessonReviewViewComponent implements OnInit {
     async loadReviews() {}
 
     async nextLesson() {
+        if (!this.page || this.page.type !== 'LESSON') return;
         if (this.pageIndex < this.pages.length - 1) {
             const nextPage = this.pages[this.pageIndex + 1];
             if (nextPage.type === 'LESSON') this.pageIndex++;
@@ -209,6 +237,7 @@ export class LessonReviewViewComponent implements OnInit {
     }
 
     previousLesson() {
+        if (!this.page || this.page.type !== 'LESSON') return;
         if (
             this.pageIndex > 0 &&
             this.pages[this.pageIndex - 1].type === 'LESSON'
@@ -217,12 +246,144 @@ export class LessonReviewViewComponent implements OnInit {
     }
 
     goToLesson(index: number) {
+        if (this.pages[index]?.type !== 'LESSON') return;
         this.pageIndex = index;
     }
 
-    @HostListener('document:keyup.ArrowLeft')
-    @HostListener('document:keyup.h')
-    @HostListener('document:keyup.a')
+    async processAnswer() {
+        if (!this.page) return;
+        if (this.page.type !== 'LESSON_INPUT' && this.page.type !== 'REVIEW')
+            return;
+        // Check input for obvious correctable mistakes
+        const input = this.answer.trim();
+        // Empty input
+        if (!input) return this.shakeInput();
+        const tokens = (wanakana.tokenize(input, {
+            detailed: true,
+        }) as any) as Array<{ type: string; value: string }>;
+        const compactTokens = (wanakana.tokenize(input, {
+            detailed: true,
+        }) as any) as Array<{ type: string; value: string }>;
+        switch (this.page.mode) {
+            case 'enToJp':
+                break;
+            case 'jpToEn':
+                // No japanese for english-only response
+                if (compactTokens.find((t) => t.type === 'ja'))
+                    return this.shakeInput();
+                break;
+            case 'kanjiToKana':
+                // No kanji for kana-only response
+                if (tokens.find((t) => t.type === 'kanji'))
+                    return this.shakeInput();
+                break;
+        }
+        // Check the answer
+        const answerCorrect = matchAnswer(
+            input,
+            this.page.mode,
+            this.page.card
+        );
+        // Process the feedback
+        this.inputFeedback = answerCorrect ? 'CORRECT' : 'INCORRECT';
+        this.inputStage = 'FEEDBACK';
+        this.answerInputEl.nativeElement.blur();
+        if (answerCorrect) {
+            this.answerInputEl.nativeElement.value = (() => {
+                switch (this.page.mode) {
+                    case 'enToJp':
+                        return (
+                            this.page.card.value.kanji ||
+                            this.page.card.value.kana
+                        );
+                    case 'jpToEn':
+                        return this.page.card.value.english;
+                    case 'kanjiToKana':
+                        return this.page.card.value.kana;
+                }
+            })();
+        }
+        if (this.page.type === 'REVIEW') {
+            if (answerCorrect) {
+                if (this.page.score >= 0) this.page.score = 1;
+            } else {
+                this.page.score--;
+            }
+        } else if (this.page.type === 'LESSON_INPUT') {
+            if (answerCorrect) {
+                this.itemsCorrect++;
+                this.totalItemsRemaining--;
+            }
+        }
+        // Upload the score if needed
+        if (answerCorrect) await this.uploadFeedback(this.page);
+        // Immediately dismiss feedback if this is the last page
+        if (answerCorrect && this.pageIndex === this.pages.length - 1)
+            this.dismissInputFeedback();
+    }
+
+    async uploadFeedback(page: ReviewPage | LessonInputPage) {}
+
+    dismissInputFeedback() {
+        if (this.inputStage !== 'FEEDBACK') return;
+        switch (this.inputFeedback) {
+            case 'CORRECT':
+                // Go to next page if it exists
+                if (this.pageIndex < this.pages.length - 1) {
+                    this.pageIndex++;
+                }
+                // Otherwise, we're done
+                else this.finishLessons();
+                break;
+            case 'INCORRECT':
+                // Move the lesson somewhere further down the queue
+                const newIndex =
+                    this.pageIndex +
+                    Math.floor(
+                        (this.pages.length - this.pageIndex) * Math.random()
+                    ) +
+                    1;
+                this.pages.splice(
+                    newIndex,
+                    0,
+                    ...this.pages.splice(this.pageIndex, 1)
+                );
+                this.onPageLoad();
+                break;
+        }
+    }
+
+    async finishLessons() {
+        const modalData =
+            this.totalItemsRemaining > 0
+                ? {
+                      title: 'Lessons complete',
+                      message: `You have more lessons available. Do you want to continue doing more lessons?`,
+                      cancelText: `No, stop here`,
+                      confirmText: `Yes, do more`,
+                  }
+                : {
+                      title: 'Lessons complete',
+                      message: `There are no more lessons to do!`,
+                      confirmText: `Go to dashboard`,
+                      showCancel: false,
+                  };
+
+        const result = await this.modalService
+            .showModal<
+                ConfirmationModalComponent,
+                ConfirmationModalInput,
+                ConfirmationModalOutput
+            >(ConfirmationModalComponent, modalData)
+            .toPromise();
+
+        if (result && this.totalItemsRemaining > 0) {
+            await this.loadLessons();
+        } else {
+            await this.router.navigate(['dashboard']);
+        }
+    }
+
     onLeftKey() {
         if (!this.page) return;
         switch (this.page.type) {
@@ -236,9 +397,6 @@ export class LessonReviewViewComponent implements OnInit {
         }
     }
 
-    @HostListener('document:keyup.ArrowRight')
-    @HostListener('document:keyup.l')
-    @HostListener('document:keyup.d')
     async onRightKey() {
         if (!this.page) return;
         switch (this.page.type) {
@@ -252,28 +410,37 @@ export class LessonReviewViewComponent implements OnInit {
         }
     }
 
-    @HostListener('document:keyup.enter')
     async onEnterKey() {
         if (!this.page) return;
         switch (this.page.type) {
             case 'LESSON':
                 await this.nextLesson();
                 break;
-            case 'LESSON_INPUT':
-                break;
             case 'REVIEW':
+            case 'LESSON_INPUT':
+                if (this.inputStage === 'INPUT') {
+                    if (
+                        document.activeElement ===
+                        this.answerInputEl?.nativeElement
+                    ) {
+                        await this.processAnswer();
+                    }
+                } else {
+                    this.dismissInputFeedback();
+                }
                 break;
         }
     }
 
-    private configureAnswerInput() {
+    private onPageLoad() {
         const page = this.pages[this._pageIndex];
         if (page && (page.type === 'REVIEW' || page.type === 'LESSON_INPUT')) {
             requestAnimationFrame(() => {
-                this.answerInputEl?.nativeElement?.focus();
-                if (page.mode === 'enToJp' || page.mode === 'kanjiToKana') {
-                }
+                this.answerInputEl.nativeElement.focus();
+                this.answerInputEl.nativeElement.value = this.answer = '';
             });
+            this.inputFeedback = null;
+            this.inputStage = 'INPUT';
         }
     }
 }

@@ -88,16 +88,15 @@
                     @fade
                     *ngIf="['LESSON_INPUT'].includes(page?.type)"
                 >
-                    <i class="material-icons">check</i>{{ lessonsCorrect }} /
-                    {{ lessonsRemaining }}
+                    <i class="material-icons">check</i>{{ itemsCorrect }} /
+                    {{ itemsInSession }}
                 </span>
                 <span
                     class="counter"
                     @fade
                     *ngIf="['LESSON_INPUT', 'LESSON'].includes(page?.type)"
                 >
-                    <i class="material-icons">inbox</i
-                    >{{ totalLessonsRemaining }}
+                    <i class="material-icons">inbox</i>{{ totalItemsRemaining }}
                 </span>
             </div>
         </div>
@@ -153,16 +152,26 @@
         <div
             class="input-bar"
             *ngIf="['LESSON_INPUT', 'REVIEW'].includes(page?.type)"
+            [class.success]="
+                inputStage === 'FEEDBACK' && inputFeedback === 'CORRECT'
+            "
+            [class.failure]="
+                inputStage === 'FEEDBACK' && inputFeedback === 'INCORRECT'
+            "
             @hshrink
         >
-            <input type="text" class="input animate__animated" placeholder="Your Response"
-                   [class.animate__shakeX]="shakeInputAnimation"
-                   [style.--animate-duration]="'0.5s'"
-                   #answerInput
-                   [wanakana]="enableIME"
-                   (wkInput)="answer = $event"
+            <input
+                type="text"
+                class="input animate__animated"
+                placeholder="Your Response"
+                [class.animate__shakeX]="shakeInputAnimation"
+                [style.--animate-duration]="'0.5s'"
+                #answerInput
+                [wanakana]="enableIME"
+                (wkInput)="answer = $event"
+                [readOnly]="inputStage === 'FEEDBACK'"
             />
-            <button class="btn btn-rect btn-transparent btn-submit">
+            <button class="btn btn-rect btn-transparent btn-submit" (click)="onEnterKey()">
                 <i class="material-icons">arrow_forward_ios</i>
             </button>
         </div>
