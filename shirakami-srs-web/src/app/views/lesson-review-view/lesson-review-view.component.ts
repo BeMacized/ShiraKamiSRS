@@ -26,6 +26,7 @@ import {
     KeyboardService,
     KeyboardUnlisten,
 } from '../../services/keyboard.service';
+import { ReviewService } from '../../services/review.service';
 
 export type LessonReviewMode = 'LESSONS' | 'REVIEWS';
 
@@ -49,6 +50,7 @@ class ReviewPage extends BasePage {
     type: 'REVIEW';
     mode: ReviewMode;
     score: number;
+    reviewId: string;
 }
 
 type Page = LessonPage | LessonInputPage | ReviewPage;
@@ -116,7 +118,8 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
         private router: Router,
         private lessonService: LessonService,
         private modalService: ModalService,
-        private keyboard: KeyboardService
+        private keyboard: KeyboardService,
+        private reviewService: ReviewService
     ) {}
 
     async ngOnInit() {
@@ -322,7 +325,39 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
             this.dismissInputFeedback();
     }
 
-    async uploadFeedback(page: ReviewPage | LessonInputPage) {}
+    async uploadFeedback(page: ReviewPage | LessonInputPage) {
+        switch (page.type) {
+            case 'REVIEW':
+                try {
+                    await this.reviewService.submitReview(
+                        page.reviewId,
+                        page.score
+                    );
+                } catch (e) {
+                    console.error('Could not submit review for card.', {
+                        error: e,
+                        card: page.card,
+                        mode: page.mode,
+                        score: page.score,
+                    });
+                }
+                break;
+            case 'LESSON_INPUT':
+                try {
+                    await this.reviewService.createReview(
+                        page.card.id,
+                        page.mode
+                    );
+                } catch (e) {
+                    console.error('Could not create review for card.', {
+                        error: e,
+                        card: page.card,
+                        mode: page.mode,
+                    });
+                }
+                break;
+        }
+    }
 
     dismissInputFeedback() {
         if (this.inputStage !== 'FEEDBACK') return;

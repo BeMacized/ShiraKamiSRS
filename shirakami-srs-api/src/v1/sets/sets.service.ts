@@ -11,6 +11,7 @@ import {
   SetSrsStatus,
 } from './entities/set.entity';
 import { Repository } from 'typeorm';
+import * as moment from 'moment';
 
 @Injectable()
 export class SetsService {
@@ -127,6 +128,7 @@ FROM set_entity sets
                  SELECT cardId, ce.setId setId
                  FROM review_entity
                           INNER JOIN card_entity ce on review_entity.cardId = ce.id
+                 WHERE CAST(strftime('%s', reviewDate) AS INT) < ?
                  GROUP BY cardId, mode
              ) cardsWithAReview
                  LEFT JOIN set_entity ON set_entity.id = cardsWithAReview.setId
@@ -142,7 +144,9 @@ ${[userId ? 'sets.userId = ?' : null, setId ? 'sets.id = ?' : null]
   .join(' AND ')}
 GROUP BY sets.id
     `;
-    const countParameters = [];
+    const countParameters: any[] = [
+      moment().startOf('hour').add(1, 'hour').unix(),
+    ];
     if (userId) countParameters.push(userId, userId);
     if (setId) countParameters.push(setId);
     const countResults: Array<{
@@ -156,14 +160,14 @@ SELECT se.id setId, re.currentLevel as srsLevel, COUNT() reviews
 FROM review_entity re
          INNER JOIN card_entity ce on ce.id = re.cardId
          INNER JOIN set_entity se on ce.setId = se.id
-WHERE CAST(strftime('%s', re.reviewDate) AS INT) <= CAST(strftime('%s', datetime('now')) AS INT)
-${[userId ? 'AND se.userId = ?' : null, setId ? 'AND setId = ?' : null]
+${userId || setId ? `WHERE` : ``}
+${[userId ? 'se.userId = ?' : null, setId ? 'setId = ?' : null]
   .filter((l) => !!l)
-  .join(' ')}
+  .join(' AND ')}
 
 GROUP BY setId, srsLevel
 `;
-    const levelParameters = [];
+    const levelParameters: any[] = [];
     if (userId) levelParameters.push(userId);
     if (setId) levelParameters.push(setId);
     const levelResults: Array<{

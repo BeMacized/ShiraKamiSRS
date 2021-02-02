@@ -181,8 +181,8 @@ export class AuthService {
                 {
                     accessToken: tokenSet.accessToken,
                     refreshToken: tokenSet.refreshToken,
-                    refreshTokenExpiry: tokenSet.refreshTokenExpiry.toJSON(),
-                    accessTokenExpiry: tokenSet.accessTokenExpiry.toJSON(),
+                    refreshTokenExpiry: tokenSet.refreshTokenExpiry.getTime(),
+                    accessTokenExpiry: tokenSet.accessTokenExpiry.getTime(),
                 },
                 TokenSetSchema
             )

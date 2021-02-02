@@ -13,7 +13,11 @@ const sanitizeEnglish = (str: string): string =>
 const sanitizeJapanese = (str: string): string =>
     wanakana
         .toHiragana(
-            wanakana.toHiragana(str.trim().toLowerCase().replace(/\s+/g, ''))
+            wanakana.toKatakana(
+                wanakana.toHiragana(
+                    str.trim().toLowerCase().replace(/\s+/g, '')
+                )
+            )
         )
         .replace(/[^ぁ-ん一-龯ー々0-9０-９]/g, '');
 
@@ -40,14 +44,7 @@ const matchJapanese = (
     kanaAnswer: string,
     kanjiAnswer: string
 ): boolean => {
-    console.log('MATCH JAPANESE', {
-        input: input + '',
-        sanitizedInput: sanitizeJapanese(input),
-        answer: kanaAnswer,
-        sanitizedAnswer: sanitizeJapanese(kanaAnswer),
-    });
     input = sanitizeJapanese(input);
-
     return !!kanaAnswer
         .split(';')
         .concat(kanjiAnswer.split(';'))

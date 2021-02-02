@@ -22,7 +22,7 @@ export class CardCardComponent implements OnInit {
 
     getSrsLevel(mode: ReviewMode) {
         return (
-            this.card?.reviews?.find((r) => r.mode === mode)?.currentLevel || -1
+            this.card?.reviews?.find((r) => r.mode === mode)?.currentLevel ?? -1
         );
     }
 

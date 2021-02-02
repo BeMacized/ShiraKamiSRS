@@ -9,9 +9,9 @@ export interface TokenSet {
 
 export interface StoredTokenSet {
     accessToken: string;
-    accessTokenExpiry: string;
+    accessTokenExpiry: number;
     refreshToken: string;
-    refreshTokenExpiry: string;
+    refreshTokenExpiry: number;
 }
 
 export const TokenSetSchema: JSONSchema = {
@@ -25,7 +25,7 @@ export const TokenSetSchema: JSONSchema = {
     properties: {
         accessToken: { type: 'string' },
         refreshToken: { type: 'string' },
-        refreshTokenExpiry: { type: 'string' },
-        accessTokenExpiry: { type: 'string' },
+        refreshTokenExpiry: { type: 'number' },
+        accessTokenExpiry: { type: 'number' },
     },
 };

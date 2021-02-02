@@ -1,10 +1,4 @@
-import {
-  Column,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { CardEntity } from '../cards/entities/card.entity';
 import { UserEntity } from '../../users/entities/user.entity';
 import { ReviewMode } from '../../reviews/dtos/review.dto';

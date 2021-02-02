@@ -1,14 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  NotFoundException,
-  Param,
-  Post,
-  Put,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { CardDto, CreateOrUpdateCardDto } from './dtos/card.dto';
 import { CardsService } from './cards.service';
 import { JWTGuard } from '../../authentication/guards/jwt.guard';

@@ -1,20 +1,9 @@
-import {
-  Body,
-  Controller,
-  DefaultValuePipe,
-  Get,
-  Param,
-  ParseIntPipe,
-  Post,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, DefaultValuePipe, Get, Param, ParseIntPipe, Post, Query, UseGuards } from '@nestjs/common';
 import { JWTGuard } from '../authentication/guards/jwt.guard';
 import { User } from '../common/user.decorator';
 import { UserEntity } from '../users/entities/user.entity';
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto, ReviewDto, SubmitReviewDto } from './dtos/review.dto';
-import { CreateOrUpdateSetDto, SetDto } from '../sets/dtos/set.dto';
 
 @Controller()
 export class ReviewsController {

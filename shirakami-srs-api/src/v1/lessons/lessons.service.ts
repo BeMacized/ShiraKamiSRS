@@ -4,9 +4,7 @@ import { CardEntity } from '../sets/cards/entities/card.entity';
 import { Repository } from 'typeorm';
 import { LessonDto, LessonSetDto } from './dtos/lesson.dto';
 import { SetEntity } from '../sets/entities/set.entity';
-import { flatten } from 'lodash';
 import { CardDto } from '../sets/cards/dtos/card.dto';
-import { ReviewMode, ReviewModes } from '../reviews/dtos/review.dto';
 import { ReviewEntity } from '../reviews/entities/review.entity';
 
 @Injectable()

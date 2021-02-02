@@ -1,18 +1,10 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  Logger,
-  UnprocessableEntityException,
-} from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger, UnprocessableEntityException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserEntity } from '../users/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RefreshTokenEntity } from './entities/refresh-token.entity';
-import {
-  AccessTokenPayload,
-  RefreshTokenPayload,
-} from './interfaces/token-payload.interface';
+import { AccessTokenPayload, RefreshTokenPayload } from './interfaces/token-payload.interface';
 import { TokenExpiredError } from 'jsonwebtoken';
 import { UsersService } from '../users/users.service';
 import { ConfigService } from '@nestjs/config';

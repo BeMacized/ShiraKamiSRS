@@ -5,22 +5,14 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { ReviewDto, ReviewMode, ReviewModes } from './dtos/review.dto';
+import { ReviewMode } from './dtos/review.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  Between,
-  Column,
-  LessThanOrEqual,
-  ManyToOne,
-  Repository,
-} from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { UserEntity } from '../users/entities/user.entity';
 import * as moment from 'moment';
 import 'moment-round';
 import { ReviewEntity } from './entities/review.entity';
 import { CardsService } from '../sets/cards/cards.service';
-import { CardEntity } from '../sets/cards/entities/card.entity';
-import { SetEntity } from '../sets/entities/set.entity';
 
 @Injectable()
 export class ReviewsService {
@@ -116,6 +108,7 @@ export class ReviewsService {
       reviewDate: moment()
         .add(
           user.srsSettings.levels.find((l) => l.id === newLevel).levelDuration,
+          'seconds',
         )
         .toDate(),
       currentLevel: newLevel,
@@ -150,12 +143,27 @@ export class ReviewsService {
       );
 
     // Create the review
+    console.log('SAVING', {
+      cardId,
+      mode,
+      creationDate: new Date(),
+      reviewDate: moment()
+        .add(
+          user.srsSettings.levels.find((l) => l.id === 0).levelDuration,
+          'seconds',
+        )
+        .toDate(),
+      currentLevel: 0,
+    });
     return await this.reviewRepository.save({
       cardId,
       mode,
       creationDate: new Date(),
       reviewDate: moment()
-        .add(user.srsSettings.levels.find((l) => l.id === 0).levelDuration)
+        .add(
+          user.srsSettings.levels.find((l) => l.id === 0).levelDuration,
+          'seconds',
+        )
         .toDate(),
       currentLevel: 0,
     });
