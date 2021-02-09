@@ -20,7 +20,8 @@
         "esModuleInterop": true,
         "lib": [
             "es2018",
-            "dom"
+            "dom",
+            "es2020.string"
         ]
     },
     "angularCompilerOptions": {

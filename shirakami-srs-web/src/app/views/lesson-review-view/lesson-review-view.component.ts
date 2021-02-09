@@ -1,7 +1,6 @@
 import {
     Component,
     ElementRef,
-    HostListener,
     OnDestroy,
     OnInit,
     ViewChild,
@@ -21,12 +20,12 @@ import {
 import { ModalService } from '../../services/modal.service';
 import { shuffle } from 'lodash';
 import * as wanakana from 'wanakana';
-import { matchAnswer } from '../../utils/answer-matcher';
 import {
     KeyboardService,
     KeyboardUnlisten,
 } from '../../services/keyboard.service';
 import { ReviewService } from '../../services/review.service';
+import { matchAnswer } from '../../utils/answer-matcher';
 
 export type LessonReviewMode = 'LESSONS' | 'REVIEWS';
 
@@ -67,7 +66,7 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
     mode: LessonReviewMode;
     setId: string;
     pages: Page[] = [];
-    get page() {
+    get page(): Page {
         return this.pages[this.pageIndex];
     }
     _pageIndex = 0;
@@ -159,7 +158,10 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
     }
 
     async loadRouteData() {
-        const [routeData, routeParamMap] = await Promise.all([
+        const [routeData, routeParamMap]: [
+            any,
+            Map<string, string>
+        ] = await Promise.all([
             this.route.data.pipe(take(1)).toPromise(),
             this.route.paramMap.pipe(take(1)).toPromise(),
         ]);
@@ -254,7 +256,6 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
     }
 
     async processAnswer() {
-        if (!this.page) return;
         if (this.page.type !== 'LESSON_INPUT' && this.page.type !== 'REVIEW')
             return;
         // Check input for obvious correctable mistakes
@@ -282,47 +283,43 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
                 break;
         }
         // Check the answer
-        const answerCorrect = matchAnswer(
-            input,
-            this.page.mode,
-            this.page.card
-        );
+        const result = matchAnswer(input, this.page.mode, this.page.card);
+        console.log('RESULT', result, this.page.card);
         // Process the feedback
-        this.inputFeedback = answerCorrect ? 'CORRECT' : 'INCORRECT';
+        this.inputFeedback = result.passing ? 'CORRECT' : 'INCORRECT';
         this.inputStage = 'FEEDBACK';
         this.answerInputEl.nativeElement.blur();
-        if (answerCorrect) {
-            this.answerInputEl.nativeElement.value = (() => {
-                switch (this.page.mode) {
-                    case 'enToJp':
-                        return (
-                            this.page.card.value.kanji ||
-                            this.page.card.value.kana
-                        );
-                    case 'jpToEn':
-                        return this.page.card.value.english;
-                    case 'kanjiToKana':
-                        return this.page.card.value.kana;
-                }
-            })();
+        if (result.passing) {
+            switch (this.page.mode) {
+                case 'enToJp':
+                    this.answerInputEl.nativeElement.value =
+                        this.page.card.value.kanji || this.page.card.value.kana;
+                    break;
+                case 'jpToEn':
+                    this.answerInputEl.nativeElement.value = this.page.card.value.english;
+                    break;
+                case 'kanjiToKana':
+                    this.answerInputEl.nativeElement.value = this.page.card.value.kana;
+                    break;
+            }
         }
         if (this.page.type === 'REVIEW') {
-            if (answerCorrect) {
+            if (result.passing) {
                 if (this.page.score >= 0) this.page.score = 1;
             } else {
                 this.page.score--;
             }
         } else if (this.page.type === 'LESSON_INPUT') {
-            if (answerCorrect) {
+            if (result.passing) {
                 this.itemsCorrect++;
                 this.totalItemsRemaining--;
             }
         }
         // Upload the score if needed
-        if (answerCorrect) await this.uploadFeedback(this.page);
+        if (result.passing) await this.uploadFeedback(this.page);
         // Immediately dismiss feedback if this is the last page
-        if (answerCorrect && this.pageIndex === this.pages.length - 1)
-            this.dismissInputFeedback();
+        if (result.passing && this.pageIndex === this.pages.length - 1)
+            await this.dismissInputFeedback();
     }
 
     async uploadFeedback(page: ReviewPage | LessonInputPage) {
@@ -359,7 +356,7 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
         }
     }
 
-    dismissInputFeedback() {
+    async dismissInputFeedback() {
         if (this.inputStage !== 'FEEDBACK') return;
         switch (this.inputFeedback) {
             case 'CORRECT':
@@ -368,7 +365,7 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
                     this.pageIndex++;
                 }
                 // Otherwise, we're done
-                else this.finishLessons();
+                else await this.finishLessons();
                 break;
             case 'INCORRECT':
                 // Move the lesson somewhere further down the queue
@@ -461,7 +458,7 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
                         await this.processAnswer();
                     }
                 } else {
-                    this.dismissInputFeedback();
+                    await this.dismissInputFeedback();
                 }
                 break;
         }
