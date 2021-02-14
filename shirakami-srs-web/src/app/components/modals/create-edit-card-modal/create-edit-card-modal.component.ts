@@ -17,6 +17,8 @@ import { Modal } from '../../../services/modal.service';
 import { CardEntity } from '../../../models/card.model';
 import { CardService } from '../../../services/card.service';
 import { OperationStatus } from '../../../models/operation-status.model';
+import { minPromiseDuration } from '../../../utils/promise-utils';
+import { cloneDeep } from 'lodash';
 
 export interface CreateEditCardModalInput {
     setId: string;
@@ -51,9 +53,9 @@ export class CreateEditCardModalComponent
     @ViewChild('kanaInput') kanaInput: ElementRef;
     @ViewChild('kanjiInput') kanjiInput: ElementRef;
     enTranslations: string[] = [];
-    enTranslationNote = '';
+    enNote = '';
     jpTranslations: [string, string?][] = [];
-    jpTranslationNote = '';
+    jpNote = '';
     englishError = '';
     kanjiError = '';
     kanaError = '';
@@ -84,7 +86,10 @@ export class CreateEditCardModalComponent
         this.setId = data.setId;
         if (data.card) {
             this.cardId = data.card.id;
-            // TODO: Load card values
+            this.enTranslations = data.card.value.enTranslations.slice();
+            this.jpTranslations = cloneDeep(data.card.value.jpTranslations);
+            this.enNote = data.card.value.enNote + '';
+            this.jpNote = data.card.value.jpNote + '';
         }
     }
 
@@ -101,29 +106,32 @@ export class CreateEditCardModalComponent
         this.kanaInput.nativeElement.blur();
         this.kanjiInput.nativeElement.blur();
         try {
-            // const card = await minPromiseDuration(
-            //     this.cardId
-            //         ? this.cardService.updateCardValues(
-            //               this.setId,
-            //               this.cardId,
-            //               {
-            //                   english: this.englishWord,
-            //                   kana: this.kanaWord,
-            //                   kanji: this.kanjiWord || undefined,
-            //               }
-            //           )
-            //         : this.cardService.createCard(this.setId, {
-            //               english: this.englishWord,
-            //               kana: this.kanaWord,
-            //               kanji: this.kanjiWord || undefined,
-            //           }),
-            //     400
-            // );
-            // this.emit(card);
+            const card = await minPromiseDuration(
+                this.cardId
+                    ? this.cardService.updateCardValues(
+                          this.setId,
+                          this.cardId,
+                          {
+                              enTranslations: this.enTranslations,
+                              jpTranslations: this.jpTranslations,
+                              enNote: this.enNote,
+                              jpNote: this.jpNote,
+                          }
+                      )
+                    : this.cardService.createCard(
+                          this.setId,
+                          this.enTranslations,
+                          this.jpTranslations,
+                          this.enNote,
+                          this.jpNote
+                      ),
+                400
+            );
+            this.emit(card);
             this.createOrUpdateStatus = 'SUCCESS';
             if (this.createAnother) {
                 setTimeout(() => {
-                    // this.englishInput.nativeElement.focus();
+                    this.englishInput.nativeElement.focus();
                     this.showStatusOverlay = false;
                 }, 500);
             } else {

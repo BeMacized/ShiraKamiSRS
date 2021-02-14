@@ -1,4 +1,3 @@
-import { SrsLevelDto, SrsLevelEntity } from './srs-level.model';
 import {CardValueDto, CardValueEntity, CreateOrUpdateCardValueDto} from './card-value.model';
 import { ReviewDto, ReviewEntity } from './review.model';
 

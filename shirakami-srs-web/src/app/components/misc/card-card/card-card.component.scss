@@ -63,6 +63,12 @@
             overflow: hidden;
             word-break: keep-all;
             white-space: nowrap;
+            flex: 1;
+            text-align: right;
+        }
+
+        &-more {
+            font-weight: bold;
         }
     }
 }

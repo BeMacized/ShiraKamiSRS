@@ -15,12 +15,6 @@ export abstract class AnswerMatcher {
     parseAnswers(
         answerStrings: string[]
     ): Array<{ answer: string; subAnswers: string[] }> {
-        // Split multiple answers by `;`
-        answerStrings = flatten(
-            answerStrings
-                .filter((a) => !!a)
-                .map((str) => str.replace(/[；]/g, ';').split(';'))
-        );
         return (
             answerStrings
                 // Sanitize answers
@@ -67,7 +61,6 @@ export abstract class AnswerMatcher {
         return answer
             .replace(/[（]/g, '(')
             .replace(/[）]/g, ')')
-            .replace(/[；]/g, ';')
             .replace(/\s+/g, '');
     }
 }

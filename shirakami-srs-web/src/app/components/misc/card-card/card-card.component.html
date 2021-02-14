@@ -9,25 +9,35 @@
                         <span>EN</span>
                     </div>
                     <div class="card-value-value">
-                        <span>{{ card.value.english }}</span>
+                        <span>{{ card.value.enTranslations[0] }}</span>
+                    </div>
+                    <div
+                        class="card-value-more"
+                        *ngIf="card.value.enTranslations.length > 1"
+                    >
+                        &nbsp;(+{{ card.value.enTranslations.length - 1 }})
                     </div>
                 </div>
                 <div class="card-value">
                     <div class="card-value-key">
                         <span class="flag-icon flag-icon-jp"></span>
-                        <span>かな</span>
+                        <span>JP</span>
                     </div>
                     <div class="card-value-value">
-                        <span>{{ card.value.kana }}</span>
+                        <span *ngIf="card.value.jpTranslations[0]?.length === 1">
+                            {{ card.value.jpTranslations[0][0] }}
+                        </span>
+                        <span *ngIf="card.value.jpTranslations[0]?.length === 2">
+                            {{ card.value.jpTranslations[0][0] }} ({{
+                                card.value.jpTranslations[0][1]
+                            }})
+                        </span>
                     </div>
-                </div>
-                <div class="card-value">
-                    <div class="card-value-key">
-                        <span class="flag-icon flag-icon-jp"></span>
-                        <span>漢字</span>
-                    </div>
-                    <div class="card-value-value">
-                        <span>{{ card.value.kanji || '-' }}</span>
+                    <div
+                        class="card-value-more"
+                        *ngIf="card.value.jpTranslations.length > 1"
+                    >
+                        &nbsp;(+{{ card.value.jpTranslations.length - 1 }})
                     </div>
                 </div>
             </div>

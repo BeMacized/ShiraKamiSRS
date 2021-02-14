@@ -2,7 +2,7 @@ import {
   ArrayMaxSize,
   ArrayMinSize,
   ArrayUnique,
-  IsEnum,
+  IsEnum, IsOptional,
   Length,
   Validate,
   ValidationArguments,
@@ -16,8 +16,10 @@ export class TranslationValidity implements ValidatorConstraintInterface {
   readonly maxOptionals = 3;
 
   validate(input: string | string[], args: ValidationArguments) {
+    if (typeof input !== 'string' && !Array.isArray(input)) return false;
     const translations: string[] = typeof input === 'string' ? [input] : input;
     for (const translation of translations) {
+      if (typeof translation !== 'string') return false;
       try {
         this.validateParentheses(translation);
       } catch (e) {
@@ -69,7 +71,13 @@ export class CreateOrUpdateCardValueDto {
   @ArrayMinSize(1, { each: true })
   @ArrayMaxSize(2, { each: true })
   @Validate(TranslationValidity, { each: true })
-  jpTranslations: string[][];
+  jpTranslations: [string, string?][];
+  @Length(0, 255)
+  @IsOptional()
+  jpNote?: string;
+  @Length(0, 255)
+  @IsOptional()
+  enNote?: string;
 }
 
 export class CardValueDto extends CreateOrUpdateCardValueDto {

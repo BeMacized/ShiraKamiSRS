@@ -13,7 +13,11 @@ export class CardValue {
   @Column('simple-json')
   enTranslations: string[];
   @Column('simple-json')
-  jpTranslations: string[][];
+  jpTranslations: [string, string?][];
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  enNote?: string;
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  jpNote?: string;
   @Column('simple-json')
   supportedModes: ReviewMode[];
 }

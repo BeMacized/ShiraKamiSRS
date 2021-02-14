@@ -12,7 +12,7 @@ export class JpToEnAnswerMatcher extends AnswerMatcher {
         // Sanitize input
         const sanitizedAnswer = this.sanitizeEnglish(input);
         // Parse answers
-        const parsedAnswers = this.parseAnswers([cardValue.english])
+        const parsedAnswers = this.parseAnswers(cardValue.enTranslations)
             // Sanitize all answers for comparison
             .map((answerObj) => {
                 answerObj.subAnswers = answerObj.subAnswers.map(

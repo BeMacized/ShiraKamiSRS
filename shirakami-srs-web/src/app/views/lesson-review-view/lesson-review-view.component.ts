@@ -286,20 +286,8 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
         this.inputFeedback = result.passing ? 'CORRECT' : 'INCORRECT';
         this.inputStage = 'FEEDBACK';
         this.answerInputEl.nativeElement.blur();
-        if (result.passing) {
-            switch (this.page.mode) {
-                case 'enToJp':
-                    this.answerInputEl.nativeElement.value =
-                        this.page.card.value.kanji || this.page.card.value.kana;
-                    break;
-                case 'jpToEn':
-                    this.answerInputEl.nativeElement.value = this.page.card.value.english;
-                    break;
-                case 'kanjiToKana':
-                    this.answerInputEl.nativeElement.value = this.page.card.value.kana;
-                    break;
-            }
-        }
+        if (result.passing)
+            this.answerInputEl.nativeElement.value = result.correctAnswer;
         if (this.page.type === 'REVIEW') {
             if (result.passing) {
                 if (this.page.score >= 0) this.page.score = 1;

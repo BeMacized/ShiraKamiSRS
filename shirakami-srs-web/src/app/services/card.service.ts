@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CardValueEntity } from '../models/card-value.model';
+import { CardValueEntity, CreateOrUpdateCardValueDto } from '../models/card-value.model';
 import { CardRepositoryService } from '../repositories/card-repository.service';
 import { CardEntity, UpdateCardDto } from '../models/card.model';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -13,13 +13,21 @@ export class CardService {
 
     async createCard(
         setId: string,
-        value: CardValueEntity
+        enTranslations: string[],
+        jpTranslations: [string, string?][],
+        enNote?: string,
+        jpNote?: string
     ): Promise<CardEntity> {
         try {
             const card = await this.cardRepository
                 .createCard({
                     setId,
-                    value,
+                    value: {
+                        enTranslations,
+                        jpTranslations,
+                        enNote,
+                        jpNote,
+                    },
                 })
                 .toPromise();
             return CardEntity.fromDto(card);
@@ -90,7 +98,7 @@ export class CardService {
     updateCardValues(
         setId: string,
         cardId: string,
-        value: CardValueEntity
+        value: CreateOrUpdateCardValueDto,
     ): Promise<CardEntity> {
         return this.updateCard({
             id: cardId,

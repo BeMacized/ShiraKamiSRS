@@ -46,27 +46,33 @@ export class SrsService {
     constructor() {}
 
     getBgColorForLevel(level: number) {
-        const group = this.srsGroups.find(
-            (g) => level >= g.minLevel && level <= g.maxLevel
-        );
-        if (group) return group.bgColor;
+        if (typeof level === 'number') {
+            const group = this.srsGroups.find(
+                (g) => level >= g.minLevel && level <= g.maxLevel
+            );
+            if (group) return group.bgColor;
+        }
         return 'transparent';
     }
 
     getFgColorForLevel(level: number) {
-        const group = this.srsGroups.find(
-            (g) => level >= g.minLevel && level <= g.maxLevel
-        );
-        if (group) return group.fgColor;
+        if (typeof level === 'number') {
+            const group = this.srsGroups.find(
+                (g) => level >= g.minLevel && level <= g.maxLevel
+            );
+            if (group) return group.fgColor;
+        }
         return 'var(--color-on-surface)';
     }
 
     getLabelForLevel(level: number) {
-        if (level <= -1) return 'Not learnt';
-        const group = this.srsGroups.find(
-            (g) => level >= g.minLevel && level <= g.maxLevel
-        );
-        if (group) return group.name;
+        if (typeof level === 'number') {
+            if (level <= -1) return 'Not learnt';
+            const group = this.srsGroups.find(
+                (g) => level >= g.minLevel && level <= g.maxLevel
+            );
+            if (group) return group.name;
+        }
         return 'Unknown';
     }
 

@@ -10,7 +10,9 @@ export class KanjiToKanaAnswerMatcher extends AnswerMatcher {
         // Sanitize input
         const sanitizedAnswer = this.sanitizeJapanese(input);
         // Parse answers
-        const parsedAnswers = this.parseAnswers([cardValue.kana])
+        const parsedAnswers = this.parseAnswers(
+            cardValue.jpTranslations.map((t) => t[0])
+        )
             // Sanitize all answers for comparison
             .map((answerObj) => {
                 answerObj.subAnswers = answerObj.subAnswers.map(

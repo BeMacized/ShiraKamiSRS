@@ -11,8 +11,8 @@ export class EnToJpAnswerMatcher extends AnswerMatcher {
         const sanitizedAnswer = this.sanitizeJapanese(input);
         // Parse answers
         const parsedAnswers = this.parseAnswers([
-            cardValue.kana,
-            cardValue.kanji,
+            ...cardValue.jpTranslations.map((t) => t[0]), // Kana
+            ...cardValue.jpTranslations.map((t) => t[1]).filter((t) => !!t), // Kanji
         ])
             // Sanitize all answers for comparison
             .map((answerObj) => {

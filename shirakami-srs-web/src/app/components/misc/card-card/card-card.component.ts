@@ -21,12 +21,14 @@ export class CardCardComponent implements OnInit {
     ngOnInit(): void {}
 
     getSrsLevel(mode: ReviewMode) {
+        if (!this.card.value.supportedModes.includes(mode)) return null;
         return (
             this.card?.reviews?.find((r) => r.mode === mode)?.currentLevel ?? -1
         );
     }
 
     getSrsLevelLabel(level: number) {
+        if (typeof level !== 'number') return 'Not applicable';
         return this.srsService.getLabelForLevel(level);
     }
 
