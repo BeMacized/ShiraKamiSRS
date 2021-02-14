@@ -5,7 +5,7 @@ import {
     OnInit,
     ViewChild,
 } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Data, ParamMap, Router } from '@angular/router';
 import { take } from 'rxjs/operators';
 import { CardEntity } from '../../models/card.model';
 import { OperationStatus } from '../../models/operation-status.model';
@@ -158,10 +158,7 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
     }
 
     async loadRouteData() {
-        const [routeData, routeParamMap]: [
-            any,
-            Map<string, string>
-        ] = await Promise.all([
+        const [routeData, routeParamMap]: [Data, ParamMap] = await Promise.all([
             this.route.data.pipe(take(1)).toPromise(),
             this.route.paramMap.pipe(take(1)).toPromise(),
         ]);

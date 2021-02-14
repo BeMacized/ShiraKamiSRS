@@ -38,20 +38,124 @@
                 >
             </div>
         </div>
-        <div class="modal-content ai-center">
-            <div class="flex-column ai-stretch">
-                <label for="english-input">English</label>
+        <div class="modal-content ai-start">
+            <h2>English</h2>
+            <div class="translations">
+                <div
+                    class="no-translations"
+                    *ngIf="!enTranslations.length"
+                    @vshrink
+                >
+                    <span>No translations</span>
+                </div>
+                <div
+                    class="translation"
+                    @vshrink
+                    *ngFor="
+                        let translation of enTranslations;
+                        let index = index
+                    "
+                >
+                    <div class="values">
+                        <span class="value value-en">{{ translation }}</span>
+                    </div>
+                    <div class="actions">
+                        <button
+                            class="action"
+                            (click)="enTranslations.splice(index, 1)"
+                        >
+                            <i class="material-icons">clear</i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="alert alert-error" *ngIf="englishError" @vshrink>
+                {{ englishError }}
+            </div>
+            <div class="input-row">
                 <input
                     id="english-input"
                     class="input input-large"
                     type="text"
                     placeholder="English"
-                    (input)="englishWord = englishInput.value"
                     maxlength="255"
                     #englishInput
-                    (keyup.enter)="isValidCardValues && createOrUpdateCard()"
+                    (keyup.enter)="addEnTranslation(englishInput.value)"
                 />
-                <label for="kana-input">Kana Only</label>
+                <button
+                    class="btn btn-primary btn-rect btn-add-translation"
+                    [disabled]="enTranslations.length >= maxTranslations"
+                    (click)="addEnTranslation(englishInput.value)"
+                >
+                    <i class="material-icons">add</i>
+                </button>
+            </div>
+            <div class="input-row note">
+                <input
+                    id="english-note-input"
+                    class="input input-large"
+                    type="text"
+                    placeholder="Translation Note"
+                    maxlength="255"
+                    [(ngModel)]="enTranslationNote"
+                />
+            </div>
+            <h2>Japanese</h2>
+            <div class="translations">
+                <div
+                    class="no-translations"
+                    *ngIf="!jpTranslations.length"
+                    @vshrink
+                >
+                    <span>No translations</span>
+                </div>
+                <div
+                    class="translation"
+                    @vshrink
+                    *ngFor="
+                        let translation of jpTranslations;
+                        let index = index
+                    "
+                >
+                    <div class="values">
+                        <span
+                            class="value value-jp"
+                            *ngIf="translation.length === 1"
+                            >{{ translation[0] }}</span
+                        >
+                        <span
+                            class="value value-jp"
+                            *ngIf="translation.length === 2"
+                            >{{ translation[0] }}（{{ translation[1] }}）</span
+                        >
+                    </div>
+                    <div class="actions">
+                        <button
+                            class="action"
+                            (click)="jpTranslations.splice(index, 1)"
+                        >
+                            <i class="material-icons">clear</i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="alert alert-error" *ngIf="kanjiError" @vshrink>
+                {{ kanjiError }}
+            </div>
+            <div class="input-row">
+                <input
+                    id="kanji-input"
+                    class="input input-large"
+                    type="text"
+                    placeholder="漢字 (Optional)"
+                    maxlength="255"
+                    #kanjiInput
+                />
+            </div>
+            <div class="alert alert-error" *ngIf="kanaError" @vshrink>
+                {{ kanaError }}
+            </div>
+            <div class="input-row">
                 <input
                     id="kana-input"
                     class="input input-large"
@@ -59,26 +163,37 @@
                     placeholder="かな"
                     maxlength="255"
                     #kanaInput
-                    [wanakana]="true"
-                    (wkInput)="kanaWord = $event"
-                    (keyup.enter)="isValidCardValues && createOrUpdateCard()"
+                    (keyup.enter)="
+                        addJpTranslation(kanaInput.value, kanjiInput.value)
+                    "
                 />
-                <label for="kanji-input">Kanji (Optional)</label>
+                <button
+                    class="btn btn-primary btn-rect btn-add-translation"
+                    [disabled]="jpTranslations.length >= maxTranslations"
+                    (click)="
+                        addJpTranslation(kanaInput.value, kanjiInput.value)
+                    "
+                >
+                    <i class="material-icons">add</i>
+                </button>
+            </div>
+            <div class="input-row note">
                 <input
-                    id="kanji-input"
+                    id="japanese-note-input"
                     class="input input-large"
                     type="text"
-                    placeholder="漢字"
+                    placeholder="Translation Note"
                     maxlength="255"
-                    #kanjiInput
-                    [wanakana]="true"
-                    (wkInput)="kanjiWord = $event"
-                    (keyup.enter)="isValidCardValues && createOrUpdateCard()"
+                    [(ngModel)]="jpTranslationNote"
                 />
-                <div class="flex-row ai-center" *ngIf="!isEditing">
-                    <app-checkbox [(checked)]="createAnother"></app-checkbox>
-                    <span>Create another card</span>
-                </div>
+            </div>
+            <div
+                class="flex-row ai-center"
+                *ngIf="!isEditing"
+                style="margin-top: 1em"
+            >
+                <app-checkbox [(checked)]="createAnother"></app-checkbox>
+                <span>Create another card</span>
             </div>
         </div>
         <div class="modal-actions">
@@ -87,7 +202,7 @@
             </button>
             <button
                 class="button btn btn-primary"
-                [disabled]="!isValidCardValues"
+                [disabled]="!enTranslations.length || !jpTranslations.length"
                 (click)="createOrUpdateCard()"
             >
                 {{ isEditing ? 'Save' : 'Create' }}

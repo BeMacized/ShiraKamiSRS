@@ -12,6 +12,7 @@ import {
 } from './entities/set.entity';
 import { Repository } from 'typeorm';
 import * as moment from 'moment';
+import { CreateOrUpdateSetDto } from './dtos/set.dto';
 
 @Injectable()
 export class SetsService {
@@ -73,32 +74,36 @@ export class SetsService {
 
   /**
    * Creates a new set.
+   * @param userId - The user to create the set for.
    * @param set - The data to create the set with.
    * @returns The created set.
    */
-  async create(set: CreateOrUpdateSetEntity): Promise<SetEntity> {
-    const result = await this.setRepository.insert(set);
-    return this.findOneById(result.identifiers[0]['id'], set.userId);
+  async create(userId: string, set: CreateOrUpdateSetDto): Promise<SetEntity> {
+    const result = await this.setRepository.insert({ ...set, userId });
+    return this.findOneById(result.identifiers[0]['id'], userId);
   }
 
   /**
    * Updates a set
+   * @param userId - The user to update the set for.
    * @param id - The ID of the set to update
    * @param set - The updated set object
    * @returns The updated set object. Is null if the set was not found.
    * @throws {NotFoundException} when no set was found for the given id.
    */
-  async update(id: string, set: CreateOrUpdateSetEntity): Promise<SetEntity> {
+  async update(
+    userId: string,
+    id: string,
+    set: CreateOrUpdateSetDto,
+  ): Promise<SetEntity> {
     // Ensure the set exists
-    await this.findOneById(id, set.userId);
+    await this.findOneById(id, userId);
     // Update the set
-    await this.setRepository.update(id, set);
+    await this.setRepository.update(id, { ...set, userId });
     // Find the set
-    const entity = await this.findOneById(id, set.userId);
+    const entity = await this.findOneById(id, userId);
     if (entity)
-      entity.srsStatus = (
-        await this.getSrsStatus(set.userId, entity.id)
-      )[0].status;
+      entity.srsStatus = (await this.getSrsStatus(userId, entity.id))[0].status;
     return entity;
   }
 

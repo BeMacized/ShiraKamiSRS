@@ -17,7 +17,6 @@ import { Modal } from '../../../services/modal.service';
 import { CardEntity } from '../../../models/card.model';
 import { CardService } from '../../../services/card.service';
 import { OperationStatus } from '../../../models/operation-status.model';
-import { minPromiseDuration } from '../../../utils/promise-utils';
 
 export interface CreateEditCardModalInput {
     setId: string;
@@ -40,18 +39,24 @@ export interface CreateEditCardModalInput {
 export class CreateEditCardModalComponent
     extends Modal<CreateEditCardModalInput, CardEntity>
     implements OnInit, AfterViewInit {
-    englishWord = '';
-    kanaWord = '';
-    kanjiWord = '';
+    readonly maxTranslations = 3;
+    readonly maxOptionals = 5;
+
     createAnother = false;
     showStatusOverlay = false;
     createOrUpdateStatus: OperationStatus = 'IDLE';
     setId: string;
     cardId: string;
-
     @ViewChild('englishInput') englishInput: ElementRef;
     @ViewChild('kanaInput') kanaInput: ElementRef;
     @ViewChild('kanjiInput') kanjiInput: ElementRef;
+    enTranslations: string[] = [];
+    enTranslationNote = '';
+    jpTranslations: [string, string?][] = [];
+    jpTranslationNote = '';
+    englishError = '';
+    kanjiError = '';
+    kanaError = '';
     get isEditing() {
         return !!this.cardId;
     }
@@ -79,26 +84,8 @@ export class CreateEditCardModalComponent
         this.setId = data.setId;
         if (data.card) {
             this.cardId = data.card.id;
-            this.englishWord = data.card.value.english || '';
-            this.kanaWord = data.card.value.kana || '';
-            this.kanjiWord = data.card.value.kanji || '';
-            setTimeout(() => {
-                this.englishInput.nativeElement.value = this.englishWord;
-                this.kanaInput.nativeElement.value = this.kanaWord;
-                this.kanjiInput.nativeElement.value = this.kanjiWord;
-            });
+            // TODO: Load card values
         }
-    }
-
-    get isValidCardValues() {
-        return (
-            this.englishWord.length > 0 &&
-            this.englishWord.length <= 255 &&
-            this.kanaWord.length > 0 &&
-            this.kanaWord.length <= 255 &&
-            (!this.kanjiWord.length ||
-                (this.kanjiWord.length > 0 && this.kanjiWord.length <= 255))
-        );
     }
 
     @HostListener('document:keydown.escape', ['$event'])
@@ -114,30 +101,29 @@ export class CreateEditCardModalComponent
         this.kanaInput.nativeElement.blur();
         this.kanjiInput.nativeElement.blur();
         try {
-            const card = await minPromiseDuration(
-                this.cardId
-                    ? this.cardService.updateCardValues(
-                          this.setId,
-                          this.cardId,
-                          {
-                              english: this.englishWord,
-                              kana: this.kanaWord,
-                              kanji: this.kanjiWord || undefined,
-                          }
-                      )
-                    : this.cardService.createCard(this.setId, {
-                          english: this.englishWord,
-                          kana: this.kanaWord,
-                          kanji: this.kanjiWord || undefined,
-                      }),
-                400
-            );
-            this.emit(card);
+            // const card = await minPromiseDuration(
+            //     this.cardId
+            //         ? this.cardService.updateCardValues(
+            //               this.setId,
+            //               this.cardId,
+            //               {
+            //                   english: this.englishWord,
+            //                   kana: this.kanaWord,
+            //                   kanji: this.kanjiWord || undefined,
+            //               }
+            //           )
+            //         : this.cardService.createCard(this.setId, {
+            //               english: this.englishWord,
+            //               kana: this.kanaWord,
+            //               kanji: this.kanjiWord || undefined,
+            //           }),
+            //     400
+            // );
+            // this.emit(card);
             this.createOrUpdateStatus = 'SUCCESS';
             if (this.createAnother) {
                 setTimeout(() => {
-                    this.resetForm();
-                    this.englishInput.nativeElement.focus();
+                    // this.englishInput.nativeElement.focus();
                     this.showStatusOverlay = false;
                 }, 500);
             } else {
@@ -150,12 +136,106 @@ export class CreateEditCardModalComponent
         }
     }
 
-    resetForm() {
-        this.englishWord = '';
-        this.kanaWord = '';
-        this.kanjiWord = '';
-        this.englishInput.nativeElement.value = this.englishWord;
-        this.kanaInput.nativeElement.value = this.kanaWord;
-        this.kanjiInput.nativeElement.value = this.kanjiWord;
+    async addEnTranslation(english: string) {
+        this.resetErrors();
+        if (this.enTranslations.length >= this.maxTranslations) return;
+        english = english.trim();
+        if (!english) return;
+        try {
+            await this.validateParentheses(english);
+        } catch (e) {
+            switch (e.code) {
+                case 'NESTED_OPTIONALS':
+                    this.englishError =
+                        'You cannot have nested pairs of parentheses, as these represent optional parts of a translation.';
+                    break;
+                case 'NON_MATCHING_PARENTHESES':
+                    this.englishError =
+                        'One or more of your parentheses do not have a matching sibling.';
+                    break;
+                case 'MAX_OPTIONALS_EXCEEDED':
+                    this.englishError = `You can only have a maximum of ${this.maxOptionals} optional groups per translation.`;
+                    break;
+            }
+            return;
+        }
+        this.enTranslations.push(english);
+        this.englishInput.nativeElement.value = '';
+    }
+
+    async addJpTranslation(kana: string, kanji: string) {
+        this.resetErrors();
+        if (this.jpTranslations.length >= this.maxTranslations) return;
+        kana = kana.trim();
+        if (!kana) return;
+        try {
+            await this.validateParentheses(kana);
+        } catch (e) {
+            switch (e.code) {
+                case 'NESTED_OPTIONALS':
+                    this.kanaError =
+                        'You cannot have nested pairs of parentheses, as these represent optional parts of a translation.';
+                    break;
+                case 'NON_MATCHING_PARENTHESES':
+                    this.kanaError =
+                        'One or more of your parentheses do not have a matching sibling.';
+                    break;
+                case 'MAX_OPTIONALS_EXCEEDED':
+                    this.kanaError = `You can only have a maximum of ${this.maxOptionals} optional groups per translation.`;
+                    break;
+            }
+            return;
+        }
+        kanji = kanji.trim();
+        try {
+            await this.validateParentheses(kanji);
+        } catch (e) {
+            switch (e.code) {
+                case 'NESTED_OPTIONALS':
+                    this.kanjiError =
+                        'You cannot have nested pairs of parentheses, as these represent optional parts of a translation.';
+                    break;
+                case 'NON_MATCHING_PARENTHESES':
+                    this.kanjiError =
+                        'One or more of your parentheses do not have a matching sibling.';
+                    break;
+                case 'MAX_OPTIONALS_EXCEEDED':
+                    this.kanjiError = `You can only have a maximum of ${this.maxOptionals} optional groups per translation.`;
+                    break;
+            }
+            return;
+        }
+        this.jpTranslations.push(kanji ? [kana, kanji] : [kana]);
+        this.kanaInput.nativeElement.value = '';
+        this.kanjiInput.nativeElement.value = '';
+    }
+
+    async validateParentheses(value: string) {
+        let optionals = 0;
+        let inOptional = false;
+        for (let i = 0; i < value.length; i++) {
+            switch (value.charAt(i)) {
+                case '(':
+                case '（':
+                    if (inOptional) throw { code: 'NESTED_OPTIONALS' };
+                    inOptional = true;
+                    break;
+                case ')':
+                case '）':
+                    if (!inOptional) throw { code: 'NON_MATCHING_PARENTHESES' };
+                    optionals++;
+                    if (optionals > this.maxOptionals)
+                        throw { code: 'MAX_OPTIONALS_EXCEEDED' };
+                    inOptional = false;
+                    break;
+            }
+        }
+        if (inOptional) throw { code: 'NON_MATCHING_PARENTHESES' };
+    }
+
+    resetErrors() {
+        this.englishError = null;
+        this.kanaError = null;
+        this.kanjiError = null;
     }
 }

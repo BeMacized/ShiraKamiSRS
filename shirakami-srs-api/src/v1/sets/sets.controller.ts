@@ -50,7 +50,7 @@ export class SetsController {
     @Body() set: CreateOrUpdateSetDto,
     @User() user: UserEntity,
   ): Promise<SetDto> {
-    const entity = await this.setsService.create({ ...set, userId: user.id });
+    const entity = await this.setsService.create(user.id, set);
     return SetDto.fromEntity(entity);
   }
 
@@ -61,11 +61,7 @@ export class SetsController {
     @Body() set: CreateOrUpdateSetDto,
     @User() user: UserEntity,
   ): Promise<SetDto> {
-    const entity = await this.setsService.update(id, {
-      ...set,
-      userId: user.id,
-    });
-
+    const entity = await this.setsService.update(user.id, id, set);
     return SetDto.fromEntity(entity);
   }
 

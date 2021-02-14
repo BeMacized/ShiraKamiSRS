@@ -1,4 +1,4 @@
-import { CardValueDto } from './card-value.dto';
+import { CardValueDto, CreateOrUpdateCardValueDto } from './card-value.dto';
 import { IsUUID, ValidateNested } from 'class-validator';
 import { CardEntity } from '../entities/card.entity';
 import { Type } from 'class-transformer';
@@ -6,8 +6,8 @@ import { ReviewDto } from '../../../reviews/dtos/review.dto';
 
 export class CreateOrUpdateCardDto {
   @ValidateNested()
-  @Type(() => CardValueDto)
-  public readonly value: CardValueDto;
+  @Type(() => CreateOrUpdateCardValueDto)
+  public readonly value: CreateOrUpdateCardValueDto;
 }
 
 export class CardDto extends CreateOrUpdateCardDto {
@@ -17,6 +17,9 @@ export class CardDto extends CreateOrUpdateCardDto {
   public readonly setId: string;
   @ValidateNested({ each: true })
   public readonly reviews: ReviewDto[];
+  @ValidateNested()
+  @Type(() => CardValueDto)
+  public readonly value: CardValueDto;
 
   static fromEntity(entity: CardEntity): CardDto {
     if (!entity) return null;

@@ -1,14 +1,21 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { SetEntity } from '../../entities/set.entity';
 import { ReviewEntity } from '../../../reviews/entities/review.entity';
+import { ReviewMode } from '../../../reviews/dtos/review.dto';
 
 export class CardValue {
-  @Column()
-  english: string;
-  @Column()
-  kana: string;
-  @Column({ nullable: true })
-  kanji?: string;
+  @Column('simple-json')
+  enTranslations: string[];
+  @Column('simple-json')
+  jpTranslations: string[][];
+  @Column('simple-json')
+  supportedModes: ReviewMode[];
 }
 
 @Entity()

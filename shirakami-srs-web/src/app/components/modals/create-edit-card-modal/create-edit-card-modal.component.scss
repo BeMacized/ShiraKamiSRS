@@ -4,10 +4,6 @@ label {
     text-align: left;
 }
 
-input {
-    margin-bottom: 1em;
-}
-
 app-checkbox {
     margin-right: 1em;
 }
@@ -57,5 +53,96 @@ app-checkbox {
         &.error {
             color: var(--color-caution);
         }
+    }
+}
+
+.modal-content {
+    h2 {
+        margin: 0.5em 0;
+    }
+}
+
+.translations {
+    //background: var(--color-surface-mute);
+    border: 1px solid var(--color-surface-border);
+    width: 100%;
+    border-radius: 0.25em;
+    overflow: hidden;
+
+    .no-translations {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        padding: 1em;
+        opacity: 0.75;
+        font-size: 1.25em;
+    }
+
+    .translation {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        .values {
+            flex: 1;
+            padding: 1em;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+
+            .value {
+                font-size: 1.25em;
+            }
+        }
+
+        .actions {
+            padding: 0 1em;
+            flex-shrink: 0;
+
+            button.action {
+                background: none;
+                border: none;
+                outline: none;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+                transition: all 0.15s ease;
+                &:hover {
+                    transform: translateY(-1px);
+                }
+                &:active {
+                    transform: translateY(0);
+                    opacity: 0.5;
+                }
+            }
+        }
+    }
+}
+
+.alert {
+    margin-top: 0.5em;
+}
+
+.input-row {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    width: 100%;
+    margin-top: 0.5em;
+
+    input {
+        flex: 1;
+        min-width: 0;
+    }
+
+    button {
+        flex-shrink: 0;
+        margin-left: 0.5em;
+    }
+
+    &.note {
+        margin-top: 1.5em;
     }
 }
