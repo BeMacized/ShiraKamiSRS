@@ -14,8 +14,11 @@ export class CardValueEntity {
     }
 }
 
-export class CardValueDto {
+export class CreateOrUpdateCardValueDto {
     enTranslations: string[];
     jpTranslations: string[][];
+}
+
+export class CardValueDto extends CreateOrUpdateCardValueDto {
     supportedModes: ReviewMode[];
 }

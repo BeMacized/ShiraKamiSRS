@@ -38,8 +38,6 @@ export class SetViewComponent implements OnInit {
 
     async ngOnInit() {
         await this.fetchSet();
-        // TODO: REMOVE BEFORE COMMIT
-        this.createCard();
     }
 
     fetchSet() {

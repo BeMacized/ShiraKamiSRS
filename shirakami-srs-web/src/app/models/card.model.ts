@@ -1,5 +1,5 @@
 import { SrsLevelDto, SrsLevelEntity } from './srs-level.model';
-import { CardValueDto, CardValueEntity } from './card-value.model';
+import {CardValueDto, CardValueEntity, CreateOrUpdateCardValueDto} from './card-value.model';
 import { ReviewDto, ReviewEntity } from './review.model';
 
 export class CardEntity {
@@ -22,7 +22,7 @@ export class CardEntity {
 
 export class CreateCardDto {
     setId: string;
-    value: CardValueDto;
+    value: CreateOrUpdateCardValueDto;
 }
 
 export class UpdateCardDto extends CreateCardDto {
@@ -31,4 +31,5 @@ export class UpdateCardDto extends CreateCardDto {
 
 export class CardDto extends UpdateCardDto {
     reviews: ReviewDto[];
+    value: CardValueDto;
 }
