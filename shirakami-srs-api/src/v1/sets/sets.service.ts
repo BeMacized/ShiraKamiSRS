@@ -121,7 +121,7 @@ FROM set_entity sets
            coalesce(cardReviews.reviews, 0) as    reviews,
            IIF(se.modes LIKE '%enToJp%', 1, 0)
                + IIF(se.modes LIKE '%jpToEn%', 1, 0)
-               + IIF(se.modes LIKE '%kanjiToKana%' AND cards.valueKanji IS NOT NULL, 1, 0)
+               + IIF(se.modes LIKE '%kanjiToKana%' AND cards.valueSupportedmodes LIKE '%kanjiToKana%', 1, 0)
                - coalesce(cardReviews.reviews, 0) lessons
     FROM card_entity cards
              LEFT JOIN (

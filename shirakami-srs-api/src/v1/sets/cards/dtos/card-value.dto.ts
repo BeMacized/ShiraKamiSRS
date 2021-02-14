@@ -30,7 +30,7 @@ export class TranslationValidity implements ValidatorConstraintInterface {
   defaultMessage(args: ValidationArguments) {
     return (
       args.property +
-      'one or more translations did not meet the standard requirements.'
+      ': one or more translations did not meet the standard requirements.'
     );
   }
 

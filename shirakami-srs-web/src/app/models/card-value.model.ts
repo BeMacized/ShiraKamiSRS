@@ -1,19 +1,21 @@
+import {ReviewMode} from './review.model';
+
 export class CardValueEntity {
-    public readonly english: string;
-    public readonly kana: string;
-    public readonly kanji?: string;
+    public readonly enTranslations: string[];
+    public readonly jpTranslations: string[];
+    public readonly supportedModes: ReviewMode[];
 
     static fromDto(dto: CardValueDto): CardValueEntity {
         return Object.assign(new CardValueEntity(), {
-            english: dto.english,
-            kana: dto.kana,
-            kanji: dto.kanji,
+            enTranslations: dto.enTranslations,
+            jpTranslations: dto.jpTranslations,
+            supportedModes: dto.supportedModes,
         });
     }
 }
 
 export class CardValueDto {
-    english: string;
-    kana: string;
-    kanji?: string;
+    enTranslations: string[];
+    jpTranslations: string[][];
+    supportedModes: ReviewMode[];
 }

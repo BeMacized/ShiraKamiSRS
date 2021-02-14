@@ -26,8 +26,7 @@ export class CardsService {
    * @throws {ForbiddenException} when the set does not belong to the specified user.
    */
   async findBySetId(setId: string, userId?: string): Promise<CardEntity[]> {
-    const set = await this.setsService.findOneById(setId, userId);
-
+    const set = await this.setsService.findOneById(setId, userId, true);
     return set.cards;
   }
 
