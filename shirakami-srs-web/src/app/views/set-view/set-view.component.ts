@@ -15,7 +15,8 @@ import {
 import { map, take } from 'rxjs/operators';
 import {
     ConfirmationModalComponent,
-    ConfirmationModalInput, ConfirmationModalOutput,
+    ConfirmationModalInput,
+    ConfirmationModalOutput,
 } from '../../components/modals/confirmation-modal/confirmation-modal.component';
 import { CardService } from '../../services/card.service';
 
@@ -61,23 +62,27 @@ export class SetViewComponent implements OnInit {
     }
 
     changeSetModes = async (set: SetEntity) => {
-        this.set =
-            (await this.modalService
+        this.set = {
+            ...((await this.modalService
                 .showModal<EditSetModesModalComponent, SetEntity, SetEntity>(
                     EditSetModesModalComponent,
                     set
                 )
-                .toPromise()) || this.set;
+                .toPromise()) || this.set),
+            cards: this.set.cards,
+        };
     };
 
     renameSet = async (set: SetEntity) => {
-        this.set =
-            (await this.modalService
+        this.set = {
+            ...((await this.modalService
                 .showModal<EditSetNameModalComponent, SetEntity, SetEntity>(
                     EditSetNameModalComponent,
                     set
                 )
-                .toPromise()) || this.set;
+                .toPromise()) || this.set),
+            cards: this.set.cards,
+        };
     };
 
     deleteSet = async (set: SetEntity) => {

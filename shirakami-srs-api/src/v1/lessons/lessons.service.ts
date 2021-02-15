@@ -52,7 +52,7 @@ WHERE ce.id NOT IN (
     WHERE cardId = ce.id
       AND mode = setModes.mode
 )
-AND (setModes.mode <> 'kanjiToKana' OR ce.valueKanji IS NOT NULL)
+AND (setModes.mode <> 'kanjiToKana' OR ce.valueSupportedmodes LIKE '%kanjiToKana%')
 ${setId ? 'AND setModes.setId = ?' : ''}
 ORDER BY ce.id DESC
 ${limit ? `LIMIT ?` : ``}     
@@ -126,7 +126,7 @@ WHERE ce.id NOT IN (
     WHERE cardId = ce.id
       AND mode = setModes.mode
 )
-AND (setModes.mode <> 'kanjiToKana' OR ce.valueKanji IS NOT NULL)
+AND (setModes.mode <> 'kanjiToKana' OR ce.valueSupportedmodes LIKE '%kanjiToKana%')
 ${setId ? 'AND setModes.setId = ?' : ''}
 `;
     const countParameters = [...lessonParameters].slice(

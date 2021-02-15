@@ -130,6 +130,10 @@ export class CreateEditCardModalComponent
             this.emit(card);
             this.createOrUpdateStatus = 'SUCCESS';
             if (this.createAnother) {
+                this.enTranslations = [];
+                this.jpTranslations = [];
+                this.enNote = '';
+                this.jpNote = '';
                 setTimeout(() => {
                     this.englishInput.nativeElement.focus();
                     this.showStatusOverlay = false;
