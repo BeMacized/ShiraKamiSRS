@@ -55,6 +55,7 @@ class ReviewPage extends BasePage {
 type Page = LessonPage | LessonInputPage | ReviewPage;
 type InputStage = 'INPUT' | 'FEEDBACK';
 type InputFeedback = 'CORRECT' | 'INCORRECT';
+type LessonStage = 'ENGLISH' | 'JAPANESE';
 
 @Component({
     selector: 'app-lesson-review-view',
@@ -63,6 +64,7 @@ type InputFeedback = 'CORRECT' | 'INCORRECT';
     animations: [fade(), hshrink()],
 })
 export class LessonReviewViewComponent implements OnInit, OnDestroy {
+    console = console;
     mode: LessonReviewMode;
     setId: string;
     pages: Page[] = [];
@@ -82,7 +84,9 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
     itemsCorrect = 0;
     itemsInSession = 0;
     totalItemsRemaining = 0;
-    inputStage: InputStage = 'INPUT';
+    lessonStages: LessonStage[] = ['ENGLISH', 'JAPANESE']; // Can be changed later for order preferences
+    lessonStage: LessonStage;
+    inputStage: InputStage;
     inputFeedback: InputFeedback;
     keyboardUnlisten: KeyboardUnlisten;
 
@@ -124,7 +128,10 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
     async ngOnInit() {
         this.keyboardUnlisten = this.keyboard.listen(
             {
-                Enter: () => void this.onEnterKey(),
+                Enter: (event) => {
+                    event.preventDefault();
+                    void this.onEnterKey();
+                },
                 ArrowRight: () => void this.onRightKey(),
                 l: () => void this.onRightKey(),
                 d: () => void this.onRightKey(),
@@ -215,7 +222,15 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
     async loadReviews() {}
 
     async nextLesson() {
+        // If we're not on a lesson, we're not gonna do anything
         if (!this.page || this.page.type !== 'LESSON') return;
+        // If we have not yet seen all translations, show the next translation
+        const lessonStageIndex = this.lessonStages.indexOf(this.lessonStage);
+        if (lessonStageIndex !== this.lessonStages.length - 1) {
+            this.lessonStage = this.lessonStages[lessonStageIndex + 1];
+            return;
+        }
+        // Otherwise, actually move to the next lesson
         if (this.pageIndex < this.pages.length - 1) {
             const nextPage = this.pages[this.pageIndex + 1];
             if (nextPage.type === 'LESSON') this.pageIndex++;
@@ -281,7 +296,6 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
         }
         // Check the answer
         const result = matchAnswer(input, this.page.mode, this.page.card);
-        console.log('RESULT', result, this.page.card);
         // Process the feedback
         this.inputFeedback = result.passing ? 'CORRECT' : 'INCORRECT';
         this.inputStage = 'FEEDBACK';
@@ -365,6 +379,7 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
                     0,
                     ...this.pages.splice(this.pageIndex, 1)
                 );
+                // Call page load manually since the page index does not actually change.
                 this.onPageLoad();
                 break;
         }
@@ -451,13 +466,16 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
 
     private onPageLoad() {
         const page = this.pages[this._pageIndex];
-        if (page && (page.type === 'REVIEW' || page.type === 'LESSON_INPUT')) {
+        if (!page) return;
+        if (page.type === 'REVIEW' || page.type === 'LESSON_INPUT') {
             requestAnimationFrame(() => {
                 this.answerInputEl.nativeElement.focus();
                 this.answerInputEl.nativeElement.value = this.answer = '';
             });
             this.inputFeedback = null;
             this.inputStage = 'INPUT';
+        } else if (page.type === 'LESSON') {
+            this.lessonStage = this.lessonStages[0];
         }
     }
 }

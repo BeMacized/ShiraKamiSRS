@@ -17,26 +17,70 @@
                     class="fit-text"
                 >
                     <div class="line line-header">Lesson</div>
-<!--                    <div class="line line-lang">-->
-<!--                        <span class="flag-icon flag-icon-jp"></span>-->
-<!--                        <span>Japanese</span>-->
-<!--                    </div>-->
-<!--                    <div-->
-<!--                        class="line line-vocab-furigana"-->
-<!--                        *ngIf="page.card.value.kanji"-->
-<!--                    >-->
-<!--                        {{ page.card.value.kana }}-->
-<!--                    </div>-->
-<!--                    <div class="line line-vocab">-->
-<!--                        {{ page.card.value.kanji || page.card.value.kana }}-->
-<!--                    </div>-->
-<!--                    <div class="line line-lang">-->
-<!--                        <span class="flag-icon flag-icon-gb"></span>-->
-<!--                        <span>English</span>-->
-<!--                    </div>-->
-<!--                    <div class="line line-vocab">-->
-<!--                        {{ page.card.value.english }}-->
-<!--                    </div>-->
+                    <ng-container *ngIf="lessonStage === 'ENGLISH'">
+                        <ng-container
+                            *ngFor="
+                                let translation of page.card.value
+                                    .enTranslations;
+                                let last = last;
+                                let count = count
+                            "
+                        >
+                            <div class="line line-vocab">
+                                {{ translation }}
+                            </div>
+                            <div
+                                class="line line-or"
+                                *ngIf="count > 1 && !last"
+                            >
+                                or
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                    <ng-container *ngIf="lessonStage === 'JAPANESE'">
+                        <ng-container
+                            *ngFor="
+                                let translation of page.card.value
+                                    .jpTranslations;
+                                let last = last;
+                                let count = count
+                            "
+                        >
+                            <div
+                                class="line line-vocab-furigana"
+                                *ngIf="translation[1]"
+                            >
+                                {{ translation[0] }}
+                            </div>
+                            <div class="line line-vocab">
+                                {{ translation[1] || translation[0] }}
+                            </div>
+                            <div
+                                class="line line-or"
+                                *ngIf="count > 1 && !last"
+                            >
+                                or
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                </div>
+                <div class="lesson-lang-indicator">
+                    <button
+                        class="lesson-lang-indicator-lang en"
+                        [class.active]="lessonStage === 'ENGLISH'"
+                        (click)="lessonStage = 'ENGLISH'"
+                    >
+                        <span class="flag-icon flag-icon-gb"></span>
+                        <span>English</span>
+                    </button>
+                    <button
+                        class="lesson-lang-indicator-lang jp"
+                        [class.active]="lessonStage === 'JAPANESE'"
+                        (click)="lessonStage = 'JAPANESE'"
+                    >
+                        <span class="flag-icon flag-icon-jp"></span>
+                        <span>Japanese</span>
+                    </button>
                 </div>
             </div>
             <div class="content-inner" *ngIf="page.type === 'LESSON_INPUT'">
@@ -46,32 +90,7 @@
                     [modelToWatch]="page"
                     class="fit-text"
                 >
-<!--                    <ng-container *ngIf="page.mode === 'enToJp'">-->
-<!--                        <div class="line">-->
-<!--                            {{ page.card.value.english }}-->
-<!--                        </div>-->
-<!--                    </ng-container>-->
-<!--                    <ng-container *ngIf="page.mode === 'kanjiToKana'">-->
-<!--                        <div class="line">-->
-<!--                            {{ page.card.value.kanji }}-->
-<!--                        </div>-->
-<!--                    </ng-container>-->
-<!--                    <ng-container *ngIf="page.mode === 'jpToEn'">-->
-<!--                        <div class="line">-->
-<!--                            <div-->
-<!--                                class="line line-vocab-furigana"-->
-<!--                                *ngIf="page.card.value.kanji"-->
-<!--                            >-->
-<!--                                {{ page.card.value.kana }}-->
-<!--                            </div>-->
-<!--                            <div class="line line-vocab">-->
-<!--                                {{-->
-<!--                                    page.card.value.kanji ||-->
-<!--                                        page.card.value.kana-->
-<!--                                }}-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </ng-container>-->
+                    <!--TODO-->
                 </div>
             </div>
         </div>
@@ -113,7 +132,10 @@
                                     | filterBy: ['type']:'LESSON':true;
                                 let index = index
                             "
-                            (click)="goToLesson(index)"
+                            (click)="
+                                goToLesson(index); lessonIndexButton.blur()
+                            "
+                            #lessonIndexButton
                         >
                             {{ index + 1 }}
                         </button>
@@ -170,7 +192,10 @@
                 (wkInput)="answer = $event"
                 [readOnly]="inputStage === 'FEEDBACK'"
             />
-            <button class="btn btn-rect btn-transparent btn-submit" (click)="onEnterKey()">
+            <button
+                class="btn btn-rect btn-transparent btn-submit"
+                (click)="onEnterKey()"
+            >
                 <i class="material-icons">arrow_forward_ios</i>
             </button>
         </div>
