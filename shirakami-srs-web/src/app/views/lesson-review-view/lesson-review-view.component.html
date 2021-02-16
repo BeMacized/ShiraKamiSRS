@@ -90,7 +90,30 @@
                     [modelToWatch]="page"
                     class="fit-text"
                 >
-                    <!--TODO-->
+                    <ng-container *ngIf="page.mode === 'enToJp'">
+                        <div class="line line-vocab">
+                            {{ page.card.value.enTranslations[0] }}
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="page.mode === 'jpToEn'">
+                        <div
+                            class="line line-vocab-furigana"
+                            *ngIf="page.card.value.jpTranslations[0][1]"
+                        >
+                            {{ page.card.value.jpTranslations[0][0] }}
+                        </div>
+                        <div class="line line-vocab">
+                            {{
+                                page.card.value.jpTranslations[0][1] ||
+                                    page.card.value.jpTranslations[0][0]
+                            }}
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="page.mode === 'kanjiToKana'">
+                        <div class="line line-vocab">
+                            {{ page.card.value.jpTranslations[0][1] }}
+                        </div>
+                    </ng-container>
                 </div>
             </div>
         </div>
