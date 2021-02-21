@@ -1,5 +1,7 @@
 @import 'shadows.scss';
 @import 'responsive.scss';
+@import 'layouts.scss';
+@import 'cards.scss';
 
 :host {
     display: block;
@@ -94,7 +96,7 @@
                         font-size: max(0.4em, 14px);
                     }
                 }
-                &-or {
+                &-label {
                     margin-bottom: 6px;
                     background: rgba(black, 0.1);
                     font-size: 14px;
@@ -196,6 +198,17 @@
     background: var(--color-surface);
     color: var(--color-on-surface);
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 0;
+
+    .bottom-content {
+        padding: $layout-gap;
+        max-width: $layout-width;
+        width: 100%;
+        z-index: 0;
+    }
 }
 
 .info-bar {
@@ -211,6 +224,7 @@
     border-bottom: 1px solid var(--color-surface-border);
     font-size: 2em;
     position: relative;
+    width: 100%;
 
     .flag-icon {
         @include shadow(1, true);
@@ -278,6 +292,7 @@
     height: 5em;
     position: relative;
     overflow: hidden;
+    width: 100%;
     @include shadow(2, true);
 
     input {
@@ -325,6 +340,44 @@
         input {
             background: var(--color-caution);
             color: var(--color-on-caution);
+        }
+    }
+}
+
+.feedback-action-bar {
+    margin: $layout-gap;
+    max-width: calc(#{$breakpoint-sm} - #{$layout-gap} * 2);
+    width: calc(100% - #{$layout-gap} * 2);
+    padding: $card-padding / 2;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    button {
+        i.material-icons {
+            margin-right: 0.25em;
+        }
+        &:not(:last-child) {
+            margin-right: 0.5em;
+        }
+    }
+}
+
+.answer-card {
+    margin: $layout-gap $layout-gap 0 $layout-gap;
+    max-width: calc(#{$breakpoint-sm} - #{$layout-gap} * 2);
+    padding: $card-padding / 2;
+    width: calc(100% - #{$layout-gap} * 2);
+
+    .answer-lang {
+        border-radius: 0.5em;
+        padding: $card-padding / 2;
+        background: var(--color-surface-mute);
+        ul {
+            padding: 0;
+            list-style-position: inside;
+            margin: 0.5em 0;
         }
     }
 }

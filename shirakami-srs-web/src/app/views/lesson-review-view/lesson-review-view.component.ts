@@ -10,7 +10,7 @@ import { take } from 'rxjs/operators';
 import { CardEntity } from '../../models/card.model';
 import { OperationStatus } from '../../models/operation-status.model';
 import { LessonService } from '../../services/lesson.service';
-import { fade, hshrink } from '../../utils/animations';
+import { fade, hshrink, vshrink } from '../../utils/animations';
 import { ReviewMode } from '../../models/review.model';
 import {
     ConfirmationModalComponent,
@@ -61,7 +61,7 @@ type LessonStage = 'ENGLISH' | 'JAPANESE';
     selector: 'app-lesson-review-view',
     templateUrl: './lesson-review-view.component.html',
     styleUrls: ['./lesson-review-view.component.scss'],
-    animations: [fade(), hshrink()],
+    animations: [fade(), hshrink(), vshrink()],
 })
 export class LessonReviewViewComponent implements OnInit, OnDestroy {
     console = console;
@@ -92,6 +92,7 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
 
     answer = '';
     @ViewChild('answerInput') answerInputEl: ElementRef;
+    answerShown = false;
     get enableIME(): boolean {
         if (
             !this.page ||
@@ -467,6 +468,7 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
     private onPageLoad() {
         const page = this.pages[this._pageIndex];
         if (!page) return;
+        this.answerShown = false;
         if (page.type === 'REVIEW' || page.type === 'LESSON_INPUT') {
             requestAnimationFrame(() => {
                 this.answerInputEl.nativeElement.focus();
@@ -477,5 +479,22 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
         } else if (page.type === 'LESSON') {
             this.lessonStage = this.lessonStages[0];
         }
+    }
+
+    get canIgnoreAnswer() {
+        return (
+            this.page.type === 'REVIEW' &&
+            this.inputStage === 'FEEDBACK' &&
+            this.inputFeedback === 'INCORRECT'
+        );
+    }
+
+    get canToggleAnswer() {
+        return (
+            this.answerShown ||
+            (this.inputStage === 'FEEDBACK' &&
+                (this.page.type === 'LESSON_INPUT' ||
+                    this.page.type === 'REVIEW'))
+        );
     }
 }

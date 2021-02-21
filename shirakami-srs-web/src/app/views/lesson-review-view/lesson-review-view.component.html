@@ -30,12 +30,18 @@
                                 {{ translation }}
                             </div>
                             <div
-                                class="line line-or"
+                                class="line line-label"
                                 *ngIf="count > 1 && !last"
                             >
                                 or
                             </div>
                         </ng-container>
+                        <div
+                            class="line line-label"
+                            *ngIf="page.card.value.enNote"
+                        >
+                            Note: {{ page.card.value.enNote }}
+                        </div>
                     </ng-container>
                     <ng-container *ngIf="lessonStage === 'JAPANESE'">
                         <ng-container
@@ -56,12 +62,18 @@
                                 {{ translation[1] || translation[0] }}
                             </div>
                             <div
-                                class="line line-or"
+                                class="line line-label"
                                 *ngIf="count > 1 && !last"
                             >
                                 or
                             </div>
                         </ng-container>
+                        <div
+                            class="line line-label"
+                            *ngIf="page.card.value.jpNote"
+                        >
+                            Note: {{ page.card.value.jpNote }}
+                        </div>
                     </ng-container>
                 </div>
                 <div class="lesson-lang-indicator">
@@ -220,6 +232,79 @@
                 (click)="onEnterKey()"
             >
                 <i class="material-icons">arrow_forward_ios</i>
+            </button>
+        </div>
+        <div
+            class="card answer-card"
+            *ngIf="answerShown && canToggleAnswer"
+            @vshrink
+        >
+            <h2 style="margin-bottom: 0.25em">Answers</h2>
+            <div class="grid xs-1 sm-2">
+                <div class="answer-lang">
+                    <h2>
+                        <span class="flag-icon flag-icon-gb"></span>
+                        English
+                    </h2>
+                    <ul>
+                        <li
+                            *ngFor="
+                                let translation of page.card.value
+                                    .enTranslations
+                            "
+                        >
+                            {{ translation }}
+                        </li>
+                    </ul>
+                    <ng-container *ngIf="page.card.value.enNote">
+                        <h3>Note</h3>
+                        <span>{{ page.card.value.enNote }}</span>
+                    </ng-container>
+                </div>
+                <div class="answer-lang">
+                    <h2>
+                        <span class="flag-icon flag-icon-jp"></span>
+                        Japanese
+                    </h2>
+                    <ul>
+                        <ng-container
+                            *ngFor="
+                                let translation of page.card.value
+                                    .jpTranslations
+                            "
+                        >
+                            <li *ngIf="translation.length === 2">
+                                {{ translation[1] }} ({{ translation[0] }})
+                            </li>
+                            <li *ngIf="translation.length === 1">
+                                {{ translation[0] }}
+                            </li>
+                        </ng-container>
+                    </ul>
+                    <ng-container *ngIf="page.card.value.jpNote">
+                        <h3>Note</h3>
+                        <span>{{ page.card.value.jpNote }}</span>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+        <div
+            class="card feedback-action-bar"
+            @vshrink
+            *ngIf="canToggleAnswer || canIgnoreAnswer"
+        >
+            <button
+                class="btn btn-transparent"
+                [disabled]="!canToggleAnswer"
+                (click)="answerShown = !answerShown"
+            >
+                <i class="material-icons">visibility</i>
+                <span *ngIf="!answerShown">Show Answer</span>
+                <span *ngIf="answerShown">Hide Answer</span>
+            </button>
+            <button class="btn btn-transparent" [disabled]="!canIgnoreAnswer">
+                <i class="material-icons">redo</i>
+                <span>Ignore Answer</span>
             </button>
         </div>
     </div>
