@@ -60,7 +60,7 @@ export class SetsService {
       if (!user) throw new NotFoundException('User not found');
     }
     const entity = await this.setRepository.findOne(id, {
-      relations: includeCards ? ['cards'] : [],
+      relations: includeCards ? ['cards', 'cards.reviews'] : [],
     });
     if (!entity) throw new NotFoundException('Set not found');
     if (user && entity.userId !== (user as UserEntity).id)
