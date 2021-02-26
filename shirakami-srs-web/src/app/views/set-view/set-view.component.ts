@@ -178,4 +178,8 @@ export class SetViewComponent implements OnInit {
         }
         await this.fetchSet();
     }
+
+    exportSet = async (set: SetEntity) => {
+        await this.setService.exportSet(set.id, set.name);
+    };
 }

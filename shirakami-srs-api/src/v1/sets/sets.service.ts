@@ -15,6 +15,7 @@ import * as moment from 'moment';
 import { CreateOrUpdateSetDto } from './dtos/set.dto';
 import { UserEntity } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
+import { exportSetV1, SetExportV1 } from './exporters/set-exporter-v1';
 
 @Injectable()
 export class SetsService {
@@ -219,5 +220,15 @@ GROUP BY setId, srsLevel
           ),
       },
     }));
+  }
+  /**
+   * Export a set by its id
+   * @param id - The id of the set to export.
+   * @param user - The id or entity of the user for which to export the set. If not provided, ownership is not checked. (Optional)
+   */
+  public async exportSet(id: string, user?: UserEntity): Promise<SetExportV1> {
+    // Find the set (and verify ownership)
+    const set = await this.findOneById(id, user, true);
+    return exportSetV1(set);
   }
 }

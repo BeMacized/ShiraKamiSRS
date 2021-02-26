@@ -39,6 +39,9 @@ export class CardSetCardComponent implements OnInit {
     @Output()
     delete: EventEmitter<void> = new EventEmitter<void>();
 
+    @Output()
+    exportFile: EventEmitter<void> = new EventEmitter<void>();
+
     constructor(
         private contextMenu: ContextMenuService,
         private router: Router,
@@ -79,6 +82,11 @@ export class CardSetCardComponent implements OnInit {
                             text: 'Remove',
                             icon: 'delete_forever',
                             onClick: () => this.delete.emit(),
+                        },
+                        {
+                            text: 'Export as File',
+                            icon: 'file_download',
+                            onClick: () => this.exportFile.emit(),
                         },
                     ].filter((i) => !!i),
                 },

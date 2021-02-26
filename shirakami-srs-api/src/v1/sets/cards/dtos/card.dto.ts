@@ -16,6 +16,7 @@ export class CardDto extends CreateOrUpdateCardDto {
   @IsUUID()
   public readonly setId: string;
   @ValidateNested({ each: true })
+  @Type(() => ReviewDto)
   public readonly reviews: ReviewDto[];
   @ValidateNested()
   @Type(() => CardValueDto)

@@ -40,13 +40,22 @@ export class SetsController {
     return SetDto.fromEntity(entity);
   }
 
+  @Get(':id/export')
+  @UseGuards(JWTGuard)
+  async exportSet(
+    @Param('id') id: string,
+    @User() user: UserEntity,
+  ): Promise<any> {
+    return this.setsService.exportSet(id, user);
+  }
+
   @Post()
   @UseGuards(JWTGuard)
   async postSet(
     @Body() set: CreateOrUpdateSetDto,
     @User() user: UserEntity,
   ): Promise<SetDto> {
-    const entity = await this.setsService.create(user, set);
+    const entity = await this.setsService.create(user.id, set);
     return SetDto.fromEntity(entity);
   }
 

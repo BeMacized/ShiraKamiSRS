@@ -169,4 +169,8 @@ export class DashboardViewComponent implements OnInit {
         if (index >= 0) this.sets.splice(index, 1);
         if (deleted) await this.refreshData();
     };
+
+    exportSet = async (set: SetEntity) => {
+        await this.setService.exportSet(set.id, set.name);
+    };
 }

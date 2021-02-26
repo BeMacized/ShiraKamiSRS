@@ -46,6 +46,12 @@ export class SetRepositoryService {
         );
     }
 
+    public exportSet(id: string): Observable<string> {
+        return this.getApiUrl(`/sets/${id}/export`).pipe(
+            switchMap((url) => this.http.get(url, { responseType: 'text' }))
+        );
+    }
+
     private getApiUrl(resource: string) {
         return this.appSettings.appSettings.pipe(
             take(1),

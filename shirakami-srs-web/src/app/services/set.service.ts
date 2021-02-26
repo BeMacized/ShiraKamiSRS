@@ -3,7 +3,8 @@ import { SetRepositoryService } from '../repositories/set-repository.service';
 import { SetEntity, UpdateSetDto } from '../models/set.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ServiceError } from '../models/service-error.model';
-import {ReviewMode} from '../models/review.model';
+import { ReviewMode } from '../models/review.model';
+import { saveAs as saveFile } from 'file-saver';
 
 @Injectable({
     providedIn: 'root',
@@ -28,7 +29,9 @@ export class SetService {
 
     async getSet(setId: string, shallow = false): Promise<SetEntity> {
         try {
-            const set = await this.setRepository.getSet(setId, shallow).toPromise();
+            const set = await this.setRepository
+                .getSet(setId, shallow)
+                .toPromise();
             return SetEntity.fromDto(set);
         } catch (e) {
             if (e instanceof HttpErrorResponse) {
@@ -94,6 +97,26 @@ export class SetService {
     async deleteSet(id: string): Promise<void> {
         try {
             await this.setRepository.deleteSet(id).toPromise();
+        } catch (e) {
+            if (e instanceof HttpErrorResponse) {
+                switch (e.status) {
+                    case 0:
+                        throw new ServiceError('SERVICE_UNAVAILABLE');
+                }
+            }
+            throw e;
+        }
+    }
+
+    async exportSet(setId: string, setName: string): Promise<void> {
+        try {
+            const setData = await this.setRepository
+                .exportSet(setId)
+                .toPromise();
+            saveFile(
+                new Blob([setData], { type: 'text/plain;charset=utf-8' }),
+                setName.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.json'
+            );
         } catch (e) {
             if (e instanceof HttpErrorResponse) {
                 switch (e.status) {
