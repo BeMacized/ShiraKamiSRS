@@ -5,7 +5,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { ReviewMode } from './dtos/review.dto';
+import { ReviewDto, ReviewMode, ReviewSetDto } from './dtos/review.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, Repository } from 'typeorm';
 import { UserEntity } from '../users/entities/user.entity';
@@ -13,6 +13,9 @@ import * as moment from 'moment';
 import 'moment-round';
 import { ReviewEntity } from './entities/review.entity';
 import { CardsService } from '../sets/cards/cards.service';
+import { CardDto } from '../sets/cards/dtos/card.dto';
+import { CardEntity } from '../sets/cards/entities/card.entity';
+import { omit } from 'lodash';
 
 @Injectable()
 export class ReviewsService {
@@ -46,19 +49,37 @@ export class ReviewsService {
   public async getAvailableReviews(
     user: UserEntity,
     timespan = 3600,
-  ): Promise<ReviewEntity[]> {
-    return await this.reviewRepository.find({
-      where: {
-        reviewDate: Between(
-          moment.unix(1).toDate().toISOString(),
-          moment()
-            .startOf('hour')
-            .add(timespan, 'seconds')
-            .toDate()
-            .toISOString(),
-        ),
+    setId?: string,
+  ): Promise<ReviewSetDto> {
+    const reviews = await this.reviewRepository.find({
+      relations: ['card'],
+      join: { alias: 'reviews', innerJoin: { card: 'reviews.card' } },
+      where: (qb) => {
+        qb.where({
+          reviewDate: Between(
+            moment.unix(0).toDate().toISOString(),
+            moment()
+              .startOf('hour')
+              .add(Math.max(timespan - 1, 0), 'seconds')
+              .toDate()
+              .toISOString(),
+          ),
+        });
+        if (setId) qb.andWhere('card.setId = :setId', { setId: setId });
       },
     });
+    const cards: CardEntity[] = Object.values(
+      reviews.reduce(
+        (acc, e) => ((acc[e.cardId] = e.card as CardEntity), acc),
+        {},
+      ),
+    );
+    return {
+      reviews: reviews.map((entity) =>
+        ReviewDto.fromEntity(omit(entity, ['card'])),
+      ),
+      cards: cards.map((entity) => CardDto.fromEntity(entity)),
+    };
   }
 
   public async submitReview(
@@ -83,7 +104,7 @@ export class ReviewsService {
     if (review.currentLevel === maxLevel)
       throw new BadRequestException(null, 'Review is already at max level.');
     // Check if the review date has passed
-    if (moment(review.reviewDate).isAfter(moment()))
+    if (moment(review.reviewDate).startOf('hour').isAfter(moment()))
       throw new BadRequestException(
         null,
         'Review is not yet available until ' + review.reviewDate.toISOString(),
@@ -143,18 +164,6 @@ export class ReviewsService {
       );
 
     // Create the review
-    console.log('SAVING', {
-      cardId,
-      mode,
-      creationDate: new Date(),
-      reviewDate: moment()
-        .add(
-          user.srsSettings.levels.find((l) => l.id === 0).levelDuration,
-          'seconds',
-        )
-        .toDate(),
-      currentLevel: 0,
-    });
     return await this.reviewRepository.save({
       cardId,
       mode,

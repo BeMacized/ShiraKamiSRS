@@ -64,7 +64,7 @@ export class DashboardViewComponent implements OnInit {
                         .getSets()
                         .then((sets) => (this.sets = sets)),
                     this.reviewService
-                        .getAvailableReviews(reviewTimespan)
+                        .getAvailableReviews({ timespan: reviewTimespan })
                         .then((reviews) => (this.reviews = reviews)),
                 ]),
                 400

@@ -95,13 +95,18 @@
                     </button>
                 </div>
             </div>
-            <div class="content-inner" *ngIf="page.type === 'LESSON_INPUT'">
+            <div
+                class="content-inner"
+                *ngIf="page.type === 'LESSON_INPUT' || page.type === 'REVIEW'"
+            >
                 <div
                     [fittext]="true"
                     [maxFontSize]="50"
                     [modelToWatch]="page"
                     class="fit-text"
                 >
+                    <div class="line line-header" *ngIf='page.type === "LESSON_INPUT"'>Lesson</div>
+                    <div class="line line-header" *ngIf='page.type === "REVIEW"'>Review</div>
                     <ng-container *ngIf="page.mode === 'enToJp'">
                         <div class="line line-vocab">
                             {{ page.card.value.enTranslations[0] }}
@@ -139,7 +144,7 @@
                 <span
                     class="counter"
                     @fade
-                    *ngIf="['LESSON_INPUT'].includes(page?.type)"
+                    *ngIf="['LESSON_INPUT', 'REVIEW'].includes(page?.type)"
                 >
                     <i class="material-icons">check</i>{{ itemsCorrect }} /
                     {{ itemsInSession }}

@@ -116,30 +116,29 @@ SELECT sets.id as setId, COALESCE(SUM(reviews), 0) reviews, COALESCE(SUM(lessons
 FROM set_entity sets
          LEFT JOIN (
 -- GET LESSON AND REVIEW COUNTS PER CARD
-    SELECT cards.id                               cardId,
-           cards.setId                            setId,
-           coalesce(cardReviews.reviews, 0) as    reviews,
+    SELECT cards.id                                      cardId,
+           cards.setId                                   setId,
+           coalesce(cardReviews.reviewableReviews, 0) as reviews,
            IIF(se.modes LIKE '%enToJp%', 1, 0)
                + IIF(se.modes LIKE '%jpToEn%', 1, 0)
                + IIF(se.modes LIKE '%kanjiToKana%' AND cards.valueSupportedmodes LIKE '%kanjiToKana%', 1, 0)
-               - coalesce(cardReviews.reviews, 0) lessons
+               - coalesce(cardReviews.totalReviews, 0)   lessons
     FROM card_entity cards
              LEFT JOIN (
 -- GET REVIEW COUNTS PER CARD
         SELECT cardId,
                setId,
-               COUNT(cardId) as reviews
+               COUNT(cardId)   as totalReviews,
+               SUM(reviewable) as reviewableReviews
         FROM (
-                 SELECT cardId, ce.setId setId
+                 SELECT cardId, ce.setId setId, CAST(strftime('%s', reviewDate) AS INT) < ? reviewable
                  FROM review_entity
                           INNER JOIN card_entity ce on review_entity.cardId = ce.id
-                 WHERE CAST(strftime('%s', reviewDate) AS INT) < ?
                  GROUP BY cardId, mode
              ) cardsWithAReview
                  LEFT JOIN set_entity ON set_entity.id = cardsWithAReview.setId
         ${userId ? 'WHERE set_entity.userId = ?' : ''}
         GROUP BY cardId, setId
-        ORDER BY reviews DESC
     ) cardReviews ON cardReviews.cardId = cards.id
              INNER JOIN set_entity se on cards.setId = se.id
 ) cardsWithReviewAndLessonCounts on cardsWithReviewAndLessonCounts.setId = sets.id

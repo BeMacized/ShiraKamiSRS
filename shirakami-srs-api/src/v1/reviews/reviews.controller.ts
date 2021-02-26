@@ -1,9 +1,24 @@
-import { Body, Controller, DefaultValuePipe, Get, Param, ParseIntPipe, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  DefaultValuePipe,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { JWTGuard } from '../authentication/guards/jwt.guard';
 import { User } from '../common/user.decorator';
 import { UserEntity } from '../users/entities/user.entity';
 import { ReviewsService } from './reviews.service';
-import { CreateReviewDto, ReviewDto, SubmitReviewDto } from './dtos/review.dto';
+import {
+  CreateReviewDto,
+  ReviewDto,
+  ReviewSetDto,
+  SubmitReviewDto,
+} from './dtos/review.dto';
 
 @Controller()
 export class ReviewsController {
@@ -13,13 +28,11 @@ export class ReviewsController {
   @UseGuards(JWTGuard)
   async getReviews(
     @User() user: UserEntity,
-    @Query('timespan', new DefaultValuePipe(3600), ParseIntPipe) timespan,
-  ): Promise<ReviewDto[]> {
-    const reviews = await this.reviewsService.getAvailableReviews(
-      user,
-      timespan,
-    );
-    return reviews.map((review) => ReviewDto.fromEntity(review));
+    @Query('timespan', new DefaultValuePipe(3600), ParseIntPipe)
+    timespan: number,
+    @Query('setId') setId: string,
+  ): Promise<ReviewSetDto> {
+    return this.reviewsService.getAvailableReviews(user, timespan, setId);
   }
 
   @Get(':id')

@@ -11,11 +11,11 @@ import { ServiceError } from '../models/service-error.model';
 export class ReviewService {
     constructor(private reviewRepository: ReviewRepositoryService) {}
 
-    async getAvailableReviews(timespan?: number): Promise<ReviewEntity[]> {
+    async getAvailableReviews(options: { timespan?: number, setId?: string } = {}): Promise<ReviewEntity[]> {
         try {
             return await this.reviewRepository
-                .getAvailableReviews(timespan)
-                .pipe(map((dtos) => dtos.map(ReviewEntity.fromDto)))
+                .getAvailableReviews(options)
+                .pipe(map((reviewSet) => reviewSet.reviews.map(dto => ReviewEntity.fromDto(dto, reviewSet.cards))))
                 .toPromise();
         } catch (e) {
             if (e instanceof HttpErrorResponse) {
@@ -35,7 +35,7 @@ export class ReviewService {
         try {
             return await this.reviewRepository
                 .createReview(cardId, mode)
-                .pipe(map(ReviewEntity.fromDto))
+                .pipe(map(dto => ReviewEntity.fromDto(dto)))
                 .toPromise();
         } catch (e) {
             if (e instanceof HttpErrorResponse) {
@@ -52,7 +52,7 @@ export class ReviewService {
         try {
             return await this.reviewRepository
                 .submitReview(reviewId, score)
-                .pipe(map(ReviewEntity.fromDto))
+                .pipe(map(dto => ReviewEntity.fromDto(dto)))
                 .toPromise();
         } catch (e) {
             if (e instanceof HttpErrorResponse) {

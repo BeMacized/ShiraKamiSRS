@@ -3,7 +3,7 @@ import { AppSettingsService } from '../services/app-settings.service';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map, switchMap, take } from 'rxjs/operators';
-import { ReviewDto, ReviewMode } from '../models/review.model';
+import { ReviewDto, ReviewMode, ReviewSetDto } from '../models/review.model';
 
 @Injectable({
     providedIn: 'root',
@@ -14,11 +14,12 @@ export class ReviewRepositoryService {
         private http: HttpClient
     ) {}
 
-    public getAvailableReviews(timespan?: number): Observable<ReviewDto[]> {
+    public getAvailableReviews(options: { timespan?: number, setId?: string } = {}): Observable<ReviewSetDto> {
         let params = new HttpParams();
-        if (timespan) params = params.append('timespan', timespan.toString());
+        if (options.timespan) params = params.append('timespan', options.timespan.toString());
+        if (options.setId) params = params.append('setId', options.setId);
         return this.getApiUrl(`/reviews`).pipe(
-            switchMap((url) => this.http.get<ReviewDto[]>(url, { params }))
+            switchMap((url) => this.http.get<ReviewSetDto>(url, { params }))
         );
     }
 

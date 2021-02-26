@@ -3,6 +3,7 @@ import { JWTGuard } from '../authentication/guards/jwt.guard';
 import { User } from '../common/user.decorator';
 import { UserEntity } from '../users/entities/user.entity';
 import { LessonsService } from './lessons.service';
+import { LessonSetDto } from './dtos/lesson.dto';
 
 @Controller()
 export class LessonsController {
@@ -10,11 +11,11 @@ export class LessonsController {
 
   @Get()
   @UseGuards(JWTGuard)
-  async debug(
+  async getLessons(
     @User() user: UserEntity,
     @Query('limit', new DefaultValuePipe(5)) limit: number,
     @Query('setId') setId: string,
-  ) {
+  ): Promise<LessonSetDto> {
     limit = Math.min(Math.max(limit, 0), 50);
     return this.lessonsService.fetchLessons(user.id, setId, limit);
   }

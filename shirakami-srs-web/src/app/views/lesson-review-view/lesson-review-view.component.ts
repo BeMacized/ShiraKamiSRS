@@ -11,7 +11,7 @@ import { CardEntity } from '../../models/card.model';
 import { OperationStatus } from '../../models/operation-status.model';
 import { LessonService } from '../../services/lesson.service';
 import { fade, hshrink, vshrink } from '../../utils/animations';
-import { ReviewMode } from '../../models/review.model';
+import { ReviewEntity, ReviewMode } from '../../models/review.model';
 import {
     ConfirmationModalComponent,
     ConfirmationModalInput,
@@ -210,7 +210,6 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
             // Set pages & current page
             this.pages = pages;
             this.pageIndex = 0;
-            // this.pageIndex = 8;
             this.loadStatus = 'SUCCESS';
         } catch (e) {
             console.error(e);
@@ -220,7 +219,41 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
         }
     }
 
-    async loadReviews() {}
+    async loadReviews() {
+        if (this.loadStatus === 'IN_PROGRESS') return;
+        this.loadStatus = 'IN_PROGRESS';
+        try {
+            // Fetch reviews
+            const reviews = await this.reviewService.getAvailableReviews({
+                setId: this.setId,
+            });
+            // Build pages
+            const pages: Page[] = [];
+            // Add review pages
+            shuffle(reviews.slice()).forEach((l: ReviewEntity) =>
+                pages.push({
+                    type: 'REVIEW',
+                    score: 0,
+                    card: l.card,
+                    mode: l.mode,
+                    reviewId: l.id,
+                })
+            );
+            // Reset stats
+            this.itemsCorrect = 0;
+            this.itemsInSession = reviews.length;
+            this.totalItemsRemaining = reviews.length;
+            // Set pages & current page
+            this.pages = pages;
+            this.pageIndex = 0;
+            this.loadStatus = 'SUCCESS';
+        } catch (e) {
+            console.error(e);
+            this.loadStatus = 'ERROR';
+            await this.router.navigate(['dashboard']);
+            return;
+        }
+    }
 
     async nextLesson() {
         // If we're not on a lesson, we're not gonna do anything
@@ -306,6 +339,8 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
         if (this.page.type === 'REVIEW') {
             if (result.passing) {
                 if (this.page.score >= 0) this.page.score = 1;
+                this.itemsCorrect++;
+                this.totalItemsRemaining--;
             } else {
                 this.page.score--;
             }
@@ -317,7 +352,7 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
         }
         // Upload the score if needed
         if (result.passing) await this.uploadFeedback(this.page);
-        // Immediately dismiss feedback if this is the last page
+        // Immediately dismiss feedback if this is the last page and the answer was correct
         if (result.passing && this.pageIndex === this.pages.length - 1)
             await this.dismissInputFeedback();
     }
@@ -372,7 +407,8 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
                 const newIndex =
                     this.pageIndex +
                     Math.floor(
-                        (this.pages.length - this.pageIndex) * Math.random()
+                        Math.min(this.pages.length - this.pageIndex, 10) *
+                            Math.random()
                     ) +
                     1;
                 this.pages.splice(
@@ -458,7 +494,7 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
                     ) {
                         await this.processAnswer();
                     }
-                } else {
+                } else if (this.inputStage === 'FEEDBACK') {
                     await this.dismissInputFeedback();
                 }
                 break;

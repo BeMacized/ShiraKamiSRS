@@ -36,7 +36,7 @@ export class CardEntity {
   @ManyToOne(() => SetEntity, (set) => set.cards, { onDelete: 'CASCADE' })
   set?: SetEntity;
 
-  @OneToMany(() => ReviewEntity, (review) => review.card, { eager: true })
+  @OneToMany(() => ReviewEntity, (review) => review.card)
   reviews?: ReviewEntity[];
 }
 

@@ -1,5 +1,7 @@
 import { ReviewEntity } from '../entities/review.entity';
 import { IsEnum, IsNumber, IsUUID } from 'class-validator';
+import { CardDto } from '../../sets/cards/dtos/card.dto';
+import { LessonDto } from '../../lessons/dtos/lesson.dto';
 
 export type ReviewMode = 'enToJp' | 'jpToEn' | 'kanjiToKana';
 export const ReviewModes: Readonly<ReviewMode[]> = [
@@ -7,6 +9,11 @@ export const ReviewModes: Readonly<ReviewMode[]> = [
   'jpToEn',
   'kanjiToKana',
 ];
+
+export class ReviewSetDto {
+  cards: CardDto[];
+  reviews: ReviewDto[];
+}
 
 export class ReviewDto {
   id: string;
