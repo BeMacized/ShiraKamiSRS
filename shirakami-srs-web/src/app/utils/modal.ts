@@ -1,5 +1,5 @@
-import { DomComponent } from './dom.service';
 import { Observable, Subject } from 'rxjs';
+import { DomComponent } from '../services/dom.service';
 
 export abstract class Modal<I = any, O = any> {
     private domComponent: DomComponent;
