@@ -5,7 +5,6 @@ import {
     OnInit,
     ViewChild,
 } from '@angular/core';
-import { Modal } from '../../../services/modal.service';
 import { SetEntity } from '../../../models/set.model';
 import { SetService } from '../../../services/set.service';
 import { OperationStatus } from '../../../models/operation-status.model';
@@ -21,6 +20,7 @@ import {
     vshrink,
 } from '../../../utils/animations';
 import { smoothHeight } from '../../../directives/smooth-height.directive';
+import { Modal } from '../../../utils/modal';
 
 type Page = 'VERIFICATION' | 'DELETION';
 

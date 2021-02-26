@@ -13,12 +13,12 @@ import {
     triggerChildren,
     vshrink,
 } from '../../../utils/animations';
-import { Modal } from '../../../services/modal.service';
 import { CardEntity } from '../../../models/card.model';
 import { CardService } from '../../../services/card.service';
 import { OperationStatus } from '../../../models/operation-status.model';
 import { minPromiseDuration } from '../../../utils/promise-utils';
 import { cloneDeep } from 'lodash';
+import { Modal } from '../../../utils/modal';
 
 export interface CreateEditCardModalInput {
     setId: string;

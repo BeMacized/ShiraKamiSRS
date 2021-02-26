@@ -1,10 +1,10 @@
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
-import { Modal } from '../../../services/modal.service';
 import { fade, fadeUp, triggerChildren } from '../../../utils/animations';
 import {
     KeyboardService,
     KeyboardUnlisten,
 } from '../../../services/keyboard.service';
+import { Modal } from '../../../utils/modal';
 
 export type ConfirmationModalInput = Partial<{
     title: string;

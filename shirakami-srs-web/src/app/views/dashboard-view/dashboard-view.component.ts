@@ -16,6 +16,12 @@ import { SrsService } from '../../services/srs.service';
 import { ReviewEntity } from '../../models/review.model';
 import { ReviewService } from '../../services/review.service';
 import moment from 'moment';
+import {
+    ConfirmationModalComponent,
+    ConfirmationModalInput,
+    ConfirmationModalOutput,
+} from '../../components/modals/confirmation-modal/confirmation-modal.component';
+import { ServiceError } from '../../models/service-error.model';
 
 @Component({
     selector: 'app-dashboard-view',
@@ -171,6 +177,21 @@ export class DashboardViewComponent implements OnInit {
     };
 
     exportSet = async (set: SetEntity) => {
-        await this.setService.exportSet(set.id, set.name);
+        try {
+            await this.setService.exportSet(set.id, set.name);
+        } catch (e) {
+            console.error(e);
+            if (e instanceof ServiceError && e.code === 'SERVICE_UNAVAILABLE') {
+                this.modalService.alert(
+                    'Could not export',
+                    'The server could not be reached. Please try again later.'
+                );
+            } else {
+                this.modalService.alert(
+                    'Could not export',
+                    'An unknown error occurred while trying to export your card set. Please contact the developer.'
+                );
+            }
+        }
     };
 }

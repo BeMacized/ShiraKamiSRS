@@ -1,34 +1,13 @@
 import { Injectable } from '@angular/core';
 import { DomComponent, DomService } from './dom.service';
-import { from, Observable, Subject } from 'rxjs';
+import { from, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-
-export abstract class Modal<I = any, O = any> {
-    private domComponent: DomComponent;
-    protected _output: Subject<O> = new Subject<O>();
-
-    public set __DOM_COMPONENT(component: DomComponent) {
-        this.domComponent = component;
-        component.on(
-            'remove',
-            () => (this._output.complete(), (this._output = null))
-        );
-    }
-
-    protected emit = (value: O) => {
-        this._output.next(value);
-    };
-
-    public abstract initModal(data?: I);
-
-    public get output(): Observable<O> {
-        return this._output.asObservable();
-    }
-
-    public close() {
-        this.domComponent.remove();
-    }
-}
+import { Modal } from '../utils/modal';
+import {
+    ConfirmationModalComponent,
+    ConfirmationModalInput,
+    ConfirmationModalOutput,
+} from '../components/modals/confirmation-modal/confirmation-modal.component';
 
 @Injectable({
     providedIn: 'root',
@@ -52,5 +31,18 @@ export class ModalService {
                 });
             })
         ).pipe(switchMap((modal: DomComponent<C>) => modal.component.output));
+    }
+
+    alert(title: string, message: string) {
+        this.showModal<
+            ConfirmationModalComponent,
+            ConfirmationModalInput,
+            ConfirmationModalOutput
+        >(ConfirmationModalComponent, {
+            title,
+            message,
+            confirmText: 'OK',
+            showCancel: false,
+        });
     }
 }
