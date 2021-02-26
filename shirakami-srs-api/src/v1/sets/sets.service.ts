@@ -13,21 +13,26 @@ import {
 import { Repository } from 'typeorm';
 import * as moment from 'moment';
 import { CreateOrUpdateSetDto } from './dtos/set.dto';
+import { UserEntity } from '../users/entities/user.entity';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class SetsService {
   constructor(
     @InjectRepository(SetEntity)
     private setRepository: Repository<SetEntity>,
+    private userService: UsersService,
   ) {}
 
   /**
    * Finds all sets.
-   * @param userId - The id of the user for which to look up the sets.
+   * @param user - The id or entity of the user for which to look up the sets.
    */
-  async findAll(userId: string): Promise<SetEntity[]> {
-    const sets = await this.setRepository.find({ userId });
-    const statuses = await this.getSrsStatus(userId);
+  async findAll(user: string | UserEntity): Promise<SetEntity[]> {
+    if (typeof user === 'string') user = await this.userService.findById(user);
+    if (!user) throw new NotFoundException('User not found');
+    const sets = await this.setRepository.find({ userId: user.id });
+    const statuses = await this.getSrsStatus(user);
     for (const set of sets) {
       set.srsStatus = statuses.find((status) => status.setId === set.id).status;
     }
@@ -37,7 +42,7 @@ export class SetsService {
   /**
    * Find a specific set by its id.
    * @param id - The id of the set to find.
-   * @param userId - The id of the user for which to look up the set. (Optional)
+   * @param user - The id or entity of the user for which to look up the set. If not provided, ownership is not checked. (Optional)
    * @param includeCards - Whether to include cards with the set. (Optional, Default: false)
    * @returns The found set.
    * @throws {NotFoundException} when no set was found for the given id.
@@ -45,29 +50,41 @@ export class SetsService {
    */
   async findOneById(
     id: string,
-    userId?: string,
+    user?: string | UserEntity,
     includeCards = false,
   ): Promise<SetEntity> {
+    if (user) {
+      if (typeof user === 'string')
+        user = await this.userService.findById(user);
+      if (!user) throw new NotFoundException('User not found');
+    }
     const entity = await this.setRepository.findOne(id, {
       relations: includeCards ? ['cards'] : [],
     });
     if (!entity) throw new NotFoundException('Set not found');
-    if (userId && entity.userId !== userId)
+    if (user && entity.userId !== (user as UserEntity).id)
       throw new ForbiddenException('Set does not belong to user');
-    entity.srsStatus = (await this.getSrsStatus(userId, entity.id))[0].status;
+    entity.srsStatus = (
+      await this.getSrsStatus(user as UserEntity, entity.id)
+    )[0].status;
     return entity;
   }
 
   /**
    * Removes an existing set.
    * @param id - The id of the set to remove.
-   * @param userId - The id of the user for which to remove the set.
+   * @param user - The id or entity of the user for which to remove the set. (Optional)
    * @throws {NotFoundException} when no set was found for the given id.
    * @throws {ForbiddenException} when the set does not belong to the specified user id.
    */
-  async removeById(id: string, userId?: string): Promise<void> {
+  async removeById(id: string, user?: string | UserEntity): Promise<void> {
+    if (user) {
+      if (typeof user === 'string')
+        user = await this.userService.findById(user);
+      if (!user) throw new NotFoundException('User not found');
+    }
     // Ensure the set exists for this user
-    await this.findOneById(id, userId);
+    await this.findOneById(id, user);
     // Delete the set
     await this.setRepository.delete(id);
   }
@@ -85,30 +102,40 @@ export class SetsService {
 
   /**
    * Updates a set
-   * @param userId - The user to update the set for.
    * @param id - The ID of the set to update
    * @param set - The updated set object
+   * @param user - The id or entity for the user to update the set for. If not provided, ownership is not checked. (Optional)
    * @returns The updated set object. Is null if the set was not found.
    * @throws {NotFoundException} when no set was found for the given id.
    */
   async update(
-    userId: string,
     id: string,
     set: CreateOrUpdateSetDto,
+    user?: string | UserEntity,
   ): Promise<SetEntity> {
+    if (user) {
+      if (typeof user === 'string')
+        user = await this.userService.findById(user);
+      if (!user) throw new NotFoundException('User not found');
+    }
     // Ensure the set exists
-    await this.findOneById(id, userId);
+    await this.findOneById(id, user);
     // Update the set
-    await this.setRepository.update(id, { ...set, userId });
+    await this.setRepository.update(id, {
+      ...set,
+      userId: (user as UserEntity)?.id ?? undefined,
+    });
     // Find the set
-    const entity = await this.findOneById(id, userId);
+    const entity = await this.findOneById(id, user);
     if (entity)
-      entity.srsStatus = (await this.getSrsStatus(userId, entity.id))[0].status;
+      entity.srsStatus = (
+        await this.getSrsStatus(user as UserEntity, entity.id)
+      )[0].status;
     return entity;
   }
 
   private async getSrsStatus(
-    userId?: string,
+    user: UserEntity,
     setId?: string,
   ): Promise<Array<{ setId: string; status: SetSrsStatus }>> {
     const countQuery = `
@@ -131,27 +158,26 @@ FROM set_entity sets
                COUNT(cardId)   as totalReviews,
                SUM(reviewable) as reviewableReviews
         FROM (
-                 SELECT cardId, ce.setId setId, CAST(strftime('%s', reviewDate) AS INT) < ? reviewable
+                 SELECT cardId, ce.setId setId, (CAST(strftime('%s', reviewDate) AS INT) < ? AND currentLevel < ?) reviewable
                  FROM review_entity
                           INNER JOIN card_entity ce on review_entity.cardId = ce.id
                  GROUP BY cardId, mode
              ) cardsWithAReview
                  LEFT JOIN set_entity ON set_entity.id = cardsWithAReview.setId
-        ${userId ? 'WHERE set_entity.userId = ?' : ''}
+        WHERE set_entity.userId = ?
         GROUP BY cardId, setId
     ) cardReviews ON cardReviews.cardId = cards.id
              INNER JOIN set_entity se on cards.setId = se.id
 ) cardsWithReviewAndLessonCounts on cardsWithReviewAndLessonCounts.setId = sets.id
-${userId || setId ? 'WHERE' : ''}
-${[userId ? 'sets.userId = ?' : null, setId ? 'sets.id = ?' : null]
-  .filter((l) => !!l)
-  .join(' AND ')}
+WHERE sets.userId = ?
+${setId ? 'AND sets.id = ?' : ''}
 GROUP BY sets.id
     `;
     const countParameters: any[] = [
       moment().startOf('hour').add(1, 'hour').unix(),
+      user.srsSettings.levels.reduce((acc, e) => Math.max(acc, e.id), 0),
     ];
-    if (userId) countParameters.push(userId, userId);
+    countParameters.push(user.id, user.id);
     if (setId) countParameters.push(setId);
     const countResults: Array<{
       setId: string;
@@ -162,17 +188,14 @@ GROUP BY sets.id
     const levelQuery = `
 SELECT se.id setId, re.currentLevel as srsLevel, COUNT() reviews
 FROM review_entity re
-         INNER JOIN card_entity ce on ce.id = re.cardId
-         INNER JOIN set_entity se on ce.setId = se.id
-${userId || setId ? `WHERE` : ``}
-${[userId ? 'se.userId = ?' : null, setId ? 'setId = ?' : null]
-  .filter((l) => !!l)
-  .join(' AND ')}
-
+INNER JOIN card_entity ce on ce.id = re.cardId
+INNER JOIN set_entity se on ce.setId = se.id
+WHERE se.userId = ?
+${setId ? 'AND setId = ?' : ''}
 GROUP BY setId, srsLevel
 `;
     const levelParameters: any[] = [];
-    if (userId) levelParameters.push(userId);
+    levelParameters.push(user.id);
     if (setId) levelParameters.push(setId);
     const levelResults: Array<{
       setId: string;

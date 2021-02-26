@@ -25,7 +25,7 @@ export class SetsController {
   @UseGuards(JWTGuard)
   async getAllSets(@User() user: UserEntity): Promise<SetDto[]> {
     return this.setsService
-      .findAll(user.id)
+      .findAll(user)
       .then((sets) => sets.map(SetDto.fromEntity));
   }
 
@@ -36,11 +36,7 @@ export class SetsController {
     @User() user: UserEntity,
     @Query('shallow', new DefaultValuePipe('0'), ParseIntPipe) shallow,
   ): Promise<SetDto> {
-    const entity = await this.setsService.findOneById(
-      id,
-      user.id,
-      shallow !== 1,
-    );
+    const entity = await this.setsService.findOneById(id, user, shallow !== 1);
     return SetDto.fromEntity(entity);
   }
 
@@ -50,7 +46,7 @@ export class SetsController {
     @Body() set: CreateOrUpdateSetDto,
     @User() user: UserEntity,
   ): Promise<SetDto> {
-    const entity = await this.setsService.create(user.id, set);
+    const entity = await this.setsService.create(user, set);
     return SetDto.fromEntity(entity);
   }
 
@@ -61,14 +57,14 @@ export class SetsController {
     @Body() set: CreateOrUpdateSetDto,
     @User() user: UserEntity,
   ): Promise<SetDto> {
-    const entity = await this.setsService.update(user.id, id, set);
+    const entity = await this.setsService.update(id, set, user);
     return SetDto.fromEntity(entity);
   }
 
   @Delete(':id')
   @UseGuards(JWTGuard)
   async deleteSet(@Param('id') id, @User() user: UserEntity) {
-    await this.setsService.removeById(id, user.id);
+    await this.setsService.removeById(id, user);
     return { success: true };
   }
 }

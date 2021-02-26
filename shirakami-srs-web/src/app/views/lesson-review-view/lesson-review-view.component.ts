@@ -187,6 +187,11 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
                 setId: this.setId,
                 limit: 5,
             });
+            // Return to dashboard if no lessons are available
+            if (!lessonSet.lessons.length) {
+                await this.router.navigate(['dashboard']);
+                return;
+            }
             // Build pages
             const pages: Page[] = [];
             // Add lesson pages
@@ -227,6 +232,11 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
             const reviews = await this.reviewService.getAvailableReviews({
                 setId: this.setId,
             });
+            // Return to dashboard if no reviews are available
+            if (!reviews.length) {
+                await this.router.navigate(['dashboard']);
+                return;
+            }
             // Build pages
             const pages: Page[] = [];
             // Add review pages
@@ -519,7 +529,7 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
 
     get canIgnoreAnswer() {
         return (
-            this.page.type === 'REVIEW' &&
+            this.page?.type === 'REVIEW' &&
             this.inputStage === 'FEEDBACK' &&
             this.inputFeedback === 'INCORRECT'
         );
@@ -529,8 +539,8 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
         return (
             this.answerShown ||
             (this.inputStage === 'FEEDBACK' &&
-                (this.page.type === 'LESSON_INPUT' ||
-                    this.page.type === 'REVIEW'))
+                (this.page?.type === 'LESSON_INPUT' ||
+                    this.page?.type === 'REVIEW'))
         );
     }
 }

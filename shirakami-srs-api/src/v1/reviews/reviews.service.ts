@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { ReviewDto, ReviewMode, ReviewSetDto } from './dtos/review.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, Repository } from 'typeorm';
+import { Between, LessThan, Repository } from 'typeorm';
 import { UserEntity } from '../users/entities/user.entity';
 import * as moment from 'moment';
 import 'moment-round';
@@ -63,6 +63,9 @@ export class ReviewsService {
               .add(Math.max(timespan - 1, 0), 'seconds')
               .toDate()
               .toISOString(),
+          ),
+          currentLevel: LessThan(
+            user.srsSettings.levels.reduce((acc, e) => Math.max(acc, e.id), 0),
           ),
         });
         if (setId) qb.andWhere('card.setId = :setId', { setId: setId });
@@ -122,16 +125,13 @@ export class ReviewsService {
       maxLevel,
     );
     // Create the new review
+    const levelDuration = user.srsSettings.levels.find((l) => l.id === newLevel)
+      .levelDuration;
     const newReview = await this.reviewRepository.save({
       cardId: card.id,
       mode: review.mode,
       creationDate: new Date(),
-      reviewDate: moment()
-        .add(
-          user.srsSettings.levels.find((l) => l.id === newLevel).levelDuration,
-          'seconds',
-        )
-        .toDate(),
+      reviewDate: moment().add(levelDuration, 'seconds').toDate(),
       currentLevel: newLevel,
     });
     // Delete the old review
