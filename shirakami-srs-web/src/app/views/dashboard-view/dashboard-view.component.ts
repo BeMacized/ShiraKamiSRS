@@ -148,9 +148,11 @@ export class DashboardViewComponent implements OnInit {
                 set
             )
             .toPromise();
-        const index = this.sets.findIndex((s) => set && s.id === set.id);
-        if (index >= 0) this.sets.splice(index, 1, set);
-        await this.refreshData();
+        if (set) {
+            const index = this.sets.findIndex((s) => set && s.id === set.id);
+            if (index >= 0) this.sets.splice(index, 1, set);
+            await this.refreshData();
+        }
     };
 
     renameSet = async (set: SetEntity) => {
@@ -160,9 +162,11 @@ export class DashboardViewComponent implements OnInit {
                 set
             )
             .toPromise();
-        const index = this.sets.findIndex((s) => set && s.id === set.id);
-        if (index >= 0) this.sets.splice(index, 1, set);
-        await this.refreshData();
+        if (set) {
+            const index = this.sets.findIndex((s) => set && s.id === set.id);
+            if (index >= 0) this.sets.splice(index, 1, set);
+            await this.refreshData();
+        }
     };
 
     deleteSet = async (set: SetEntity) => {
@@ -172,9 +176,11 @@ export class DashboardViewComponent implements OnInit {
                 set
             )
             .toPromise();
-        const index = this.sets.findIndex((s) => set && s.id === set.id);
-        if (index >= 0) this.sets.splice(index, 1);
-        if (deleted) await this.refreshData();
+        if (deleted) {
+            const index = this.sets.findIndex((s) => set && s.id === set.id);
+            if (index >= 0) this.sets.splice(index, 1);
+            await this.refreshData();
+        }
     };
 
     exportSet = async (set: SetEntity) => {
