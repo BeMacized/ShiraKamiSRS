@@ -46,9 +46,13 @@ export class SetRepositoryService {
         );
     }
 
-    public exportSet(id: string): Observable<string> {
+    public exportSet(id: string, includeReviews = false): Observable<string> {
+        let params = new HttpParams();
+        if (includeReviews) params = params.append('includeReviews', '1');
         return this.getApiUrl(`/sets/${id}/export`).pipe(
-            switchMap((url) => this.http.get(url, { responseType: 'text' }))
+            switchMap((url) =>
+                this.http.get(url, { responseType: 'text', params })
+            )
         );
     }
 

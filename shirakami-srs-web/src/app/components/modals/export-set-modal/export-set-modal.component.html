@@ -1,0 +1,98 @@
+<div class="modal-bg" @bg @triggerModal>
+    <div
+        class="modal modal-sm"
+        @modal
+        (clickOutside)="close()"
+        [smoothHeight]="page"
+    >
+        <div class="modal-page" *ngIf="page === 'CONFIG'" @modalPage>
+            <div class="modal-header">
+                <h1>Export Set</h1>
+                <h2>{{ set.name }}</h2>
+            </div>
+            <div class="modal-content ai-start">
+                <div class="toggle-row">
+                    <app-checkbox
+                        [checked]="true"
+                        [disabled]="true"
+                    ></app-checkbox>
+                    <span>All Cards</span>
+                </div>
+                <div class="toggle-row">
+                    <app-checkbox
+                        [(checked)]="includeReviews"
+                    ></app-checkbox>
+                    <span>SRS Progress</span>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="button btn btn-secondary" (click)="close()">
+                    Cancel
+                </button>
+                <button class="button btn btn-primary" (click)="exportSet()">
+                    Export
+                </button>
+            </div>
+        </div>
+        <div class="modal-page" *ngIf="page === 'EXPORTING'" @modalPage>
+            <div class="modal-header">
+                <h1>Export Set</h1>
+                <h2>{{ set.name }}</h2>
+            </div>
+            <div
+                class="modal-content ai-center no-padding"
+                [smoothHeight]="exportStatus"
+            >
+                <div
+                    @crossFade
+                    class="modal-status-container"
+                    *ngIf="exportStatus === 'IN_PROGRESS'"
+                >
+                    <app-spinner size="NORMAL"></app-spinner>
+                    <span class="status-message">Exporting set...</span>
+                </div>
+                <div
+                    @crossFade
+                    class="modal-status-container"
+                    *ngIf="exportStatus === 'ERROR'"
+                >
+                    <i class="material-icons error-icon">error_outline</i>
+                    <span class="status-message">
+                        {{ errorMessage }}
+                    </span>
+                </div>
+                <div
+                    @crossFade
+                    class="modal-status-container"
+                    *ngIf="exportStatus === 'SUCCESS'"
+                >
+                    <i class="material-icons success-icon"
+                        >check_circle_outline</i
+                    >
+                    <span class="status-message">
+                        <span>Set '{{ set.name }}' exported successfully!</span>
+                    </span>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button
+                    class="button btn btn-secondary"
+                    (click)="exportSet()"
+                    *ngIf="exportStatus === 'ERROR'"
+                    @hshrink
+                >
+                    Retry
+                </button>
+                <button
+                    class="button btn btn-secondary"
+                    (click)="close()"
+                    [disabled]="exportStatus === 'IN_PROGRESS'"
+                    *ngIf="exportStatus !== 'SUCCESS'"
+                    @vshrink
+                >
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

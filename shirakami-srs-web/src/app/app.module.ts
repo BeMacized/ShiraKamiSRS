@@ -37,6 +37,7 @@ import { LessonReviewViewComponent } from './views/lesson-review-view/lesson-rev
 import { Ng2FittextModule } from 'ng2-fittext';
 import { NgPipesModule } from 'ngx-pipes';
 import { WanakanaDirective } from './directives/wanakana.directive';
+import { ExportSetModalComponent } from './components/modals/export-set-modal/export-set-modal.component';
 
 export function initializeApp(appInitService: AppInitService) {
     return () => appInitService.init();
@@ -70,6 +71,7 @@ export function initializeApp(appInitService: AppInitService) {
         ConfirmationModalComponent,
         LessonReviewViewComponent,
         WanakanaDirective,
+        ExportSetModalComponent,
     ],
     imports: [
         BrowserModule,

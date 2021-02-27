@@ -1,0 +1,9 @@
+.toggle-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0.5em 0;
+    app-checkbox {
+        margin-right: 0.5em;
+    }
+}

@@ -108,10 +108,10 @@ export class SetService {
         }
     }
 
-    async exportSet(setId: string, setName: string): Promise<void> {
+    async exportSet(setId: string, setName: string, includeReviews = false): Promise<void> {
         try {
             const setData = await this.setRepository
-                .exportSet(setId)
+                .exportSet(setId, includeReviews)
                 .toPromise();
             saveFile(
                 new Blob([setData], { type: 'text/plain;charset=utf-8' }),
