@@ -44,3 +44,10 @@ export type CreateOrUpdateCardEntity = Omit<
   CardEntity,
   'id' | 'set' | 'reviews'
 >;
+
+export const buildSupportedCardModes = (cardValue: CardValue): ReviewMode[] => {
+  const modes: ReviewMode[] = ['enToJp', 'jpToEn'];
+  if (cardValue.jpTranslations.find((v) => v.length === 2))
+    modes.push('kanjiToKana');
+  return modes;
+};

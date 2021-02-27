@@ -1,11 +1,17 @@
 import {
   ForbiddenException,
+  forwardRef,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CardEntity, CreateOrUpdateCardEntity } from './entities/card.entity';
+import {
+  buildSupportedCardModes,
+  CardEntity,
+  CreateOrUpdateCardEntity,
+} from './entities/card.entity';
 import { SetsService } from '../sets.service';
 import { CreateOrUpdateCardDto } from './dtos/card.dto';
 
@@ -21,12 +27,22 @@ export class CardsService {
    * Finds all cards from a set.
    * @param setId - The set to look up cards for.
    * @param userId - The id of the user to which the set should belong (optional).
+   * @param includeReviews - Whether to include reviews with the cards (Default: false).
    * @returns The founds cards.
    * @throws {NotFoundException} when no set was found for the given id.
    * @throws {ForbiddenException} when the set does not belong to the specified user.
    */
-  async findBySetId(setId: string, userId?: string): Promise<CardEntity[]> {
-    const set = await this.setsService.findOneById(setId, userId, true);
+  async findBySetId(
+    setId: string,
+    userId?: string,
+    includeReviews = false,
+  ): Promise<CardEntity[]> {
+    const set = await this.setsService.findOneById(
+      setId,
+      userId,
+      true,
+      includeReviews,
+    );
     return set.cards;
   }
 
@@ -77,7 +93,13 @@ export class CardsService {
     userId?: string,
   ): Promise<CardEntity> {
     // Ensure the set exists
-    if (userId) await this.setsService.findOneById(setId, userId);
+    const set = await this.setsService.findOneById(setId, userId, true);
+    // Ensure there is room for more cards
+    if (set.cards.length >= 10000) {
+      throw new ForbiddenException(
+        'Maximum allowed cards per set reached (10000).',
+      );
+    }
     // Construct the entity to save
     const cardEntity: CreateOrUpdateCardEntity = {
       ...card,
@@ -85,9 +107,7 @@ export class CardsService {
       setId,
     };
     // Determine the supported modes for this card
-    cardEntity.value.supportedModes = ['enToJp', 'jpToEn'];
-    if (cardEntity.value.jpTranslations.find((v) => v.length === 2))
-      cardEntity.value.supportedModes.push('kanjiToKana');
+    cardEntity.value.supportedModes = buildSupportedCardModes(cardEntity.value);
     // Create the card
     const result = await this.cardRepository.insert(cardEntity);
     // Find and return the card
@@ -119,9 +139,8 @@ export class CardsService {
       setId,
     };
     // Redetermine the supported modes for this card
-    cardEntity.value.supportedModes = ['enToJp', 'jpToEn'];
-    if (cardEntity.value.jpTranslations.find((v) => v.length === 2))
-      cardEntity.value.supportedModes.push('kanjiToKana');
+    cardEntity.value.supportedModes = buildSupportedCardModes(cardEntity.value);
+
     // Update the card
     await this.cardRepository.update(id, cardEntity);
     // Find and return the card

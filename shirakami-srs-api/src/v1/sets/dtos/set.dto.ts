@@ -35,6 +35,7 @@ export class SetDto extends CreateOrUpdateSetDto {
   public readonly srsStatus: SetSrsStatus;
 
   static fromEntity(entity: SetEntity): SetDto {
+    if (!entity) return null;
     return {
       id: entity.id,
       name: entity.name,

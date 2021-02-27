@@ -16,6 +16,7 @@ import { JWTGuard } from '../authentication/guards/jwt.guard';
 import { User } from '../common/user.decorator';
 import { UserEntity } from '../users/entities/user.entity';
 import { CreateOrUpdateSetDto, SetDto } from './dtos/set.dto';
+import { SetExportV1 } from './exporters/set-exporter-v1';
 
 @Controller()
 export class SetsController {
@@ -36,7 +37,12 @@ export class SetsController {
     @User() user: UserEntity,
     @Query('shallow', new DefaultValuePipe('0'), ParseIntPipe) shallow,
   ): Promise<SetDto> {
-    const entity = await this.setsService.findOneById(id, user, shallow !== 1);
+    const entity = await this.setsService.findOneById(
+      id,
+      user,
+      shallow !== 1,
+      shallow !== 1,
+    );
     return SetDto.fromEntity(entity);
   }
 
@@ -45,8 +51,26 @@ export class SetsController {
   async exportSet(
     @Param('id') id: string,
     @User() user: UserEntity,
+    @Query('includeReviews', new DefaultValuePipe('0'), ParseIntPipe)
+    includeReviews,
   ): Promise<any> {
-    return this.setsService.exportSet(id, user);
+    return this.setsService.exportSet(id, user, includeReviews === 1);
+  }
+
+  @Post('import')
+  @UseGuards(JWTGuard)
+  async importSet(
+    @Body() set: SetExportV1,
+    @User() user: UserEntity,
+    @Query('includeReviews', new DefaultValuePipe('0'), ParseIntPipe)
+    includeReviews,
+  ): Promise<SetDto> {
+    const entity = await this.setsService.importSet(
+      set,
+      user,
+      includeReviews === 1,
+    );
+    return SetDto.fromEntity(entity);
   }
 
   @Post()

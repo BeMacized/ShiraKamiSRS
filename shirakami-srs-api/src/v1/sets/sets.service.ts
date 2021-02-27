@@ -1,6 +1,8 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {
   ForbiddenException,
+  forwardRef,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -15,7 +17,14 @@ import * as moment from 'moment';
 import { CreateOrUpdateSetDto } from './dtos/set.dto';
 import { UserEntity } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
-import { exportSetV1, SetExportV1 } from './exporters/set-exporter-v1';
+import {
+  exportSetV1,
+  importSetV1,
+  SetExportV1,
+} from './exporters/set-exporter-v1';
+import { CardsService } from './cards/cards.service';
+import { CardEntity } from './cards/entities/card.entity';
+import { ReviewEntity } from '../reviews/entities/review.entity';
 
 @Injectable()
 export class SetsService {
@@ -23,6 +32,10 @@ export class SetsService {
     @InjectRepository(SetEntity)
     private setRepository: Repository<SetEntity>,
     private userService: UsersService,
+    @InjectRepository(CardEntity)
+    private cardRepository: Repository<CardEntity>,
+    @InjectRepository(ReviewEntity)
+    private reviewRepository: Repository<ReviewEntity>,
   ) {}
 
   /**
@@ -45,6 +58,7 @@ export class SetsService {
    * @param id - The id of the set to find.
    * @param user - The id or entity of the user for which to look up the set. If not provided, ownership is not checked. (Optional)
    * @param includeCards - Whether to include cards with the set. (Optional, Default: false)
+   * @param includeReviews - Whether to include reviews with each card. (Optional, Default: false)
    * @returns The found set.
    * @throws {NotFoundException} when no set was found for the given id.
    * @throws {ForbiddenException} when the set does not belong to the specified user id.
@@ -53,6 +67,7 @@ export class SetsService {
     id: string,
     user?: string | UserEntity,
     includeCards = false,
+    includeReviews = false,
   ): Promise<SetEntity> {
     if (user) {
       if (typeof user === 'string')
@@ -60,7 +75,10 @@ export class SetsService {
       if (!user) throw new NotFoundException('User not found');
     }
     const entity = await this.setRepository.findOne(id, {
-      relations: includeCards ? ['cards', 'cards.reviews'] : [],
+      relations: [
+        includeCards ? 'cards' : null,
+        includeReviews ? 'cards.reviews' : null,
+      ].filter((r) => !!r),
     });
     if (!entity) throw new NotFoundException('Set not found');
     if (user && entity.userId !== (user as UserEntity).id)
@@ -162,6 +180,8 @@ FROM set_entity sets
                  SELECT cardId, ce.setId setId, (CAST(strftime('%s', reviewDate) AS INT) < ? AND currentLevel < ?) reviewable
                  FROM review_entity
                           INNER JOIN card_entity ce on review_entity.cardId = ce.id
+                          INNER JOIN set_entity se on ce.setId = se.id
+                 WHERE se.modes LIKE '%'||mode||'%'
                  GROUP BY cardId, mode
              ) cardsWithAReview
                  LEFT JOIN set_entity ON set_entity.id = cardsWithAReview.setId
@@ -221,14 +241,78 @@ GROUP BY setId, srsLevel
       },
     }));
   }
+
   /**
    * Export a set by its id
    * @param id - The id of the set to export.
    * @param user - The id or entity of the user for which to export the set. If not provided, ownership is not checked. (Optional)
+   * @param includeReviews - Whether to include card reviews with the export (Default: false).
    */
-  public async exportSet(id: string, user?: UserEntity): Promise<SetExportV1> {
+  public async exportSet(
+    id: string,
+    user?: UserEntity,
+    includeReviews = false,
+  ): Promise<SetExportV1> {
     // Find the set (and verify ownership)
-    const set = await this.findOneById(id, user, true);
-    return exportSetV1(set);
+    const set = await this.findOneById(id, user, true, true);
+    return exportSetV1(set, includeReviews);
+  }
+
+  /**
+   * Import a new set based on a file export.
+   * @param exportData - The exported data to import.
+   * @param user - The id or entity of the user for which to import the set.
+   * @param includeReviews - Whether to also import any reviews if they are present (Default: false).
+   */
+  public async importSet(
+    exportData: SetExportV1,
+    user?: string | UserEntity,
+    includeReviews = false,
+  ): Promise<SetEntity> {
+    // Ensure user object exists
+    if (user) {
+      if (typeof user === 'string')
+        user = await this.userService.findById(user);
+      if (!user) throw new NotFoundException('User not found');
+    }
+    // Parse the export data
+    const { set, cards, reviews } = importSetV1(exportData);
+    // Optionally validate imported reviews
+    if (includeReviews && reviews && reviews.length) {
+      //TODO: Verify every review has a matching card
+      //TODO: Verify every card has max three reviews
+      //TODO: Verify every card has max 1 review per review mode
+    }
+    // Create the set
+    const setCreationResult = await this.setRepository.insert({
+      ...set,
+      userId: (user as UserEntity).id,
+    });
+    const setId = setCreationResult.identifiers[0]['id'];
+    // Create the cards for the set
+    const cardCreationResults = await Promise.all(
+      cards.map(async (card) =>
+        this.cardRepository.insert({
+          ...card,
+          setId,
+        }),
+      ),
+    );
+    // Optionally import reviews
+    if (includeReviews && reviews && reviews.length) {
+      await Promise.all(
+        reviews
+          .map((reviewData) => {
+            const { cardIndex, ...review } = reviewData;
+            console.log('WEWLAD', { cardCreationResults, cardIndex, review });
+            return {
+              ...review,
+              cardId: cardCreationResults[cardIndex].identifiers[0]['id'],
+            } as ReviewEntity;
+          })
+          .map(async (review) => this.reviewRepository.save(review)),
+      );
+    }
+    return this.findOneById(setId, (user as UserEntity).id);
   }
 }

@@ -51,26 +51,30 @@ export class ReviewsService {
     timespan = 3600,
     setId?: string,
   ): Promise<ReviewSetDto> {
-    const reviews = await this.reviewRepository.find({
-      relations: ['card'],
-      join: { alias: 'reviews', innerJoin: { card: 'reviews.card' } },
-      where: (qb) => {
-        qb.where({
-          reviewDate: Between(
-            moment.unix(0).toDate().toISOString(),
-            moment()
-              .startOf('hour')
-              .add(Math.max(timespan - 1, 0), 'seconds')
-              .toDate()
-              .toISOString(),
-          ),
-          currentLevel: LessThan(
-            user.srsSettings.levels.reduce((acc, e) => Math.max(acc, e.id), 0),
-          ),
-        });
-        if (setId) qb.andWhere('card.setId = :setId', { setId: setId });
-      },
-    });
+    let reviewQuery = await this.reviewRepository
+      .createQueryBuilder('review')
+      .leftJoinAndSelect('review.card', 'card')
+      .leftJoinAndSelect('card.set', 'set')
+      .where('reviewDate BETWEEN :low AND :high', {
+        low: moment.unix(0).toDate().toISOString(),
+        high: moment()
+          .startOf('hour')
+          .add(Math.max(timespan - 1, 0), 'seconds')
+          .toDate()
+          .toISOString(),
+      })
+      .andWhere('currentLevel < :maxLevel', {
+        maxLevel: user.srsSettings.levels.reduce(
+          (acc, e) => Math.max(acc, e.id),
+          0,
+        ),
+      })
+      .andWhere(`set.modes LIKE '%'||mode||'%'`);
+    if (setId)
+      reviewQuery = reviewQuery.andWhere('card.setId = :setId', {
+        setId: setId,
+      });
+    const reviews = await reviewQuery.getMany();
     const cards: CardEntity[] = Object.values(
       reviews.reduce(
         (acc, e) => ((acc[e.cardId] = e.card as CardEntity), acc),
