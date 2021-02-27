@@ -1,5 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {
+  BadRequestException,
   ForbiddenException,
   forwardRef,
   Inject,
@@ -25,6 +26,7 @@ import {
 import { CardsService } from './cards/cards.service';
 import { CardEntity } from './cards/entities/card.entity';
 import { ReviewEntity } from '../reviews/entities/review.entity';
+import { ReviewModes } from '../reviews/dtos/review.dto';
 
 @Injectable()
 export class SetsService {
@@ -279,9 +281,25 @@ GROUP BY setId, srsLevel
     const { set, cards, reviews } = importSetV1(exportData);
     // Optionally validate imported reviews
     if (includeReviews && reviews && reviews.length) {
-      //TODO: Verify every review has a matching card
-      //TODO: Verify every card has max three reviews
-      //TODO: Verify every card has max 1 review per review mode
+      // Every review has to match a card
+      if (reviews.find((r) => r.cardIndex < 0 || r.cardIndex >= reviews.length))
+        throw new BadRequestException(
+          'Export could not be imported, due to the reviews not matching the included cards.',
+        );
+      // 1 review per mode per card
+      if (
+        cards.find((card, cardIndex) =>
+          ReviewModes.find(
+            (mode) =>
+              reviews.filter(
+                (r) => r.cardIndex === cardIndex && r.mode === mode,
+              ).length > 1,
+          ),
+        )
+      )
+        throw new BadRequestException(
+          'Export could not be imported, due to the presence conflicting reviews.',
+        );
     }
     // Create the set
     const setCreationResult = await this.setRepository.insert({
@@ -304,7 +322,6 @@ GROUP BY setId, srsLevel
         reviews
           .map((reviewData) => {
             const { cardIndex, ...review } = reviewData;
-            console.log('WEWLAD', { cardCreationResults, cardIndex, review });
             return {
               ...review,
               cardId: cardCreationResults[cardIndex].identifiers[0]['id'],
