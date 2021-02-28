@@ -119,10 +119,9 @@
                 <div *ngFor="let set of sets; trackBy: trackSetBy" @fade>
                     <app-card-set-card
                         [set]="set"
-                        (changeModes)="changeSetModes(set)"
-                        (rename)="renameSet(set)"
-                        (delete)="deleteSet(set)"
-                        (exportFile)='exportSet(set)'
+                        (changedModes)="updatedSet($event)"
+                        (renamed)="updatedSet($event)"
+                        (removed)="removedSet(set)"
                     ></app-card-set-card>
                 </div>
             </div>

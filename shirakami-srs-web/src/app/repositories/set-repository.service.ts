@@ -3,7 +3,12 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { AppSettingsService } from '../services/app-settings.service';
 import { Observable } from 'rxjs';
 import { map, switchMap, take } from 'rxjs/operators';
-import { CreateSetDto, SetDto, UpdateSetDto } from '../models/set.model';
+import {
+    CreateSetDto,
+    SetDto,
+    SetEntity,
+    UpdateSetDto,
+} from '../models/set.model';
 
 @Injectable({
     providedIn: 'root',
@@ -52,6 +57,19 @@ export class SetRepositoryService {
         return this.getApiUrl(`/sets/${id}/export`).pipe(
             switchMap((url) =>
                 this.http.get(url, { responseType: 'text', params })
+            )
+        );
+    }
+
+    public importSet(
+        fileData: any,
+        includeReviews: boolean = false
+    ): Observable<SetDto> {
+        let params = new HttpParams();
+        if (includeReviews) params = params.append('includeReviews', '1');
+        return this.getApiUrl(`/sets/import`).pipe(
+            switchMap((url) =>
+                this.http.post<SetDto>(url, fileData, { params })
             )
         );
     }

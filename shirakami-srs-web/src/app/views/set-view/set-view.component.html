@@ -4,10 +4,9 @@
         <app-card-set-card
             [set]="set"
             [config]="{ showManageAction: false }"
-            (changeModes)="changeSetModes(set)"
-            (rename)="renameSet(set)"
-            (delete)="deleteSet(set)"
-            (exportFile)='exportSet(set)'
+            (changedModes)="updatedSet($event)"
+            (renamed)="updatedSet($event)"
+            (removed)="removedSet()"
         ></app-card-set-card>
         <div class="section-header">
             <h1 class="section-header-title">

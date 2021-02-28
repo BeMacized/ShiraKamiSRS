@@ -63,11 +63,11 @@ export const routeAnimations = trigger('routeAnimations', [
     routeFadeUpPush('login', '*'),
     routeFadeUpPop('*', 'login'),
 
-    routeFadeUpPush('dashboard', 'lessons'),
-    routeFadeUpPop('lessons', 'dashboard'),
+    routeFadeUpPush('*', 'lessons'),
+    routeFadeUpPop('lessons', '*'),
 
-    routeFadeUpPush('dashboard', 'reviews'),
-    routeFadeUpPop('reviews', 'dashboard'),
+    routeFadeUpPush('*', 'reviews'),
+    routeFadeUpPop('reviews', '*'),
 ]);
 
 @NgModule({

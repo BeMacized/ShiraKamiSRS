@@ -108,7 +108,11 @@ export class SetService {
         }
     }
 
-    async exportSet(setId: string, setName: string, includeReviews = false): Promise<void> {
+    async exportSet(
+        setId: string,
+        setName: string,
+        includeReviews = false
+    ): Promise<void> {
         try {
             const setData = await this.setRepository
                 .exportSet(setId, includeReviews)
@@ -122,6 +126,28 @@ export class SetService {
                 switch (e.status) {
                     case 0:
                         throw new ServiceError('SERVICE_UNAVAILABLE');
+                }
+            }
+            throw e;
+        }
+    }
+
+    async importSet(
+        fileData: any,
+        includeReviews: boolean = false
+    ): Promise<SetEntity> {
+        try {
+            const set = await this.setRepository
+                .importSet(fileData, includeReviews)
+                .toPromise();
+            return SetEntity.fromDto(set);
+        } catch (e) {
+            if (e instanceof HttpErrorResponse) {
+                switch (e.status) {
+                    case 0:
+                        throw new ServiceError('SERVICE_UNAVAILABLE');
+                    case 400:
+                        throw new ServiceError('INVALID_IMPORT_DATA');
                 }
             }
             throw e;

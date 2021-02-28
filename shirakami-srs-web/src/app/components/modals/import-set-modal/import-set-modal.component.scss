@@ -1,0 +1,51 @@
+.toggle-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0.5em 0;
+    app-checkbox {
+        margin-right: 0.5em;
+    }
+}
+
+.file-box {
+    border: 1px solid var(--color-surface-border);
+    border-radius: 0.5em;
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+
+    &:hover {
+        background: var(--color-surface-mute);
+    }
+
+    &:active {
+        opacity: 0.7;
+    }
+
+    i.material-icons {
+        color: var(--color-primary);
+        font-size: 2em;
+        margin-bottom: 0.5em;
+    }
+    span {
+        color: var(--color-on-surface-mute);
+        text-align: center;
+        &.selected {
+            color: var(--color-on-surface);
+        }
+    }
+    input {
+        display: none;
+    }
+}
+
+.alert {
+    margin-top: 0.5em;
+}

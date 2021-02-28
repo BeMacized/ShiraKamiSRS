@@ -4,6 +4,11 @@ import { ContextMenuService } from '../../../services/context-menu.service';
 import { DomComponent } from '../../../services/dom.service';
 import { Router } from '@angular/router';
 import { SrsService } from '../../../services/srs.service';
+import { EditSetNameModalComponent } from '../../modals/edit-set-name-modal/edit-set-name-modal.component';
+import { ModalService } from '../../../services/modal.service';
+import { EditSetModesModalComponent } from '../../modals/edit-set-modes-modal/edit-set-modes-modal.component';
+import { DeleteSetModalComponent } from '../../modals/delete-set-modal/delete-set-modal.component';
+import { ExportSetModalComponent } from '../../modals/export-set-modal/export-set-modal.component';
 
 export interface CardSetCardConfig {
     showManageAction: boolean;
@@ -31,20 +36,21 @@ export class CardSetCardComponent implements OnInit {
     setActionsPopup: DomComponent;
 
     @Output()
-    changeModes: EventEmitter<void> = new EventEmitter<void>();
+    changedModes: EventEmitter<SetEntity> = new EventEmitter<SetEntity>();
 
     @Output()
-    rename: EventEmitter<void> = new EventEmitter<void>();
+    removed: EventEmitter<void> = new EventEmitter<void>();
 
     @Output()
-    delete: EventEmitter<void> = new EventEmitter<void>();
+    renamed: EventEmitter<SetEntity> = new EventEmitter<SetEntity>();
 
     @Output()
-    exportFile: EventEmitter<void> = new EventEmitter<void>();
+    exported: EventEmitter<void> = new EventEmitter<void>();
 
     constructor(
         private contextMenu: ContextMenuService,
         private router: Router,
+        private modalService: ModalService,
         public srsService: SrsService
     ) {}
 
@@ -71,22 +77,22 @@ export class CardSetCardComponent implements OnInit {
                         {
                             text: 'Rename',
                             icon: 'text_format',
-                            onClick: () => this.rename.emit(),
+                            onClick: this.rename,
                         },
                         {
                             text: 'Change Modes',
                             icon: 'edit',
-                            onClick: () => this.changeModes.emit(),
+                            onClick: this.changeModes,
                         },
                         {
                             text: 'Remove',
                             icon: 'delete_forever',
-                            onClick: () => this.delete.emit(),
+                            onClick: this.remove,
                         },
                         {
                             text: 'Export as File',
                             icon: 'file_download',
-                            onClick: () => this.exportFile.emit(),
+                            onClick: this.exportFile,
                         },
                     ].filter((i) => !!i),
                 },
@@ -98,4 +104,47 @@ export class CardSetCardComponent implements OnInit {
             );
         }
     }
+
+    rename = async () => {
+        const set = await this.modalService
+            .showModal<EditSetNameModalComponent, SetEntity, SetEntity>(
+                EditSetNameModalComponent,
+                this.set
+            )
+            .toPromise();
+        if (set) {
+            this.set = set;
+            this.renamed.emit(set);
+        }
+    };
+    changeModes = async () => {
+        const set = await this.modalService
+            .showModal<EditSetModesModalComponent, SetEntity, SetEntity>(
+                EditSetModesModalComponent,
+                this.set
+            )
+            .toPromise();
+        if (set) {
+            this.set = set;
+            this.changedModes.emit(set);
+        }
+    };
+    remove = async () => {
+        const removed = await this.modalService
+            .showModal<DeleteSetModalComponent, SetEntity, boolean>(
+                DeleteSetModalComponent,
+                this.set
+            )
+            .toPromise();
+        if (removed) this.removed.emit();
+    };
+    exportFile = async () => {
+        const exported = await this.modalService
+            .showModal<ExportSetModalComponent, SetEntity, boolean>(
+                ExportSetModalComponent,
+                this.set
+            )
+            .toPromise();
+        if (exported) this.exported.emit();
+    };
 }

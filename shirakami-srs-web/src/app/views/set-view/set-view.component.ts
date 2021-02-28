@@ -19,6 +19,7 @@ import {
     ConfirmationModalOutput,
 } from '../../components/modals/confirmation-modal/confirmation-modal.component';
 import { CardService } from '../../services/card.service';
+import { ExportSetModalComponent } from '../../components/modals/export-set-modal/export-set-modal.component';
 
 @Component({
     selector: 'app-set-view',
@@ -60,40 +61,6 @@ export class SetViewComponent implements OnInit {
             )
             .toPromise();
     }
-
-    changeSetModes = async (set: SetEntity) => {
-        this.set = {
-            ...((await this.modalService
-                .showModal<EditSetModesModalComponent, SetEntity, SetEntity>(
-                    EditSetModesModalComponent,
-                    set
-                )
-                .toPromise()) || this.set),
-            cards: this.set.cards,
-        };
-    };
-
-    renameSet = async (set: SetEntity) => {
-        this.set = {
-            ...((await this.modalService
-                .showModal<EditSetNameModalComponent, SetEntity, SetEntity>(
-                    EditSetNameModalComponent,
-                    set
-                )
-                .toPromise()) || this.set),
-            cards: this.set.cards,
-        };
-    };
-
-    deleteSet = async (set: SetEntity) => {
-        const deleted = await this.modalService
-            .showModal<DeleteSetModalComponent, SetEntity, boolean>(
-                DeleteSetModalComponent,
-                set
-            )
-            .toPromise();
-        if (deleted) await this.router.navigate(['dashboard']);
-    };
 
     createCard = () => {
         this.modalService
@@ -179,7 +146,14 @@ export class SetViewComponent implements OnInit {
         await this.fetchSet();
     }
 
-    exportSet = async (set: SetEntity) => {
-        await this.setService.exportSet(set.id, set.name);
+    updatedSet = async (updatedSet: SetEntity) => {
+        this.set = {
+            ...updatedSet,
+            cards: this.set.cards,
+        };
+    };
+
+    removedSet = async () => {
+        await this.router.navigate(['dashboard']);
     };
 }

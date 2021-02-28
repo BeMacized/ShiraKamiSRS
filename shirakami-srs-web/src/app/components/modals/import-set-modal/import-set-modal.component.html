@@ -7,10 +7,35 @@
     >
         <div class="modal-page" *ngIf="page === 'CONFIG'" @modalPage>
             <div class="modal-header">
-                <h1>Export Set</h1>
-                <h2>{{ set.name }}</h2>
+                <h1>Import Set</h1>
             </div>
             <div class="modal-content ai-start">
+                <div
+                    class="file-box animate__animated"
+                    (click)="fileInput.click()"
+                    [class.animate__shakeX]="shakeFileInput"
+                    [style.--animate-duration]="'0.5s'"
+                >
+                    <i class="material-icons">upload_file</i>
+                    <span *ngIf="!fileData">Select file</span>
+                    <span *ngIf="fileData" class="selected"
+                        >File: {{ file.name }}</span
+                    >
+                    <input
+                        type="file"
+                        id="fileInput"
+                        #fileInput
+                        (change)="handleFileInput($event.target)"
+                    />
+                </div>
+                <div
+                    class="alert alert-error"
+                    *ngIf="fileErrorMessage"
+                    @vshrink
+                >
+                    {{ fileErrorMessage }}
+                </div>
+                <span style="margin: 1em 0 0.5em 0">Aspects to import:</span>
                 <div class="toggle-row">
                     <app-checkbox
                         [checked]="true"
@@ -27,65 +52,68 @@
                 <button class="button btn btn-secondary" (click)="close()">
                     Cancel
                 </button>
-                <button class="button btn btn-primary" (click)="exportSet()">
-                    Export
+                <button
+                    class="button btn btn-primary"
+                    (click)="importSet()"
+                    [disabled]="!fileData"
+                >
+                    Import
                 </button>
             </div>
         </div>
-        <div class="modal-page" *ngIf="page === 'EXPORTING'" @modalPage>
+        <div class="modal-page" *ngIf="page === 'IMPORTING'" @modalPage>
             <div class="modal-header">
-                <h1>Export Set</h1>
-                <h2>{{ set.name }}</h2>
+                <h1>Import Set</h1>
             </div>
             <div
                 class="modal-content ai-center no-padding"
-                [smoothHeight]="exportStatus"
+                [smoothHeight]="importStatus"
             >
                 <div
                     @crossFade
                     class="modal-status-container"
-                    *ngIf="exportStatus === 'IN_PROGRESS'"
+                    *ngIf="importStatus === 'IN_PROGRESS'"
                 >
                     <app-spinner size="NORMAL"></app-spinner>
-                    <span class="status-message">Exporting set...</span>
+                    <span class="status-message">Importing set...</span>
                 </div>
                 <div
                     @crossFade
                     class="modal-status-container"
-                    *ngIf="exportStatus === 'ERROR'"
+                    *ngIf="importStatus === 'ERROR'"
                 >
                     <i class="material-icons error-icon">error_outline</i>
                     <span class="status-message">
-                        {{ errorMessage }}
+                        {{ importErrorMessage }}
                     </span>
                 </div>
                 <div
                     @crossFade
                     class="modal-status-container"
-                    *ngIf="exportStatus === 'SUCCESS'"
+                    *ngIf="importStatus === 'SUCCESS'"
                 >
                     <i class="material-icons success-icon"
                         >check_circle_outline</i
                     >
                     <span class="status-message">
-                        <span>Set '{{ set.name }}' exported successfully!</span>
+                        <span>Set '{{ set.name }}' imported successfully!</span>
                     </span>
                 </div>
             </div>
             <div class="modal-actions">
                 <button
                     class="button btn btn-secondary"
-                    (click)="exportSet()"
-                    *ngIf="exportStatus === 'ERROR'"
+                    (click)="page = 'CONFIG'"
+                    *ngIf="importStatus === 'ERROR'"
                     @hshrink
                 >
-                    Retry
+                    Back
                 </button>
                 <button
                     class="button btn btn-secondary"
                     (click)="close()"
-                    [disabled]="exportStatus === 'IN_PROGRESS'"
-                    *ngIf="exportStatus !== 'SUCCESS'"
+                    [disabled]="importStatus === 'IN_PROGRESS'"
+                    *ngIf="importStatus !== 'SUCCESS'"
                     @vshrink
                 >
                     Close

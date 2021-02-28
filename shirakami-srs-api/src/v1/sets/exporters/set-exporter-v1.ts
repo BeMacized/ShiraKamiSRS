@@ -38,6 +38,7 @@ export class SetExportV1 {
   @ValidateNested({ each: true })
   @Type(() => SetExportV1Review)
   @ArrayMaxSize(30000) // 3x the max allowed cards
+  @IsOptional()
   reviews?: SetExportV1Review[];
 }
 

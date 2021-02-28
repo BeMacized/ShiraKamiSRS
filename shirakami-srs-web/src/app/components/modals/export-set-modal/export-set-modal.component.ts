@@ -34,7 +34,7 @@ type Page = 'CONFIG' | 'EXPORTING';
     ],
 })
 export class ExportSetModalComponent
-    extends Modal<SetEntity>
+    extends Modal<SetEntity, boolean>
     implements OnInit {
     set: SetEntity;
     page: Page = 'CONFIG';
@@ -80,6 +80,7 @@ export class ExportSetModalComponent
             );
             this.exportStatus = 'SUCCESS';
             setTimeout(() => {
+                this.emit(true);
                 this.close();
             }, 1500);
         } catch (e) {

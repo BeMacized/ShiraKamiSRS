@@ -23,6 +23,7 @@ import {
 } from '../../components/modals/confirmation-modal/confirmation-modal.component';
 import { ServiceError } from '../../models/service-error.model';
 import { ExportSetModalComponent } from '../../components/modals/export-set-modal/export-set-modal.component';
+import { ImportSetModalComponent } from '../../components/modals/import-set-modal/import-set-modal.component';
 
 @Component({
     selector: 'app-dashboard-view',
@@ -119,6 +120,11 @@ export class DashboardViewComponent implements OnInit {
                             icon: 'add',
                             onClick: this.createSet,
                         },
+                        {
+                            text: 'Import Set',
+                            icon: 'file_upload',
+                            onClick: this.importSet,
+                        },
                     ],
                 },
                 $event
@@ -132,63 +138,35 @@ export class DashboardViewComponent implements OnInit {
 
     createSet = async () => {
         const set = await this.modalService
-            .showModal<CreateSetModalComponent>(CreateSetModalComponent)
+            .showModal<CreateSetModalComponent, void, SetEntity>(CreateSetModalComponent)
             .toPromise();
-        await this.router.navigate(['set', set.id]);
+        if (set) await this.router.navigate(['set', set.id]);
+    };
+
+    importSet = async () => {
+        const set = await this.modalService
+            .showModal<ImportSetModalComponent, void, SetEntity>(
+                ImportSetModalComponent
+            )
+            .toPromise();
+        if (set) await this.router.navigate(['set', set.id]);
     };
 
     trackSetBy(index: number, item: SetEntity) {
         return item.id;
     }
 
-    changeSetModes = async (set: SetEntity) => {
-        set = await this.modalService
-            .showModal<EditSetModesModalComponent, SetEntity, SetEntity>(
-                EditSetModesModalComponent,
-                set
-            )
-            .toPromise();
-        if (set) {
-            const index = this.sets.findIndex((s) => set && s.id === set.id);
-            if (index >= 0) this.sets.splice(index, 1, set);
-            await this.refreshData();
-        }
+    updatedSet = async (updatedSet: SetEntity) => {
+        const index = this.sets.findIndex(
+            (s) => updatedSet && s.id === updatedSet.id
+        );
+        if (index >= 0) this.sets.splice(index, 1, updatedSet);
+        await this.refreshData();
     };
 
-    renameSet = async (set: SetEntity) => {
-        set = await this.modalService
-            .showModal<EditSetNameModalComponent, SetEntity, SetEntity>(
-                EditSetNameModalComponent,
-                set
-            )
-            .toPromise();
-        if (set) {
-            const index = this.sets.findIndex((s) => set && s.id === set.id);
-            if (index >= 0) this.sets.splice(index, 1, set);
-            await this.refreshData();
-        }
-    };
-
-    deleteSet = async (set: SetEntity) => {
-        const deleted = await this.modalService
-            .showModal<DeleteSetModalComponent, SetEntity, boolean>(
-                DeleteSetModalComponent,
-                set
-            )
-            .toPromise();
-        if (deleted) {
-            const index = this.sets.findIndex((s) => set && s.id === set.id);
-            if (index >= 0) this.sets.splice(index, 1);
-            await this.refreshData();
-        }
-    };
-
-    exportSet = async (set: SetEntity) => {
-        await this.modalService
-            .showModal<ExportSetModalComponent, SetEntity>(
-                ExportSetModalComponent,
-                set
-            )
-            .toPromise();
+    removedSet = async (set: SetEntity) => {
+        const index = this.sets.findIndex((s) => set && s.id === set.id);
+        if (index >= 0) this.sets.splice(index, 1);
+        await this.refreshData();
     };
 }
