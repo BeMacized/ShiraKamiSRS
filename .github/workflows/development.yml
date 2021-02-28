@@ -1,0 +1,35 @@
+name: 'Development Build'
+
+# REQUIRED SECRETS:
+# - SLACK_WEBHOOK_URL
+
+env:
+    ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+    REPOSITORY_NAME: asito-web
+
+on:
+    push:
+        branches:
+            - '*'
+            - '*/*'
+            - '**'
+            - '!master'
+            - '!staging'
+
+jobs:
+    build:
+        runs-on: ubuntu-18.04
+        steps:
+            - uses: actions/checkout@v1
+            - name: Login to GitHub Container Registry
+              uses: docker/login-action@v1
+              with:
+                registry: ghcr.io
+                username: ${{ github.repository_owner }}
+                password: ${{ secrets.CR_PAT }}
+            - name: Build and push Docker image
+              id: docker_build
+              uses: docker/build-push-action@v2
+              with:
+                push: true
+                tags: BeMacized/ShiraKamiSRS:develop

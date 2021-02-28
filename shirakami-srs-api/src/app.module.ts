@@ -7,13 +7,18 @@ import { SetEntity } from './v1/sets/entities/set.entity';
 import { CardEntity } from './v1/sets/cards/entities/card.entity';
 import { V1Module } from './v1/v1.module';
 import { UserEntity } from './v1/users/entities/user.entity';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
 import { RefreshTokenEntity } from './v1/authentication/entities/refresh-token.entity';
 import { ReviewEntity } from './v1/reviews/entities/review.entity';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, 'web'),
+    }),
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: './sqlite.db',
@@ -41,4 +46,15 @@ import { ReviewEntity } from './v1/reviews/entities/review.entity';
   controllers: [AppController],
   providers: [],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private config: ConfigService) {
+    if (config.get('JWT_ACCESS_SECRET') === 'CHANGEME')
+      console.warn(
+        'Environment variable JWT_ACCESS_SECRET has not yet been changed. Please set this environment variable to prevent unauthorized access.',
+      );
+    if (config.get('JWT_REFRESH_SECRET') === 'CHANGEME')
+      console.warn(
+        'Environment variable JWT_REFRESH_SECRET has not yet been changed. Please set this environment variable to prevent unauthorized access.',
+      );
+  }
+}

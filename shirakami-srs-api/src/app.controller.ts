@@ -2,10 +2,8 @@ import { Controller, Get } from '@nestjs/common';
 
 @Controller()
 export class AppController {
-  constructor() {}
-
-  @Get()
-  onGetRoot() {
-    return 'ShiraKamiSRS API Server';
-  }
+  // @Get()
+  // onGetRoot() {
+  //   return 'ShiraKamiSRS API Server';
+  // }
 }
