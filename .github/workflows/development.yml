@@ -1,8 +1,5 @@
 name: 'Development Build'
 
-# env:
-#   ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-
 on:
     push:
         branches:
@@ -28,4 +25,4 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/shirakami-srs:develop
+          tags: ghcr.io/bemacized/shirakami-srs:develop
