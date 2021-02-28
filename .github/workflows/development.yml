@@ -1,11 +1,7 @@
 name: 'Development Build'
 
-# REQUIRED SECRETS:
-# - SLACK_WEBHOOK_URL
-
 env:
-    ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-    REPOSITORY_NAME: asito-web
+    # ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
 on:
     push:
