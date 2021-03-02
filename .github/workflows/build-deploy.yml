@@ -9,13 +9,3 @@ jobs:
   build_and_publish:
     runs-on: ubuntu-18.04
     steps:
-      - uses: actions/checkout@v1
-      - name: Publish to Registry
-        uses: sergeysova/docker-publish-action@master
-        with:
-          image: bemacized/shirakami-srs
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.CR_PAT }}
-          tag_semver: fail
-          semver_higher: true
