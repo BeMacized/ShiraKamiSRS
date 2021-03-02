@@ -205,7 +205,7 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
                 )
                 .forEach((card) => pages.push({ type: 'LESSON', card }));
             // Add lesson input pages
-            shuffle(lessonSet.lessons.slice()).forEach((l) =>
+            lessonSet.lessons.slice().forEach((l) =>
                 pages.push({ type: 'LESSON_INPUT', card: l.card, mode: l.mode })
             );
             // Reset stats
