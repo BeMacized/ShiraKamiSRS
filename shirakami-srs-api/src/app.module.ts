@@ -13,31 +13,46 @@ import { RefreshTokenEntity } from './v1/authentication/entities/refresh-token.e
 import { ReviewEntity } from './v1/reviews/entities/review.entity';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions';
 
 @Module({
   imports: [
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, 'web'),
     }),
-    TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: './sqlite.db',
-      entities: [
-        SetEntity,
-        CardEntity,
-        UserEntity,
-        RefreshTokenEntity,
-        ReviewEntity,
-      ],
-      synchronize: true,
-      logging: true,
-    }),
     ConfigModule.forRoot({
+      isGlobal: true,
       validationSchema: Joi.object({
         JWT_ACCESS_SECRET: Joi.string().required(),
         JWT_ACCESS_EXPIRY: Joi.number().default(60 * 60 * 24),
         JWT_REFRESH_SECRET: Joi.string().required(),
         JWT_REFRESH_EXPIRY: Joi.number().default(60 * 60 * 24 * 30),
+        MYSQL_HOST: Joi.string().default('localhost'),
+        MYSQL_PORT: Joi.number().default('3306'),
+        MYSQL_USER: Joi.string().default('shirakami'),
+        MYSQL_PASSWORD: Joi.string().default('shirakami'),
+        MYSQL_DB: Joi.string().default('shirakami'),
+      }),
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        type: 'mariadb',
+        host: configService.get('MYSQL_HOST'),
+        port: configService.get<number>('MYSQL_PORT'),
+        username: configService.get('MYSQL_USER'),
+        password: configService.get<string>('MYSQL_PASSWORD'),
+        database: configService.get<string>('MYSQL_DB'),
+        entities: [
+          SetEntity,
+          CardEntity,
+          UserEntity,
+          RefreshTokenEntity,
+          ReviewEntity,
+        ],
+        synchronize: true,
+        logging: true,
       }),
     }),
     RouterModule.forRoutes(APP_ROUTES),

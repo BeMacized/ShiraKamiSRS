@@ -167,9 +167,9 @@ FROM set_entity sets
     SELECT cards.id                                      cardId,
            cards.setId                                   setId,
            coalesce(cardReviews.reviewableReviews, 0) as reviews,
-           IIF(se.modes LIKE '%enToJp%', 1, 0)
-               + IIF(se.modes LIKE '%jpToEn%', 1, 0)
-               + IIF(se.modes LIKE '%kanjiToKana%' AND cards.valueSupportedmodes LIKE '%kanjiToKana%', 1, 0)
+           IF(se.modes LIKE '%enToJp%', 1, 0)
+               + IF(se.modes LIKE '%jpToEn%', 1, 0)
+               + IF(se.modes LIKE '%kanjiToKana%' AND cards.valueSupportedmodes LIKE '%kanjiToKana%', 1, 0)
                - coalesce(cardReviews.totalReviews, 0)   lessons
     FROM card_entity cards
              LEFT JOIN (
@@ -179,7 +179,7 @@ FROM set_entity sets
                COUNT(cardId)   as totalReviews,
                SUM(reviewable) as reviewableReviews
         FROM (
-                 SELECT cardId, ce.setId setId, (CAST(strftime('%s', reviewDate) AS INT) < ? AND currentLevel < ?) reviewable
+                 SELECT cardId, ce.setId setId, (UNIX_TIMESTAMP(reviewDate) < ? AND currentLevel < ?) reviewable
                  FROM review_entity
                           INNER JOIN card_entity ce on review_entity.cardId = ce.id
                           INNER JOIN set_entity se on ce.setId = se.id
@@ -204,12 +204,12 @@ GROUP BY sets.id
     if (setId) countParameters.push(setId);
     const countResults: Array<{
       setId: string;
-      reviews: number;
-      lessons: number;
+      reviews: string;
+      lessons: string;
     }> = await this.setRepository.query(countQuery, countParameters);
 
     const levelQuery = `
-SELECT se.id setId, re.currentLevel as srsLevel, COUNT() reviews
+SELECT se.id setId, re.currentLevel as srsLevel, COUNT(*) reviews
 FROM review_entity re
 INNER JOIN card_entity ce on ce.id = re.cardId
 INNER JOIN set_entity se on ce.setId = se.id
@@ -223,19 +223,21 @@ GROUP BY setId, srsLevel
     const levelResults: Array<{
       setId: string;
       srsLevel: number;
-      reviews: number;
+      reviews: string;
     }> = await this.setRepository.query(levelQuery, levelParameters);
 
     return countResults.map((countResult) => ({
       setId: countResult.setId,
       status: {
-        lessons: countResult.lessons,
-        reviews: countResult.reviews,
+        lessons: parseInt(countResult.lessons),
+        reviews: parseInt(countResult.reviews),
         levelItems: levelResults
           .filter((levelResult) => levelResult.setId === countResult.setId)
           .reduce(
             (levelItems, levelResult) => (
-              (levelItems[levelResult.srsLevel] = levelResult.reviews),
+              (levelItems[levelResult.srsLevel] = parseInt(
+                levelResult.reviews,
+              )),
               levelItems
             ),
             {},

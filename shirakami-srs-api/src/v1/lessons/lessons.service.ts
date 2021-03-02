@@ -29,21 +29,21 @@ FROM card_entity ce
          LEFT JOIN (
     SELECT *
     FROM (
-             SELECT se.id setId, IIF(se.modes LIKE '%enToJp%', 'enToJp', null) mode
+             SELECT se.id setId, IF(se.modes LIKE '%enToJp%', 'enToJp', null) mode
              FROM set_entity se
              WHERE se.userId = ?
                ${setId ? 'AND se.id = ?' : ''}
              UNION ALL
-             SELECT se.id setId, IIF(se.modes LIKE '%jpToEn%', 'jpToEn', null) mode
+             SELECT se.id setId, IF(se.modes LIKE '%jpToEn%', 'jpToEn', null) mode
              FROM set_entity se
              WHERE se.userId = ?
                ${setId ? 'AND se.id = ?' : ''}
              UNION ALL
-             SELECT se.id setId, IIF(se.modes LIKE '%kanjiToKana%', 'kanjiToKana', null) mode
+             SELECT se.id setId, IF(se.modes LIKE '%kanjiToKana%', 'kanjiToKana', null) mode
              FROM set_entity se
              WHERE se.userId = ?
                ${setId ? 'AND se.id = ?' : ''}
-         )
+         ) as setModesRaw
     WHERE mode IS NOT NULL
 ) setModes ON setModes.setId = ce.setId
 WHERE ce.id NOT IN (
@@ -103,21 +103,21 @@ FROM card_entity ce
          LEFT JOIN (
     SELECT *
     FROM (
-             SELECT se.id setId, IIF(se.modes LIKE '%enToJp%', 'enToJp', null) mode
+             SELECT se.id setId, IF(se.modes LIKE '%enToJp%', 'enToJp', null) mode
              FROM set_entity se
              WHERE se.userId = ?
                ${setId ? 'AND se.id = ?' : ''}
              UNION ALL
-             SELECT se.id setId, IIF(se.modes LIKE '%jpToEn%', 'jpToEn', null) mode
+             SELECT se.id setId, IF(se.modes LIKE '%jpToEn%', 'jpToEn', null) mode
              FROM set_entity se
              WHERE se.userId = ?
                ${setId ? 'AND se.id = ?' : ''}
              UNION ALL
-             SELECT se.id setId, IIF(se.modes LIKE '%kanjiToKana%', 'kanjiToKana', null) mode
+             SELECT se.id setId, IF(se.modes LIKE '%kanjiToKana%', 'kanjiToKana', null) mode
              FROM set_entity se
              WHERE se.userId = ?
                ${setId ? 'AND se.id = ?' : ''}
-         )
+         ) as setModesRaw
     WHERE mode IS NOT NULL
 ) setModes ON setModes.setId = ce.setId
 WHERE ce.id NOT IN (
