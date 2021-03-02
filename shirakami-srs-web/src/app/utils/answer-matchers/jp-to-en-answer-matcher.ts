@@ -40,7 +40,6 @@ export class JpToEnAnswerMatcher extends AnswerMatcher {
             ),
             ['distance']
         ).find((answer) => answer.distance <= allowedDistance);
-        console.log({ parsedAnswers, allowedDistance, matchingAnswer });
         if (matchingAnswer) {
             return {
                 passing: true,
