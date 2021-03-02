@@ -7,7 +7,7 @@ on:
             - '*/*'
             - '**'
             - '!master'
-            - '!staging'
+            - '!testing'
 
 jobs:
   build_and_publish:
