@@ -16,7 +16,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.CR_PAT }}
-      - name: Build and push Docker image
+      - name: Build and publish Docker image
         id: docker_build
         uses: docker/build-push-action@v2
         with:

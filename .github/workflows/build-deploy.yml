@@ -6,14 +6,14 @@ on:
       - '*'
 
 jobs:
-  build_and_publish:
+  build_publish_and_deploy:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v1
       - name: Get the version
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
-      - name: Publish to Registry
+      - name: Build and publish Docker image
         uses: sergeysova/docker-publish-action@master
         with:
           image: bemacized/shirakami-srs
@@ -23,7 +23,7 @@ jobs:
           tag_semver: fail
           semver_higher: true
           buildargs: 'BUILD_VERSION=${{steps.get_version.outputs.VERSION}}'
-      - name: executing remote ssh commands using password
+      - name: Update deployments
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.DO_SSH_HOST }}
