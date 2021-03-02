@@ -88,8 +88,8 @@ export class CreateEditCardModalComponent
             this.cardId = data.card.id;
             this.enTranslations = data.card.value.enTranslations.slice();
             this.jpTranslations = cloneDeep(data.card.value.jpTranslations);
-            this.enNote = data.card.value.enNote + '';
-            this.jpNote = data.card.value.jpNote + '';
+            this.enNote = data.card.value.enNote ?? '';
+            this.jpNote = data.card.value.jpNote ?? '';
         }
     }
 

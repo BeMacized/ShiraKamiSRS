@@ -149,6 +149,7 @@
                     type="text"
                     placeholder="漢字 (Optional)"
                     maxlength="255"
+                    [wanakana]='true'
                     #kanjiInput
                 />
             </div>
@@ -163,6 +164,7 @@
                     placeholder="かな"
                     maxlength="255"
                     #kanaInput
+                    [wanakana]='true'
                     (keyup.enter)="
                         addJpTranslation(kanaInput.value, kanjiInput.value)
                     "
