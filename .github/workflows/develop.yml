@@ -1,13 +1,9 @@
 name: 'Development Build'
 
 on:
-    push:
-        branches:
-            - '*'
-            - '*/*'
-            - '**'
-            - '!master'
-            - '!testing'
+  push:
+    branches:
+      - develop
 
 jobs:
   build_and_publish:

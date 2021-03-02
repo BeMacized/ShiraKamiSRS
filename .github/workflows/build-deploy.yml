@@ -1,4 +1,4 @@
-name: 'Production & Testing Build & Deploy'
+name: 'Build & Deploy'
 
 on:
   push:
@@ -19,3 +19,18 @@ jobs:
           password: ${{ secrets.CR_PAT }}
           tag_semver: fail
           semver_higher: true
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DO_SSH_HOST }}
+          username: ${{ secrets.DO_SSH_USER }}
+          key: ${{ secrets.DO_SSH_PRIVKEY }}
+          port: ${{ secrets.DO_SSH_PORT }}
+          script: docker-compose pull && docker-compose up -d --remove-orphans
+      - uses: sarisia/actions-status-discord@v1
+        if: always()
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          username: GitHub Actions
+          description: "Build & Deploy"
+          avatar_url: 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'
