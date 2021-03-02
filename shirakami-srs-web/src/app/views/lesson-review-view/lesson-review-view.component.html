@@ -78,20 +78,21 @@
                 </div>
                 <div class="lesson-lang-indicator">
                     <button
-                        class="lesson-lang-indicator-lang en"
-                        [class.active]="lessonStage === 'ENGLISH'"
-                        (click)="lessonStage = 'ENGLISH'"
-                    >
-                        <span class="flag-icon flag-icon-gb"></span>
-                        <span>English</span>
-                    </button>
-                    <button
                         class="lesson-lang-indicator-lang jp"
                         [class.active]="lessonStage === 'JAPANESE'"
-                        (click)="lessonStage = 'JAPANESE'"
+                        (click)="setLessonStage('JAPANESE')"
                     >
                         <span class="flag-icon flag-icon-jp"></span>
                         <span>Japanese</span>
+                    </button>
+                    <button
+                        class="lesson-lang-indicator-lang en"
+                        [class.active]="lessonStage === 'ENGLISH'"
+                        (click)="setLessonStage('ENGLISH')"
+
+                    >
+                        <span class="flag-icon flag-icon-gb"></span>
+                        <span>English</span>
                     </button>
                 </div>
             </div>
@@ -234,7 +235,7 @@
             />
             <button
                 class="btn btn-rect btn-transparent btn-submit"
-                (click)="onEnterKey()"
+                (click)="onEnterKey($event)"
             >
                 <i class="material-icons">arrow_forward_ios</i>
             </button>

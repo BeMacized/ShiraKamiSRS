@@ -109,6 +109,7 @@ app-checkbox {
                 align-items: center;
                 cursor: pointer;
                 transition: all 0.15s ease;
+                color: var(--color-on-surface);
                 &:hover {
                     transform: translateY(-1px);
                 }

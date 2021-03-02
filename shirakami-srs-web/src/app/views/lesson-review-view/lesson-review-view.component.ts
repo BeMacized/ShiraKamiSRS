@@ -38,6 +38,7 @@ abstract class BasePage {
 
 class LessonPage extends BasePage {
     type: 'LESSON';
+    viewedStages: LessonStage[];
 }
 
 class LessonInputPage extends BasePage {
@@ -84,7 +85,7 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
     itemsCorrect = 0;
     itemsInSession = 0;
     totalItemsRemaining = 0;
-    lessonStages: LessonStage[] = ['ENGLISH', 'JAPANESE']; // Can be changed later for order preferences
+    lessonStages: LessonStage[] = ['JAPANESE', 'ENGLISH']; // Can be changed later for order preferences
     lessonStage: LessonStage;
     inputStage: InputStage;
     inputFeedback: InputFeedback;
@@ -131,7 +132,7 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
             {
                 Enter: (event) => {
                     event.preventDefault();
-                    void this.onEnterKey();
+                    void this.onEnterKey(event);
                 },
                 ArrowRight: () => void this.onRightKey(),
                 l: () => void this.onRightKey(),
@@ -203,10 +204,16 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
                             : [...acc, e.card],
                     [] as CardEntity[]
                 )
-                .forEach((card) => pages.push({ type: 'LESSON', card }));
+                .forEach((card) =>
+                    pages.push({ type: 'LESSON', card, viewedStages: [] })
+                );
             // Add lesson input pages
             lessonSet.lessons.slice().forEach((l) =>
-                pages.push({ type: 'LESSON_INPUT', card: l.card, mode: l.mode })
+                pages.push({
+                    type: 'LESSON_INPUT',
+                    card: l.card,
+                    mode: l.mode,
+                })
             );
             // Reset stats
             this.itemsCorrect = 0;
@@ -269,14 +276,29 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
         // If we're not on a lesson, we're not gonna do anything
         if (!this.page || this.page.type !== 'LESSON') return;
         // If we have not yet seen all translations, show the next translation
-        const lessonStageIndex = this.lessonStages.indexOf(this.lessonStage);
-        if (lessonStageIndex !== this.lessonStages.length - 1) {
-            this.lessonStage = this.lessonStages[lessonStageIndex + 1];
+        if (this.page.viewedStages.length < this.lessonStages.length) {
+            this.setLessonStage(
+                this.lessonStages.find(
+                    (s) => !(this.page as LessonPage).viewedStages.includes(s)
+                )
+            );
             return;
         }
         // Otherwise, actually move to the next lesson
         if (this.pageIndex < this.pages.length - 1) {
-            const nextPage = this.pages[this.pageIndex + 1];
+            // Get the next lesson with unseen lesson stages
+            const nextPage =
+                this.pages
+                    .slice(this.pageIndex + 1)
+                    .find(
+                        (p) =>
+                            p.type === 'LESSON' &&
+                            p.viewedStages.length < this.lessonStages.length
+                    ) ??
+                // or just return the next non-lesson page if there's none
+                this.pages
+                    .slice(this.pageIndex + 1)
+                    .find((p) => p.type !== 'LESSON');
             if (nextPage.type === 'LESSON') this.pageIndex++;
             else if (nextPage.type === 'LESSON_INPUT') {
                 const result = await this.modalService
@@ -489,7 +511,7 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
         }
     }
 
-    async onEnterKey() {
+    async onEnterKey(event?: Event) {
         if (!this.page) return;
         switch (this.page.type) {
             case 'LESSON':
@@ -499,8 +521,11 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
             case 'LESSON_INPUT':
                 if (this.inputStage === 'INPUT') {
                     if (
-                        document.activeElement ===
-                        this.answerInputEl?.nativeElement
+                        !event ||
+                        event instanceof MouseEvent ||
+                        (event instanceof KeyboardEvent &&
+                            document.activeElement ===
+                                this.answerInputEl?.nativeElement)
                     ) {
                         await this.processAnswer();
                     }
@@ -523,8 +548,19 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
             this.inputFeedback = null;
             this.inputStage = 'INPUT';
         } else if (page.type === 'LESSON') {
-            this.lessonStage = this.lessonStages[0];
+            this.setLessonStage(
+                this.lessonStages.find(
+                    (s) => !(this.page as LessonPage).viewedStages.includes(s)
+                ) ?? this.lessonStages[0]
+            );
         }
+    }
+
+    setLessonStage(stage: LessonStage) {
+        if (this.page.type !== 'LESSON') return;
+        this.lessonStage = stage;
+        if (!this.page.viewedStages.includes(stage))
+            this.page.viewedStages.push(stage);
     }
 
     get canIgnoreAnswer() {
