@@ -1,4 +1,5 @@
 name: Bump Version
+
 on:
   push:
     branches:
@@ -20,3 +21,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_BRANCHES: master
           PRERELEASE_SUFFIX: ${{ steps.extract_branch.outputs.branch }}
+          DEFAULT_BUMP: PATCH
