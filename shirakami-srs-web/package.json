@@ -9,7 +9,8 @@
         "lint": "ng lint",
         "e2e": "ng e2e",
         "postinstall": "npm run ensure-appsettings && rm -rf ./node_modules/flag-icon-css/flags/1x1 && cp -r ./node_modules/flag-icon-css/flags/4x3 ./node_modules/flag-icon-css/flags/1x1",
-        "ensure-appsettings": "ts-node --project scripts/tsconfig.json -- scripts/ensure-appsettings.ts"
+        "ensure-appsettings": "ts-node --project scripts/tsconfig.json -- scripts/ensure-appsettings.ts",
+        "apply-build-version": "ts-node --project scripts/tsconfig.json -- scripts/apply-build-version.ts"
     },
     "private": true,
     "dependencies": {

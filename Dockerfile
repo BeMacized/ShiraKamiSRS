@@ -1,12 +1,18 @@
 FROM node:14-buster AS buildBackend
+ARG BUILD_VERSION=DEV
 WORKDIR /app
 COPY ./shirakami-srs-api .
-RUN npm install && npm run build
+RUN npm install
+RUN npm run apply-build-version "$BUILD_VERSION"
+RUN npm run build
 
 FROM node:14-buster AS buildFrontend
+ARG BUILD_VERSION=DEV
 WORKDIR /app
 COPY ./shirakami-srs-web .
-RUN npm install && npm run build
+RUN npm install
+RUN npm run apply-build-version "$BUILD_VERSION"
+RUN npm run build
 
 FROM node:14-buster
 WORKDIR /app

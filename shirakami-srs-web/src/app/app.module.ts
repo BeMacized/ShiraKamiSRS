@@ -39,6 +39,7 @@ import { NgPipesModule } from 'ngx-pipes';
 import { WanakanaDirective } from './directives/wanakana.directive';
 import { ExportSetModalComponent } from './components/modals/export-set-modal/export-set-modal.component';
 import { ImportSetModalComponent } from './components/modals/import-set-modal/import-set-modal.component';
+import { buildVersion } from '../assets/build-version.json';
 
 export function initializeApp(appInitService: AppInitService) {
     return () => appInitService.init();
@@ -99,4 +100,8 @@ export function initializeApp(appInitService: AppInitService) {
     bootstrap: [AppComponent],
     // entryComponents: [],
 })
-export class AppModule {}
+export class AppModule {
+    constructor() {
+        console.log(`Loading ShiraKamiSRS v${buildVersion}`);
+    }
+}

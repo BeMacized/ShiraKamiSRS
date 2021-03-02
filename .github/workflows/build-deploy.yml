@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v1
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
       - name: Publish to Registry
         uses: sergeysova/docker-publish-action@master
         with:
@@ -19,6 +22,7 @@ jobs:
           password: ${{ secrets.CR_PAT }}
           tag_semver: fail
           semver_higher: true
+          buildargs: 'BUILD_VERSION=${{steps.get_version.outputs.VERSION}}'
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@master
         with:

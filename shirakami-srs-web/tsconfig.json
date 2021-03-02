@@ -22,7 +22,8 @@
             "es2018",
             "dom",
             "es2020.string"
-        ]
+        ],
+        "resolveJsonModule": true
     },
     "angularCompilerOptions": {
         "strictInjectionParameters": true,
