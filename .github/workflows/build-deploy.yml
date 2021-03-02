@@ -36,5 +36,5 @@ jobs:
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           username: GitHub Actions
-          description: "Build & Deploy"
+          description: "Build, Publish & Deploy"
           avatar_url: 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'

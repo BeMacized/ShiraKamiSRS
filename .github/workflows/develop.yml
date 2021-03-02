@@ -22,3 +22,10 @@ jobs:
         with:
           push: true
           tags: ghcr.io/bemacized/shirakami-srs:develop
+      - uses: sarisia/actions-status-discord@v1
+        if: failed()
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          username: GitHub Actions
+          description: "Build & Publish"
+          avatar_url: 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'
