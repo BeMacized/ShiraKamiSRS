@@ -310,13 +310,11 @@ GROUP BY setId, srsLevel
     });
     const setId = setCreationResult.identifiers[0]['id'];
     // Create the cards for the set
-    const cardCreationResults = await Promise.all(
-      cards.map(async (card) =>
-        this.cardRepository.insert({
-          ...card,
-          setId,
-        }),
-      ),
+    const cardCreationResults = await this.cardRepository.insert(
+      cards.map((card) => ({
+        ...card,
+        setId,
+      })),
     );
     // Optionally import reviews
     if (includeReviews && reviews && reviews.length) {
@@ -326,7 +324,7 @@ GROUP BY setId, srsLevel
             const { cardIndex, ...review } = reviewData;
             return {
               ...review,
-              cardId: cardCreationResults[cardIndex].identifiers[0]['id'],
+              cardId: cardCreationResults.identifiers[cardIndex]['id'],
             } as ReviewEntity;
           })
           .map(async (review) => this.reviewRepository.save(review)),

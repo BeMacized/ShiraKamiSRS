@@ -3,11 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { map, switchMap, take } from 'rxjs/operators';
 import { AppSettingsService } from '../services/app-settings.service';
 import { Observable } from 'rxjs';
-
-export interface AuthResponse {
-    accessToken: string;
-    refreshToken: string;
-}
+import { AuthResponseDto, RegisterResponseDto } from '../models/auth.model';
 
 @Injectable({
     providedIn: 'root',
@@ -18,11 +14,27 @@ export class AuthRepositoryService {
         private appSettings: AppSettingsService
     ) {}
 
-    public login(email: string, password: string): Observable<AuthResponse> {
+    public login(email: string, password: string): Observable<AuthResponseDto> {
         return this.getApiUrl(`/auth/login`).pipe(
             switchMap((url) =>
-                this.http.post<AuthResponse>(url, {
+                this.http.post<AuthResponseDto>(url, {
                     email,
+                    password,
+                })
+            )
+        );
+    }
+
+    public register(
+        email: string,
+        username: string,
+        password: string
+    ): Observable<RegisterResponseDto> {
+        return this.getApiUrl(`/auth/register`).pipe(
+            switchMap((url) =>
+                this.http.post<RegisterResponseDto>(url, {
+                    email,
+                    username,
                     password,
                 })
             )
@@ -32,10 +44,10 @@ export class AuthRepositoryService {
     public refresh(
         accessToken: string,
         refreshToken: string
-    ): Observable<AuthResponse> {
+    ): Observable<AuthResponseDto> {
         return this.getApiUrl(`/auth/refresh`).pipe(
             switchMap((url) =>
-                this.http.post<AuthResponse>(url, {
+                this.http.post<AuthResponseDto>(url, {
                     accessToken,
                     refreshToken,
                 })

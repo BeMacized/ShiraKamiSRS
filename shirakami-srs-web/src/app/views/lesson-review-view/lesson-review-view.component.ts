@@ -314,7 +314,7 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
                     })
                     .toPromise();
                 if (!result) return;
-                this.pageIndex++;
+                this.pageIndex = this.pages.indexOf(nextPage);
             }
         }
     }

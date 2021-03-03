@@ -1,13 +1,23 @@
 @import 'materials.scss';
 
 :host {
+    display: block;
     width: 100%;
-    min-height: 100vh;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.dialog-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
 }
 
 .dialog {
@@ -18,6 +28,7 @@
     justify-content: center;
     max-width: 350px;
     width: 100%;
+    text-align: center;
 
     app-logo {
         margin-bottom: 0.25em;
@@ -31,6 +42,10 @@
     .title {
         font-weight: 200;
         font-size: 2em;
+    }
+
+    .text {
+        margin: 2em 0;
     }
 
     a {

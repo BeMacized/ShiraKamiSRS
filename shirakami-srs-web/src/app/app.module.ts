@@ -14,7 +14,7 @@ import { CollapsibleComponent } from './components/misc/collapsible/collapsible.
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MainNavComponent } from './components/misc/main-nav/main-nav.component';
 import { LogoComponent } from './components/misc/logo/logo.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { SpinnerComponent } from './components/misc/spinner/spinner.component';
 import { AuthInterceptor } from './interceptors/auth-interceptor.service';
@@ -81,6 +81,7 @@ export function initializeApp(appInitService: AppInitService) {
         BrowserAnimationsModule,
         HttpClientModule,
         FormsModule,
+        ReactiveFormsModule,
         AppRoutingModule,
         MomentModule,
         Ng2FittextModule,

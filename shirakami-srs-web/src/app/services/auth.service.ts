@@ -7,15 +7,13 @@ import {
     TokenSetSchema,
 } from '../models/token-set.model';
 import { delay, filter, map, switchMap } from 'rxjs/operators';
-import {
-    AuthRepositoryService,
-    AuthResponse,
-} from '../repositories/auth-repository.service';
+import { AuthRepositoryService } from '../repositories/auth-repository.service';
 import jwt_decode from 'jwt-decode';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ServiceError } from '../models/service-error.model';
 import { UserService } from './user.service';
 import { Router } from '@angular/router';
+import { AuthResponseDto } from '../models/auth.model';
 
 const TOKEN_SET_KEY = 'AUTH_TOKEN_SET';
 const ACCESS_TOKEN_REFRESH_PERIOD = 1000 * 60 * 5;
@@ -84,6 +82,39 @@ export class AuthService {
             await this.logout();
             if (e instanceof HttpErrorResponse) {
                 switch (e.status) {
+                    case 0:
+                        throw new ServiceError('SERVICE_UNAVAILABLE');
+                }
+            }
+            throw e;
+        }
+    }
+
+    async register(
+        email: string,
+        username: string,
+        password: string
+    ): Promise<{
+        needsAccountVerification: boolean;
+    }> {
+        try {
+            const resp = await this.authRepository
+                .register(email, username, password)
+                .toPromise();
+            return { needsAccountVerification: false };
+        } catch (e) {
+            if (e instanceof HttpErrorResponse) {
+                switch (e.status) {
+                    case 400:
+                        throw new ServiceError('INVALID_REGISTRATION_DATA');
+                    case 409:
+                        console.log(e, e.error, e.error.error);
+                        if (
+                            e.error.error === 'EMAIL_EXISTS' ||
+                            e.error.error === 'USERNAME_USED_TOO_OFTEN'
+                        )
+                            throw new ServiceError(e.error.error);
+                        break;
                     case 0:
                         throw new ServiceError('SERVICE_UNAVAILABLE');
                 }
@@ -189,7 +220,7 @@ export class AuthService {
             .toPromise();
     }
 
-    private getTokenSetFromLoginResponse(resp: AuthResponse): TokenSet {
+    private getTokenSetFromLoginResponse(resp: AuthResponseDto): TokenSet {
         const { exp: accessExp } = jwt_decode(resp.accessToken) as any;
         const { exp: refreshExp } = jwt_decode(resp.refreshToken) as any;
         return {

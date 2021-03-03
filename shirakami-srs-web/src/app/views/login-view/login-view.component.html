@@ -1,51 +1,263 @@
-<div class="card dialog">
-    <app-logo></app-logo>
-    <span class="title">Log in</span>
-    <form class="input-block" (ngSubmit)="onFormSubmit()">
-        <input
-            class="input"
-            type="text"
-            name="email"
-            placeholder="E-mail address"
-            [(ngModel)]="email"
-        />
-        <input
-            class="input"
-            type="password"
-            name="password"
-            placeholder="Password"
-            [(ngModel)]="password"
-        />
-        <input type="submit" style="visibility: hidden; position: absolute" />
-        <div class="alert alert-error login-error" *ngIf="loginError" @vshrink>
-            {{ loginError }}
-        </div>
-    </form>
-    <button
-        class="btn btn-primary"
-        (click)="onFormSubmit()"
-        [disabled]="
-            loginStatus === 'IN_PROGRESS' ||
-            loginStatus === 'SUCCESS' ||
-            (!email && !password)
-        "
-    >
-        <div class="flex-row jc-center ai-center">
-            <div *ngIf="loginStatus === 'IN_PROGRESS'" @hshrink>
-                <app-spinner [size]="'SMALL'"></app-spinner>
-            </div>
+<div class="dialog-container" *ngIf="mode === 'LOGIN'" @fadeUp>
+    <div class="card dialog">
+        <app-logo></app-logo>
+        <span class="title">Sign in</span>
+        <form
+            class="input-block"
+            [formGroup]="loginForm"
+            (ngSubmit)="onLoginClick()"
+        >
+            <input
+                class="input"
+                type="text"
+                name="email"
+                placeholder="E-mail address"
+                formControlName="email"
+            />
+            <input
+                class="input"
+                type="password"
+                name="password"
+                placeholder="Password"
+                formControlName="password"
+            />
+            <input
+                type="submit"
+                style="visibility: hidden; position: absolute"
+            />
             <div
-                *ngIf="loginStatus === 'IDLE' || loginStatus === 'ERROR'"
-                @hshrink
-                class="nowrap"
+                class="alert alert-error login-error"
+                *ngIf="loginError"
+                @vshrink
             >
-                Log In
+                {{ loginError }}
             </div>
-            <div *ngIf="loginStatus === 'SUCCESS'" @hshrink>
-                <i class="material-icons">done</i>
+        </form>
+        <button
+            class="btn btn-primary"
+            (click)="onLoginClick()"
+            [disabled]="
+                loginStatus === 'IN_PROGRESS' ||
+                loginStatus === 'SUCCESS' ||
+                loginForm.invalid
+            "
+        >
+            <div class="flex-row jc-center ai-center">
+                <div *ngIf="loginStatus === 'IN_PROGRESS'" @hshrink>
+                    <app-spinner [size]="'SMALL'"></app-spinner>
+                </div>
+                <div
+                    *ngIf="loginStatus === 'IDLE' || loginStatus === 'ERROR'"
+                    @hshrink
+                    class="nowrap"
+                >
+                    Sign In
+                </div>
+                <div *ngIf="loginStatus === 'SUCCESS'" @hshrink>
+                    <i class="material-icons">done</i>
+                </div>
             </div>
-        </div>
-    </button>
-    <button class="btn btn-secondary">Create Account</button>
-    <a href="#" class="forgot-password">I forgot my password</a>
+        </button>
+        <button
+            class="btn btn-secondary"
+            (click)="setMode('REGISTER')"
+            [disabled]="
+                loginStatus === 'IN_PROGRESS' || loginStatus === 'SUCCESS'
+            "
+        >
+            Register
+        </button>
+        <a href="#" class="forgot-password">I forgot my password</a>
+    </div>
+</div>
+
+<div class="dialog-container" *ngIf="mode === 'REGISTER'" @fadeUp>
+    <div class="card dialog">
+        <span class="title">Register Account</span>
+        <form
+            class="input-block"
+            [formGroup]="registerForm"
+            (ngSubmit)="onRegisterClick()"
+        >
+            <input
+                class="input"
+                type="text"
+                name="username"
+                placeholder="Username"
+                formControlName="username"
+            />
+            <div
+                class="alert alert-error login-error"
+                *ngIf="showForInvalid(registerForm, 'username')"
+                @vshrink
+            >
+                <ng-container
+                    *ngIf="registerForm.get('username').errors.required"
+                >
+                    A username is required.
+                </ng-container>
+                <ng-container
+                    *ngIf="registerForm.get('username').errors.minlength"
+                >
+                    Your username must be at least 3 characters long.
+                </ng-container>
+                <ng-container
+                    *ngIf="registerForm.get('username').errors.maxlength"
+                >
+                    Your username can only be 32 characters long maximum.
+                </ng-container>
+                <ng-container
+                    *ngIf="registerForm.get('username').errors.pattern"
+                >
+                    Your username can only contain letters, numbers, dashes (-)
+                    and underscores (_), with no spacing allowed.
+                </ng-container>
+            </div>
+            <input
+                class="input"
+                type="text"
+                name="email"
+                placeholder="E-mail address"
+                formControlName="email"
+            />
+            <div
+                class="alert alert-error login-error"
+                *ngIf="showForInvalid(registerForm, 'email')"
+                @vshrink
+            >
+                <ng-container *ngIf="registerForm.get('email').errors.required">
+                    A valid e-mail address is required.
+                </ng-container>
+                <ng-container *ngIf="registerForm.get('email').errors.email">
+                    Only a valid e-mail address is accepted.
+                </ng-container>
+            </div>
+            <input
+                class="input"
+                type="password"
+                name="password"
+                placeholder="Password"
+                formControlName="password"
+            />
+            <div
+                class="alert alert-error login-error"
+                *ngIf="showForInvalid(registerForm, 'password')"
+                @vshrink
+            >
+                <ng-container
+                    *ngIf="registerForm.get('password').errors.required"
+                >
+                    You must provide a password.
+                </ng-container>
+                <ng-container
+                    *ngIf="registerForm.get('password').errors.minlength"
+                >
+                    Your password must be at least 6 characters.
+                </ng-container>
+                <ng-container
+                    *ngIf="registerForm.get('password').errors.maxlength"
+                >
+                    Your password can only be 32 characters long maximum.
+                </ng-container>
+            </div>
+            <input
+                class="input"
+                type="password"
+                name="passwordConfirm"
+                placeholder="Confirm password"
+                formControlName="passwordConfirm"
+            />
+            <div
+                class="alert alert-error login-error"
+                *ngIf="
+                    showForInvalid(registerForm, 'passwordConfirm') ||
+                    (registerForm.errors?.passwordNoMatch &&
+                        (registerForm.get('passwordConfirm').touched ||
+                            registerForm.get('passwordConfirm').dirty))
+                "
+                @vshrink
+            >
+                <ng-container *ngIf="registerForm.errors?.passwordNoMatch">
+                    Please make sure your password confirmation matches your
+                    given password.
+                </ng-container>
+            </div>
+            <input
+                type="submit"
+                style="visibility: hidden; position: absolute"
+            />
+            <div
+                class="alert alert-error login-error"
+                *ngIf="registerError"
+                @vshrink
+            >
+                {{ registerError }}
+            </div>
+        </form>
+        <button
+            class="btn btn-primary"
+            (click)="onRegisterClick()"
+            [disabled]="
+                registerStatus === 'IN_PROGRESS' ||
+                registerStatus === 'SUCCESS' ||
+                registerForm.invalid
+            "
+        >
+            <div class="flex-row jc-center ai-center">
+                <div *ngIf="registerStatus === 'IN_PROGRESS'" @hshrink>
+                    <app-spinner [size]="'SMALL'"></app-spinner>
+                </div>
+                <div
+                    *ngIf="
+                        registerStatus === 'IDLE' || registerStatus === 'ERROR'
+                    "
+                    @hshrink
+                    class="nowrap"
+                >
+                    Register
+                </div>
+                <div *ngIf="registerStatus === 'SUCCESS'" @hshrink>
+                    <i class="material-icons">done</i>
+                </div>
+            </div>
+        </button>
+        <button
+            class="btn btn-secondary"
+            (click)="setMode('LOGIN')"
+            [disabled]="
+                registerStatus === 'IN_PROGRESS' || registerStatus === 'SUCCESS'
+            "
+        >
+            Use Existing Account
+        </button>
+    </div>
+</div>
+
+<div class="dialog-container" *ngIf="mode === 'ACCOUNT_CREATED'" @fadeUp>
+    <div class="card dialog">
+        <span class="title">Account Created</span>
+        <span class="text">
+            Your account has been created!
+            <br />
+            You can continue by signing in with the credentials you provided.
+        </span>
+        <button class="btn btn-secondary" (click)="setMode('LOGIN')">
+            Sign In
+        </button>
+    </div>
+</div>
+
+<div class="dialog-container" *ngIf="mode === 'VERIFY_ACCOUNT'" @fadeUp>
+    <div class="card dialog">
+        <span class="title">Account Created</span>
+        <span class="text">
+            Your account has been created!
+            <br />
+            Before you can sign in, you must verify your e-mail address. Click
+            the link in the e-mail that has been sent to you in order to verify.
+        </span>
+        <button class="btn btn-secondary" (click)="setMode('LOGIN')">
+            Sign In
+        </button>
+    </div>
 </div>

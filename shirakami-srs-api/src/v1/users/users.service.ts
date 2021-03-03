@@ -1,4 +1,8 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserEntity, UserEntity } from './entities/user.entity';
 import { Repository } from 'typeorm';
@@ -38,8 +42,8 @@ export class UsersService {
       const existingUser = await this.findByEmail(userData.email);
       if (existingUser)
         throw new ConflictException(
-          null,
           'A user with this email already exists',
+          'EMAIL_EXISTS',
         );
     } catch (e) {
       if (!(e instanceof NotFoundException)) throw e;
@@ -55,8 +59,8 @@ export class UsersService {
     }
     if (!discriminator)
       throw new ConflictException(
-        null,
         'This username has been used too often',
+        'USERNAME_USED_TOO_OFTEN',
       );
     // Hash the password
     const passwordHash = await bcrypt.hash(userData.password, 10);
