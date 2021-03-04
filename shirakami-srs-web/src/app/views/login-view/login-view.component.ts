@@ -79,6 +79,10 @@ export class LoginViewComponent implements OnInit {
             this.loginStatus = 'ERROR';
             if (e instanceof ServiceError) {
                 switch (e.code) {
+                    case 'RATE_LIMITED':
+                        this.loginError =
+                            'There have been too many login attempts from your address. Please try again later.';
+                        return;
                     case 'INVALID_CREDENTIALS':
                         this.loginError =
                             'The provided credentials are invalid.';
@@ -123,6 +127,10 @@ export class LoginViewComponent implements OnInit {
             this.registerStatus = 'ERROR';
             if (e instanceof ServiceError) {
                 switch (e.code) {
+                    case 'RATE_LIMITED':
+                        this.registerError =
+                            'There have been too many sign up attempts from your address. Please try again later.';
+                        return;
                     case 'MAILER_FAILED':
                         this.registerError =
                             'The verification email could not be sent. Please contact an administrator.';

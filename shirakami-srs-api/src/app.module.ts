@@ -14,6 +14,7 @@ import { ReviewEntity } from './v1/reviews/entities/review.entity';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -71,6 +72,7 @@ import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOpti
       }),
     }),
     RouterModule.forRoutes(APP_ROUTES),
+    ThrottlerModule.forRoot(),
     V1Module,
   ],
   controllers: [AppController],

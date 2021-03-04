@@ -22,6 +22,7 @@ import { RegisterResponseDto } from './dtos/register-response.dto';
 import { ConfigService } from '@nestjs/config';
 import { EmailVerificationTokenPayload } from './interfaces/token-payload.interface';
 import { MailService } from '../common/mail.service';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller()
 export class AuthenticationController {
@@ -33,6 +34,7 @@ export class AuthenticationController {
   ) {}
 
   @Post('/register')
+  @Throttle(10, 60 * 60)
   public async register(
     @Body() body: RegisterRequestDto,
   ): Promise<RegisterResponseDto> {
@@ -123,6 +125,7 @@ export class AuthenticationController {
   }
 
   @Post('/login')
+  @Throttle(60, 60 * 60)
   public async login(@Body() body: LoginRequestDto): Promise<AuthResponseDto> {
     const { email, password } = body;
     const user = await this.usersService.findByEmail(email, true).catch((e) => {

@@ -67,6 +67,8 @@ export class AuthService {
             await this.logout();
             if (e instanceof HttpErrorResponse) {
                 switch (e.status) {
+                    case 429:
+                        throw new ServiceError('RATE_LIMITED');
                     case 403:
                     case 401:
                         throw new ServiceError(e.error.error);
@@ -110,6 +112,8 @@ export class AuthService {
                 switch (e.status) {
                     case 400:
                         throw new ServiceError('INVALID_REGISTRATION_DATA');
+                    case 429:
+                        throw new ServiceError('RATE_LIMITED');
                     case 409:
                     case 500:
                         if (
