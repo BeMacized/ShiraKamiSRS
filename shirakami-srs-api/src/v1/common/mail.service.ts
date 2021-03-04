@@ -49,7 +49,7 @@ export class MailService {
         'Tried sending a confirmation email, but SMTP settings were not configured.',
       );
     await this.mail.sendMail({
-      from: `"ShiraKamiSRS" <${this.fromAddress}>`,
+      from: this.from,
       to: email,
       subject: 'ShiraKamiSRS: Email Verification',
       html: `
