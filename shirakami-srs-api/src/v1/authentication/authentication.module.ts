@@ -9,6 +9,7 @@ import { RefreshTokenEntity } from './entities/refresh-token.entity';
 import { TokensService } from './tokens.service';
 import { JWTStrategy } from './strategies/jwt.strategy';
 import { JWTGuard } from './guards/jwt.guard';
+import { CommonModule } from '../common/common.module';
 
 @Module({
   imports: [
@@ -16,14 +17,12 @@ import { JWTGuard } from './guards/jwt.guard';
     UsersModule,
     PassportModule,
     ConfigModule,
+    CommonModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
-        secret: configService.get('JWT_ACCESS_SECRET'),
-        signOptions: {
-          expiresIn: configService.get('JWT_ACCESS_EXPIRY'),
-        },
+        secret: configService.get('JWT_SECRET'),
       }),
     }),
   ],

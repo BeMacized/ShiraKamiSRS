@@ -30,41 +30,21 @@
     width: 100%;
     text-align: center;
 
-    .alert {
-        text-align: left;
-    }
-
-    app-logo {
-        margin-bottom: 0.25em;
-    }
-
-    .input-block {
-        margin: 2em 0;
-        width: 100%;
-    }
-
-    .title {
-        font-weight: 200;
-        font-size: 2em;
-    }
-
-    .text {
-        margin: 2em 0;
-    }
-
-    a {
-        margin-top: 1em;
-        font-size: 0.75em;
-    }
-
-    button,
-    input,
-    .login-error {
+    button {
         width: 100%;
         display: block;
 
         &:not(:last-child) {
             margin-bottom: 1em;
         }
+    }
+
+    span {
+        margin: 1em 0 2em 0;
+    }
+
+    i.material-icons {
+        color: var(--color-primary);
+        font-size: 4em;
     }
 }

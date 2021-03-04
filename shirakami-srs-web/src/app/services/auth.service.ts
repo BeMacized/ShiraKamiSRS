@@ -67,8 +67,9 @@ export class AuthService {
             await this.logout();
             if (e instanceof HttpErrorResponse) {
                 switch (e.status) {
+                    case 403:
                     case 401:
-                        throw new ServiceError('INVALID_CREDENTIALS');
+                        throw new ServiceError(e.error.error);
                     case 0:
                         throw new ServiceError('SERVICE_UNAVAILABLE');
                 }
@@ -95,23 +96,28 @@ export class AuthService {
         username: string,
         password: string
     ): Promise<{
-        needsAccountVerification: boolean;
+        needsEmailVerification: boolean;
     }> {
         try {
-            const resp = await this.authRepository
+            const {
+                needsEmailVerification,
+            } = await this.authRepository
                 .register(email, username, password)
                 .toPromise();
-            return { needsAccountVerification: false };
+            return { needsEmailVerification };
         } catch (e) {
             if (e instanceof HttpErrorResponse) {
                 switch (e.status) {
                     case 400:
                         throw new ServiceError('INVALID_REGISTRATION_DATA');
                     case 409:
-                        console.log(e, e.error, e.error.error);
+                    case 500:
                         if (
-                            e.error.error === 'EMAIL_EXISTS' ||
-                            e.error.error === 'USERNAME_USED_TOO_OFTEN'
+                            [
+                                'EMAIL_EXISTS',
+                                'USERNAME_USED_TOO_OFTEN',
+                                'MAILER_FAILED',
+                            ].includes(e.error.error)
                         )
                             throw new ServiceError(e.error.error);
                         break;

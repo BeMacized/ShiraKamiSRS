@@ -14,7 +14,7 @@ export class RefreshTokenEntity {
   })
   user?: string;
 
-  @Column()
+  @Column({ type: 'text' })
   token: string;
 
   @Column({ default: false })

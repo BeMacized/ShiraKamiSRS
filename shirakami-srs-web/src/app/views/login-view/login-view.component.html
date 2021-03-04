@@ -247,14 +247,14 @@
     </div>
 </div>
 
-<div class="dialog-container" *ngIf="mode === 'VERIFY_ACCOUNT'" @fadeUp>
+<div class="dialog-container" *ngIf="mode === 'VERIFY_EMAIL'" @fadeUp>
     <div class="card dialog">
-        <span class="title">Account Created</span>
+        <span class="title">Activate Account</span>
         <span class="text">
             Your account has been created!
             <br />
-            Before you can sign in, you must verify your e-mail address. Click
-            the link in the e-mail that has been sent to you in order to verify.
+            Before you can sign in, you must verify your e&#8209;mail address to activate your account. Click
+            the link in the verification e&#8209;mail that has been sent to you to activate your account.
         </span>
         <button class="btn btn-secondary" (click)="setMode('LOGIN')">
             Sign In

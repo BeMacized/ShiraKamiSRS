@@ -6,6 +6,7 @@ import { V1Controller } from './v1.controller';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { LessonsModule } from './lessons/lessons.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { LessonsModule } from './lessons/lessons.module';
     AuthenticationModule,
     ReviewsModule,
     LessonsModule,
+    CommonModule,
   ],
   controllers: [V1Controller],
   providers: [],

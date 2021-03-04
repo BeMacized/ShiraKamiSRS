@@ -1,6 +1,12 @@
-import { Controller, DefaultValuePipe, Get, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  DefaultValuePipe,
+  Get,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { JWTGuard } from '../authentication/guards/jwt.guard';
-import { User } from '../common/user.decorator';
+import { User } from '../common/decorators/user.decorator';
 import { UserEntity } from '../users/entities/user.entity';
 import { LessonsService } from './lessons.service';
 import { LessonSetDto } from './dtos/lesson.dto';

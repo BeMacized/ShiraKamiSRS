@@ -14,6 +14,7 @@ import {
     routeSlidePush,
 } from './utils/route-transitions';
 import { LessonReviewViewComponent } from './views/lesson-review-view/lesson-review-view.component';
+import { EmailVerificationViewComponent } from './views/email-verification-view/email-verification-view.component';
 
 const routes: Routes = [
     {
@@ -45,6 +46,11 @@ const routes: Routes = [
         canActivate: [AuthGuardService],
         component: SetViewComponent,
         data: { animation: 'setDetails' },
+    },
+    {
+        path: 'emailverification',
+        component: EmailVerificationViewComponent,
+        data: { animation: 'emailverification' },
     },
     {
         path: 'debug',

@@ -13,7 +13,7 @@ import { CardDto, CreateOrUpdateCardDto } from './dtos/card.dto';
 import { CardsService } from './cards.service';
 import { JWTGuard } from '../../authentication/guards/jwt.guard';
 import { UserEntity } from '../../users/entities/user.entity';
-import { User } from '../../common/user.decorator';
+import { User } from '../../common/decorators/user.decorator';
 
 @Controller()
 export class CardsController {

@@ -12,7 +12,7 @@ const main = async () => {
     await replace({
         files: path.join(__dirname, '../src/assets/appsettings.json'),
         from: [
-            /\${SK_API_BASE_URL}/g,
+            /\${API_BASE_URL}/g,
         ],
         to: [
             'http://localhost:3000/api/v1',

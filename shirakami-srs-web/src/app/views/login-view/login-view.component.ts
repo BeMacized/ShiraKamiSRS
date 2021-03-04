@@ -7,7 +7,7 @@ import { fadeUp, hshrink, vshrink } from '../../utils/animations';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
-type Mode = 'LOGIN' | 'REGISTER' | 'VERIFY_ACCOUNT' | 'ACCOUNT_CREATED';
+type Mode = 'LOGIN' | 'REGISTER' | 'VERIFY_EMAIL' | 'ACCOUNT_CREATED';
 
 @Component({
     selector: 'app-login-view',
@@ -83,6 +83,10 @@ export class LoginViewComponent implements OnInit {
                         this.loginError =
                             'The provided credentials are invalid.';
                         return;
+                    case 'EMAIL_NOT_VERIFIED':
+                        this.loginError =
+                            'Your account has not yet been activated. Please activate your account by clicking the link in the verification e-mail.';
+                        return;
                     case 'SERVICE_UNAVAILABLE':
                         this.loginError =
                             'The server was unavailable. Please try again later.';
@@ -104,7 +108,7 @@ export class LoginViewComponent implements OnInit {
         this.registerStatus = 'IN_PROGRESS';
         try {
             const { email, username, password } = this.registerForm.value;
-            const { needsAccountVerification } = await this.auth.register(
+            const { needsEmailVerification } = await this.auth.register(
                 email,
                 username,
                 password
@@ -112,15 +116,17 @@ export class LoginViewComponent implements OnInit {
             this.registerStatus = 'SUCCESS';
             setTimeout(() => {
                 this.setMode(
-                    needsAccountVerification
-                        ? 'VERIFY_ACCOUNT'
-                        : 'ACCOUNT_CREATED'
+                    needsEmailVerification ? 'VERIFY_EMAIL' : 'ACCOUNT_CREATED'
                 );
             }, 1000);
         } catch (e) {
             this.registerStatus = 'ERROR';
             if (e instanceof ServiceError) {
                 switch (e.code) {
+                    case 'MAILER_FAILED':
+                        this.registerError =
+                            'The verification email could not be sent. Please contact an administrator.';
+                        return;
                     case 'INVALID_REGISTRATION_DATA':
                         this.registerError =
                             'The provided registration information is invalid.';
@@ -146,6 +152,8 @@ export class LoginViewComponent implements OnInit {
 
     setMode(mode: Mode) {
         this.mode = mode;
+        this.registerStatus = 'IDLE';
+        this.loginStatus = 'IDLE';
     }
 
     showForInvalid(registerForm: FormGroup, controlName: string) {

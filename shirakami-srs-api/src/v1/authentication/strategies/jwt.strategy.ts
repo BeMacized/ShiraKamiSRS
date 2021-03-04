@@ -15,7 +15,7 @@ export class JWTStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: configService.get<string>('JWT_ACCESS_SECRET'),
+      secretOrKey: configService.get<string>('JWT_SECRET'),
       signOptions: {
         expiresIn: configService.get<number>('JWT_ACCESS_EXPIRY'),
       },
@@ -23,7 +23,8 @@ export class JWTStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: AccessTokenPayload): Promise<UserEntity> {
-    const { userId } = payload;
+    const { type, userId } = payload;
+    if (type !== 'ACCESS' || !userId) return null;
     try {
       return await this.usersService.findById(userId);
     } catch (e) {

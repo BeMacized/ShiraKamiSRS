@@ -1,6 +1,6 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { JWTGuard } from '../authentication/guards/jwt.guard';
-import { User } from '../common/user.decorator';
+import { User } from '../common/decorators/user.decorator';
 import { UserEntity } from './entities/user.entity';
 import { UserResponseDto } from './dtos/userResponseDto';
 

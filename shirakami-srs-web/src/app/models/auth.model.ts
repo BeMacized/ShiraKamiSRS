@@ -5,5 +5,5 @@ export interface AuthResponseDto {
 
 export interface RegisterResponseDto {
     success: boolean;
-    needsAccountVerification: boolean;
+    needsEmailVerification: boolean;
 }

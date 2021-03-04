@@ -7,12 +7,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserEntity, UserEntity } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
+    private configService: ConfigService,
   ) {}
 
   async findById(id: string, includePasswordHash = false): Promise<UserEntity> {
@@ -34,6 +36,10 @@ export class UsersService {
 
   async findByUsername(username: string): Promise<UserEntity[]> {
     return this.userRepository.find({ username });
+  }
+
+  async verifyEmail(userId: string) {
+    await this.userRepository.update(userId, { emailVerified: true });
   }
 
   async create(userData: CreateUserEntity): Promise<UserEntity> {
@@ -70,6 +76,7 @@ export class UsersService {
       username: userData.username,
       discriminator,
       passwordHash,
+      emailVerified: !this.configService.get<boolean>('EMAIL_VERIFICATION'),
     });
     user.passwordHash = undefined;
     return user;
@@ -80,5 +87,9 @@ export class UsersService {
     password: string,
   ): Promise<boolean> {
     return bcrypt.compare(password, user.passwordHash);
+  }
+
+  async remove(userId: string) {
+    await this.userRepository.delete(userId);
   }
 }

@@ -1,11 +1,20 @@
-import { Injectable, InternalServerErrorException, Logger, UnprocessableEntityException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserEntity } from '../users/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RefreshTokenEntity } from './entities/refresh-token.entity';
-import { AccessTokenPayload, RefreshTokenPayload } from './interfaces/token-payload.interface';
-import { TokenExpiredError } from 'jsonwebtoken';
+import {
+  AccessTokenPayload,
+  EmailVerificationTokenPayload,
+  RefreshTokenPayload,
+} from './interfaces/token-payload.interface';
+import { TokenExpiredError, JsonWebTokenError } from 'jsonwebtoken';
 import { UsersService } from '../users/users.service';
 import { ConfigService } from '@nestjs/config';
 
@@ -21,7 +30,21 @@ export class TokensService {
 
   public async generateAccessToken(user: UserEntity): Promise<string> {
     const payload: AccessTokenPayload = {
+      type: 'ACCESS',
       userId: user.id,
+    };
+    return this.jwt.signAsync(payload, {
+      expiresIn: this.configService.get('JWT_ACCESS_EXPIRY'),
+    });
+  }
+
+  public async generateEmailVerificationToken(
+    user: UserEntity,
+  ): Promise<string> {
+    const payload: EmailVerificationTokenPayload = {
+      type: 'EMAIL_VERIFICATION',
+      userId: user.id,
+      email: user.email,
     };
     return this.jwt.signAsync(payload);
   }
@@ -45,12 +68,12 @@ export class TokensService {
           );
           // Generate the token
           const payload: RefreshTokenPayload = {
+            type: 'REFRESH',
             userId: user.id,
             jwtId: entity.id,
           };
           const token = await this.jwt.signAsync(payload, {
             expiresIn: ttl,
-            secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
           });
           // Update DB entity with generated token
           await em.save(Object.assign(entity, { token }));
@@ -99,22 +122,53 @@ export class TokensService {
   private async resolveRefreshToken(
     encoded: string,
   ): Promise<RefreshTokenEntity> {
-    const payload = await this.decodeRefreshToken(encoded);
+    const payload = await this.decodeToken<RefreshTokenPayload>(
+      encoded,
+      'Refresh',
+    );
     return this.refreshTokenRepository.findOne(payload.jwtId);
   }
 
-  private async decodeRefreshToken(
+  public async decodeToken<T extends object = any>(
     token: string,
-  ): Promise<RefreshTokenPayload> {
+    name?: string,
+  ): Promise<T> {
     try {
-      return await this.jwt.verifyAsync(token, {
-        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+      return await this.jwt.verifyAsync<T>(token, {
+        secret: this.configService.get<string>('JWT_SECRET'),
       });
     } catch (e) {
       if (e instanceof TokenExpiredError) {
-        throw new UnprocessableEntityException('Refresh token expired');
+        throw new UnprocessableEntityException(
+          `${name} token expired`.trim(),
+          'TOKEN_EXPIRED',
+        );
+      } else if (e instanceof JsonWebTokenError) {
+        let code;
+        switch (e.message) {
+          case 'jwt signature is required':
+            code = 'MISSING_SIGNATURE';
+            break;
+          case 'invalid signature':
+            code = 'INVALID_SIGNATURE';
+            break;
+          case 'invalid token':
+          case 'jwt malformed':
+          default:
+            code = 'TOKEN_MALFORMED';
+            break;
+        }
+        throw new UnprocessableEntityException(
+          name
+            ? `Invalid ${name} token: ${e.message}`
+            : `Invalid token: ${e.message}`,
+          code,
+        );
       } else {
-        throw new UnprocessableEntityException('Refresh token malformed');
+        throw new UnprocessableEntityException(
+          `${name} token malformed`.trim(),
+          'TOKEN_MALFORMED',
+        );
       }
     }
   }

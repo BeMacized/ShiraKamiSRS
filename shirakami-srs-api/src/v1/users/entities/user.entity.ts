@@ -25,11 +25,14 @@ export class UserEntity {
   // Currently standard for all users.
   // Could be made customizable later on.
   srsSettings: SrsSettings = SrsSettings.defaults;
+
+  @Column({ default: false })
+  emailVerified: boolean;
 }
 
 export type CreateUserEntity = Omit<
   UserEntity,
-  'id' | 'discriminator' | 'passwordHash' | 'srsSettings'
+  'id' | 'discriminator' | 'passwordHash' | 'srsSettings' | 'emailVerified'
 > & {
   password: string;
 };

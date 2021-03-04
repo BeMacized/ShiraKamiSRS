@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { buildVersion } from './assets/build-version.json';
 import * as helmet from 'helmet';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   console.log(`Starting ShiraKamiSRS v${buildVersion}`);
@@ -13,6 +14,8 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
+  if ((app.get('ConfigService') as ConfigService).get<boolean>('ENABLE_CORS'))
+    app.enableCors();
   await app.listen(3000);
 }
 bootstrap();

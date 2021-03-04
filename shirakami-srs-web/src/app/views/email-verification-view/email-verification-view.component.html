@@ -1,0 +1,37 @@
+<div class="dialog-container" @fadeUp *ngIf='status'>
+    <div class="card dialog">
+        <i class="material-icons">email</i>
+        <span *ngIf="status === 'SUCCESS'">
+            Your e-mail has successfully been verified! You are now able to sign
+            in.
+        </span>
+        <span *ngIf="status === 'ALREADY_VERIFIED'">
+            Your e-mail address has already been verified!
+        </span>
+        <span *ngIf="status === 'EMAIL_NO_MATCH'">
+            Your e-mail address could not be verified, as it has changed in the
+            meantime. Please contact an administrator.
+        </span>
+        <span *ngIf="status === 'UNKNOWN_ERROR'">
+            An unknown error occurred while trying to verify your email address.
+            Please contact a developer.
+        </span>
+        <span *ngIf="status === 'TOKEN_EXPIRED'">
+            Your e-mail address could not be verified as the verification link
+            has expired.
+        </span>
+        <span *ngIf="status === 'MISSING_SIGNATURE'">
+            Your e-mail address could not be verified as the verification token
+            does not contain a signature.
+        </span>
+        <span *ngIf="status === 'INVALID_SIGNATURE'">
+            Your e-mail address could not be verified as the verification token
+            contains an invalid signature.
+        </span>
+        <span *ngIf="status === 'TOKEN_MALFORMED'">
+            Your e-mail address could not be verified as the verification token
+            is malformed.
+        </span>
+        <button class="btn btn-secondary" routerLink="login">Alright</button>
+    </div>
+</div>

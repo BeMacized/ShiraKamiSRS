@@ -23,15 +23,30 @@ import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOpti
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
-        JWT_ACCESS_SECRET: Joi.string().required(),
+        // Security Settings
+        JWT_SECRET: Joi.string().default('CHANGEME'),
         JWT_ACCESS_EXPIRY: Joi.number().default(60 * 60 * 24),
-        JWT_REFRESH_SECRET: Joi.string().required(),
         JWT_REFRESH_EXPIRY: Joi.number().default(60 * 60 * 24 * 30),
+        EMAIL_VERIFICATION: Joi.boolean().default(false),
+        ENABLE_CORS: Joi.boolean().default(false),
+        // Database Settings
         MYSQL_HOST: Joi.string().default('localhost'),
         MYSQL_PORT: Joi.number().default('3306'),
         MYSQL_USER: Joi.string().default('shirakami'),
         MYSQL_PASSWORD: Joi.string().default('shirakami'),
         MYSQL_DB: Joi.string().default('shirakami'),
+        // SMTP Settings
+        SMTP_FROM_ADDRESS: Joi.string().default(''),
+        SMTP_FROM_NAME: Joi.string().default(''),
+        SMTP_HOST: Joi.string().default(''),
+        SMTP_USER: Joi.string().default(''),
+        SMTP_PASSWORD: Joi.string().default(''),
+        SMTP_PORT: Joi.number().default(587),
+        SMTP_SECURE: Joi.boolean().default(false),
+        // Application Settings
+        APP_BASE_URL: Joi.string().default(''),
+        // Development Settings
+        TYPEORM_LOGGING: Joi.boolean().default(false),
       }),
     }),
     TypeOrmModule.forRootAsync({
@@ -39,9 +54,9 @@ import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOpti
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         type: 'mariadb',
-        host: configService.get('MYSQL_HOST'),
+        host: configService.get<string>('MYSQL_HOST'),
         port: configService.get<number>('MYSQL_PORT'),
-        username: configService.get('MYSQL_USER'),
+        username: configService.get<string>('MYSQL_USER'),
         password: configService.get<string>('MYSQL_PASSWORD'),
         database: configService.get<string>('MYSQL_DB'),
         entities: [
@@ -52,7 +67,7 @@ import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOpti
           ReviewEntity,
         ],
         synchronize: true,
-        logging: true,
+        logging: configService.get<boolean>('TYPEORM_LOGGING'),
       }),
     }),
     RouterModule.forRoutes(APP_ROUTES),
@@ -63,13 +78,9 @@ import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOpti
 })
 export class AppModule {
   constructor(private config: ConfigService) {
-    if (config.get('JWT_ACCESS_SECRET') === 'CHANGEME')
+    if (config.get('JWT_SECRET') === 'CHANGEME')
       console.warn(
-        'Environment variable JWT_ACCESS_SECRET has not yet been changed. Please set this environment variable to prevent unauthorized access.',
-      );
-    if (config.get('JWT_REFRESH_SECRET') === 'CHANGEME')
-      console.warn(
-        'Environment variable JWT_REFRESH_SECRET has not yet been changed. Please set this environment variable to prevent unauthorized access.',
+        'Environment variable JWT_SECRET has not yet been changed. Please set this environment variable to prevent unauthorized access.',
       );
   }
 }

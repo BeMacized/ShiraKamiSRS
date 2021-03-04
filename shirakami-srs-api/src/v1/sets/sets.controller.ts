@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { SetsService } from './sets.service';
 import { JWTGuard } from '../authentication/guards/jwt.guard';
-import { User } from '../common/user.decorator';
+import { User } from '../common/decorators/user.decorator';
 import { UserEntity } from '../users/entities/user.entity';
 import { CreateOrUpdateSetDto, SetDto } from './dtos/set.dto';
 import { SetExportV1 } from './exporters/set-exporter-v1';
