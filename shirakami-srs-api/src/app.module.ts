@@ -13,14 +13,10 @@ import { RefreshTokenEntity } from './v1/authentication/entities/refresh-token.e
 import { ReviewEntity } from './v1/reviews/entities/review.entity';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions';
 import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, 'web'),
-    }),
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
@@ -46,9 +42,22 @@ import { ThrottlerModule } from '@nestjs/throttler';
         SMTP_SECURE: Joi.boolean().default(false),
         // Application Settings
         APP_BASE_URL: Joi.string().default(''),
+        APP_SERVE_HTTP: Joi.boolean().default(true),
         // Development Settings
         TYPEORM_LOGGING: Joi.boolean().default(false),
       }),
+    }),
+    ServeStaticModule.forRootAsync({
+      imports: [],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) =>
+        configService.get<boolean>('APP_SERVE_HTTP')
+          ? [
+              {
+                rootPath: join(__dirname, 'web'),
+              },
+            ]
+          : [],
     }),
     TypeOrmModule.forRootAsync({
       imports: [],

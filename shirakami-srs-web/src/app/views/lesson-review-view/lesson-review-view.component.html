@@ -13,7 +13,7 @@
                 <div
                     [fittext]="true"
                     [maxFontSize]="50"
-                    [modelToWatch]="page"
+                    [modelToWatch]="[page, lessonStage]"
                     class="fit-text"
                 >
                     <div class="line line-header">Lesson</div>
@@ -220,7 +220,7 @@
             [class.failure]="
                 inputStage === 'FEEDBACK' && inputFeedback === 'INCORRECT'
             "
-            @hshrink
+            @vshrink
         >
             <input
                 type="text"

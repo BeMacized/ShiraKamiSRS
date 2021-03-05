@@ -47,7 +47,8 @@
             </div>
             <div class="srs-groups grid xs-2 sm-5">
                 <div
-                    class="card srs-group xs-span-2"
+                    class="card srs-group"
+                    [class.xs-span-2]='index === 0'
                     *ngFor="
                         let group of srsService.srsGroups;
                         let index = index

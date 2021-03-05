@@ -57,6 +57,9 @@ app-checkbox {
 }
 
 .modal-content {
+    input {
+        max-width: 100%;
+    }
     h2 {
         margin: 0.5em 0;
     }
