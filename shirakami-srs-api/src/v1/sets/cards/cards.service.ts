@@ -84,7 +84,7 @@ export class CardsService {
       await qr.manager.remove(card);
       await qr.manager.update(
         CardEntity,
-        { sortIndex: MoreThan(card.sortIndex) },
+        { sortIndex: MoreThan(card.sortIndex), setId: card.setId },
         { sortIndex: () => 'sortIndex - 1' },
       );
       await qr.commitTransaction();
