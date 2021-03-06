@@ -107,8 +107,8 @@ export const exportSetV1 = (
 export const importSetV1 = (
   exportData: SetExportV1,
 ): {
-  set: Omit<CreateOrUpdateSetEntity, 'userId'>;
-  cards: Omit<CreateOrUpdateCardEntity, 'setId'>[];
+  set: Omit<CreateOrUpdateSetEntity, 'userId' | 'createdAt'>;
+  cards: Omit<CreateOrUpdateCardEntity, 'setId' | 'sortIndex'>[];
   reviews?: Array<
     Omit<ReviewEntity, 'id' | 'card' | 'cardId'> & { cardIndex: number }
   >;

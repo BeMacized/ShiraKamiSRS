@@ -3,6 +3,7 @@ import {
   ArrayUnique,
   IsEnum,
   IsNotEmpty,
+  IsNumber,
   IsString,
   IsUUID,
   Length,
@@ -34,6 +35,9 @@ export class SetDto extends CreateOrUpdateSetDto {
   @ValidateNested()
   public readonly srsStatus: SetSrsStatus;
 
+  @IsNumber()
+  public readonly createdAt: number;
+
   static fromEntity(entity: SetEntity): SetDto {
     if (!entity) return null;
     return {
@@ -42,6 +46,7 @@ export class SetDto extends CreateOrUpdateSetDto {
       cards: entity.cards ? entity.cards.map(CardDto.fromEntity) : undefined,
       modes: entity.modes,
       srsStatus: entity.srsStatus,
+      createdAt: Math.floor(entity.createdAt.getTime() / 1000),
     };
   }
 }

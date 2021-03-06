@@ -29,17 +29,17 @@ FROM card_entity ce
          LEFT JOIN (
     SELECT *
     FROM (
-             SELECT se.id setId, IF(se.modes LIKE '%enToJp%', 'enToJp', null) mode
+             SELECT se.id setId, se.createdAt, IF(se.modes LIKE '%enToJp%', 'enToJp', null) mode
              FROM set_entity se
              WHERE se.userId = ?
                ${setId ? 'AND se.id = ?' : ''}
              UNION ALL
-             SELECT se.id setId, IF(se.modes LIKE '%jpToEn%', 'jpToEn', null) mode
+             SELECT se.id setId, se.createdAt, IF(se.modes LIKE '%jpToEn%', 'jpToEn', null) mode
              FROM set_entity se
              WHERE se.userId = ?
                ${setId ? 'AND se.id = ?' : ''}
              UNION ALL
-             SELECT se.id setId, IF(se.modes LIKE '%kanjiToKana%', 'kanjiToKana', null) mode
+             SELECT se.id setId, se.createdAt, IF(se.modes LIKE '%kanjiToKana%', 'kanjiToKana', null) mode
              FROM set_entity se
              WHERE se.userId = ?
                ${setId ? 'AND se.id = ?' : ''}
@@ -54,7 +54,7 @@ WHERE ce.id NOT IN (
 )
 AND (setModes.mode <> 'kanjiToKana' OR ce.valueSupportedmodes LIKE '%kanjiToKana%')
 ${setId ? 'AND setModes.setId = ?' : ''}
-ORDER BY ce.id DESC
+ORDER BY setModes.createdAt ASC, ce.sortIndex ASC
 ${limit ? `LIMIT ?` : ``}     
     `;
     const lessonParameters: any[] = [userId];

@@ -1,8 +1,9 @@
 import { CardValueDto, CreateOrUpdateCardValueDto } from './card-value.dto';
-import { IsUUID, ValidateNested } from 'class-validator';
+import { IsNumber, IsUUID, Min, ValidateNested } from 'class-validator';
 import { CardEntity } from '../entities/card.entity';
 import { Type } from 'class-transformer';
 import { ReviewDto } from '../../../reviews/dtos/review.dto';
+import { Column } from 'typeorm';
 
 export class CreateOrUpdateCardDto {
   @ValidateNested()
@@ -21,6 +22,11 @@ export class CardDto extends CreateOrUpdateCardDto {
   @ValidateNested()
   @Type(() => CardValueDto)
   public readonly value: CardValueDto;
+  @IsNumber()
+  @Min(0)
+  sortIndex: number;
+  @IsNumber()
+  createdAt: number;
 
   static fromEntity(entity: CardEntity): CardDto {
     if (!entity) return null;
@@ -28,6 +34,8 @@ export class CardDto extends CreateOrUpdateCardDto {
       id: entity.id,
       setId: entity.setId,
       value: entity.value,
+      sortIndex: entity.sortIndex,
+      createdAt: Math.floor(entity.createdAt.getTime() / 1000),
       reviews:
         entity.reviews?.map((review) => ReviewDto.fromEntity(review)) ||
         undefined,

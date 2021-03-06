@@ -6,7 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Connection, MoreThan, Repository } from 'typeorm';
 import {
   buildSupportedCardModes,
   CardEntity,
@@ -14,6 +14,7 @@ import {
 } from './entities/card.entity';
 import { SetsService } from '../sets.service';
 import { CreateOrUpdateCardDto } from './dtos/card.dto';
+import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class CardsService {
@@ -21,6 +22,7 @@ export class CardsService {
     @InjectRepository(CardEntity)
     private cardRepository: Repository<CardEntity>,
     private setsService: SetsService,
+    private con: Connection,
   ) {}
 
   /**
@@ -73,9 +75,25 @@ export class CardsService {
    */
   async removeById(id: string, userId?: string): Promise<void> {
     // Ensure the card exists for this user
-    await this.findOneById(id, userId);
-    // Delete the card
-    await this.cardRepository.delete(id);
+    const card = await this.findOneById(id, userId);
+    // Run deletion in transaction
+    const qr = this.con.createQueryRunner();
+    await qr.connect();
+    await qr.startTransaction();
+    try {
+      await qr.manager.remove(card);
+      await qr.manager.update(
+        CardEntity,
+        { sortIndex: MoreThan(card.sortIndex) },
+        { sortIndex: () => 'sortIndex - 1' },
+      );
+      await qr.commitTransaction();
+    } catch (err) {
+      await qr.rollbackTransaction();
+      throw err;
+    } finally {
+      await qr.release();
+    }
   }
 
   /**
@@ -92,26 +110,48 @@ export class CardsService {
     card: CreateOrUpdateCardDto,
     userId?: string,
   ): Promise<CardEntity> {
-    // Ensure the set exists
-    const set = await this.setsService.findOneById(setId, userId, true);
-    // Ensure there is room for more cards
-    if (set.cards.length >= 10000) {
-      throw new ForbiddenException(
-        'Maximum allowed cards per set reached (10000).',
+    // Ensure the set exists and belongs to the user
+    await this.setsService.findOneById(setId, userId, false);
+
+    const qr = this.con.createQueryRunner();
+    await qr.connect();
+    await qr.startTransaction();
+    let createdCard: CardEntity;
+    try {
+      // Ensure there is room for more cards
+      const cardCount = await qr.manager
+        .createQueryBuilder()
+        .select()
+        .from(CardEntity, 'card')
+        .where('card.setId = :setId', { setId })
+        .getCount();
+      if (cardCount >= 10000)
+        throw new ForbiddenException(
+          'Maximum allowed cards per set reached (10000).',
+        );
+      // Construct the entity to save
+      const cardEntity: CreateOrUpdateCardEntity = {
+        ...card,
+        value: { ...card.value, supportedModes: [] },
+        setId,
+        sortIndex: cardCount,
+      };
+      // Determine the supported modes for this card
+      cardEntity.value.supportedModes = buildSupportedCardModes(
+        cardEntity.value,
       );
+      // Create the card
+      createdCard = await qr.manager.save(plainToClass(CardEntity, cardEntity));
+      await qr.commitTransaction();
+    } catch (err) {
+      await qr.rollbackTransaction();
+      throw err;
+    } finally {
+      await qr.release();
     }
-    // Construct the entity to save
-    const cardEntity: CreateOrUpdateCardEntity = {
-      ...card,
-      value: { ...card.value, supportedModes: [] },
-      setId,
-    };
-    // Determine the supported modes for this card
-    cardEntity.value.supportedModes = buildSupportedCardModes(cardEntity.value);
-    // Create the card
-    const result = await this.cardRepository.insert(cardEntity);
+
     // Find and return the card
-    return this.findOneById(result.identifiers[0]['id']);
+    return this.findOneById(createdCard.id);
   }
 
   /**
@@ -131,16 +171,16 @@ export class CardsService {
     userId?: string,
   ): Promise<CardEntity> {
     // Ensure the card exists
-    await this.findOneById(id, userId);
+    const existingCard = await this.findOneById(id, userId);
     // Reconstruct the entity to save
     const cardEntity: CreateOrUpdateCardEntity = {
       ...card,
       value: { ...card.value, supportedModes: [] },
       setId,
+      sortIndex: existingCard.sortIndex,
     };
     // Redetermine the supported modes for this card
     cardEntity.value.supportedModes = buildSupportedCardModes(cardEntity.value);
-
     // Update the card
     await this.cardRepository.update(id, cardEntity);
     // Find and return the card

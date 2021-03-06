@@ -1,5 +1,6 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
@@ -35,9 +36,12 @@ export class SetEntity {
   @OneToMany(() => CardEntity, (card) => card.set)
   cards?: CardEntity[];
 
+  @CreateDateColumn()
+  createdAt: Date;
+
   srsStatus?: SetSrsStatus;
 }
 export type CreateOrUpdateSetEntity = Omit<
   SetEntity,
-  'id' | 'cards' | 'user' | 'srsStatus'
+  'id' | 'cards' | 'user' | 'srsStatus' | 'createdAt'
 >;

@@ -2,18 +2,12 @@
 import {
   BadRequestException,
   ForbiddenException,
-  forwardRef,
-  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  CreateOrUpdateSetEntity,
-  SetEntity,
-  SetSrsStatus,
-} from './entities/set.entity';
-import { Repository } from 'typeorm';
+import { SetEntity, SetSrsStatus } from './entities/set.entity';
+import { Connection, MoreThan, Repository } from 'typeorm';
 import * as moment from 'moment';
 import { CreateOrUpdateSetDto } from './dtos/set.dto';
 import { UserEntity } from '../users/entities/user.entity';
@@ -23,10 +17,11 @@ import {
   importSetV1,
   SetExportV1,
 } from './exporters/set-exporter-v1';
-import { CardsService } from './cards/cards.service';
 import { CardEntity } from './cards/entities/card.entity';
 import { ReviewEntity } from '../reviews/entities/review.entity';
 import { ReviewModes } from '../reviews/dtos/review.dto';
+import { plainToClass } from 'class-transformer';
+import { orderBy } from 'lodash';
 
 @Injectable()
 export class SetsService {
@@ -34,10 +29,9 @@ export class SetsService {
     @InjectRepository(SetEntity)
     private setRepository: Repository<SetEntity>,
     private userService: UsersService,
-    @InjectRepository(CardEntity)
-    private cardRepository: Repository<CardEntity>,
     @InjectRepository(ReviewEntity)
     private reviewRepository: Repository<ReviewEntity>,
+    private con: Connection,
   ) {}
 
   /**
@@ -82,6 +76,7 @@ export class SetsService {
         includeReviews ? 'cards.reviews' : null,
       ].filter((r) => !!r),
     });
+    entity.cards = orderBy(entity.cards, ['sortIndex'], ['asc']);
     if (!entity) throw new NotFoundException('Set not found');
     if (user && entity.userId !== (user as UserEntity).id)
       throw new ForbiddenException('Set does not belong to user');
@@ -303,33 +298,53 @@ GROUP BY setId, srsLevel
           'Export could not be imported, due to the presence conflicting reviews.',
         );
     }
-    // Create the set
-    const setCreationResult = await this.setRepository.insert({
-      ...set,
-      userId: (user as UserEntity).id,
-    });
-    const setId = setCreationResult.identifiers[0]['id'];
-    // Create the cards for the set
-    const cardCreationResults = await this.cardRepository.insert(
-      cards.map((card) => ({
-        ...card,
-        setId,
-      })),
-    );
-    // Optionally import reviews
-    if (includeReviews && reviews && reviews.length) {
-      await Promise.all(
-        reviews
-          .map((reviewData) => {
+    const qr = this.con.createQueryRunner();
+    await qr.connect();
+    await qr.startTransaction();
+    let createdSetId: string;
+    let cardIds: string[];
+    try {
+      // Create the set
+      createdSetId = (
+        await qr.manager.save(
+          plainToClass(SetEntity, {
+            ...set,
+            userId: (user as UserEntity).id,
+          }),
+        )
+      ).id;
+      // Create the cards for the set
+      cardIds = (
+        await qr.manager.save(
+          cards.map((card, sortIndex) =>
+            plainToClass(CardEntity, {
+              ...card,
+              setId: createdSetId,
+              sortIndex,
+            }),
+          ),
+        )
+      ).map((c) => c.id);
+      // Optionally import reviews
+      if (includeReviews && reviews && reviews.length) {
+        await qr.manager.save(
+          reviews.map((reviewData) => {
             const { cardIndex, ...review } = reviewData;
-            return {
+            return plainToClass(ReviewEntity, {
               ...review,
-              cardId: cardCreationResults.identifiers[cardIndex]['id'],
-            } as ReviewEntity;
-          })
-          .map(async (review) => this.reviewRepository.save(review)),
-      );
+              cardId: cardIds[cardIndex],
+            });
+          }),
+        );
+      }
+      await qr.commitTransaction();
+    } catch (err) {
+      await qr.rollbackTransaction();
+      throw err;
+    } finally {
+      await qr.release();
     }
-    return this.findOneById(setId, (user as UserEntity).id);
+    // Optionally import reviews
+    return this.findOneById(createdSetId, (user as UserEntity).id);
   }
 }

@@ -1,6 +1,8 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
+  Generated,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -27,6 +29,9 @@ export class CardEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column()
+  sortIndex: number;
+
   @Column(() => CardValue)
   value: CardValue;
 
@@ -38,11 +43,14 @@ export class CardEntity {
 
   @OneToMany(() => ReviewEntity, (review) => review.card)
   reviews?: ReviewEntity[];
+
+  @CreateDateColumn()
+  createdAt: Date;
 }
 
 export type CreateOrUpdateCardEntity = Omit<
   CardEntity,
-  'id' | 'set' | 'reviews'
+  'id' | 'set' | 'reviews' | 'createdAt'
 >;
 
 export const buildSupportedCardModes = (cardValue: CardValue): ReviewMode[] => {
