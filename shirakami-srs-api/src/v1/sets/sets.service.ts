@@ -17,11 +17,16 @@ import {
   importSetV1,
   SetExportV1,
 } from './exporters/set-exporter-v1';
-import { CardEntity } from './cards/entities/card.entity';
+import {
+  buildSupportedCardModes,
+  CardEntity,
+  CreateOrUpdateCardEntity,
+} from './cards/entities/card.entity';
 import { ReviewEntity } from '../reviews/entities/review.entity';
 import { ReviewModes } from '../reviews/dtos/review.dto';
 import { plainToClass } from 'class-transformer';
 import { orderBy } from 'lodash';
+import { MAX_CARDS_PER_SET, MAX_SETS_PER_USER } from '../v1.constants';
 
 @Injectable()
 export class SetsService {
@@ -112,8 +117,34 @@ export class SetsService {
    * @returns The created set.
    */
   async create(userId: string, set: CreateOrUpdateSetDto): Promise<SetEntity> {
-    const result = await this.setRepository.insert({ ...set, userId });
-    return this.findOneById(result.identifiers[0]['id'], userId);
+    const qr = this.con.createQueryRunner();
+    await qr.connect();
+    await qr.startTransaction();
+    let createdSetId: string;
+    try {
+      // Ensure there is room for more cards
+      const setCount = await qr.manager
+        .createQueryBuilder()
+        .select()
+        .from(SetEntity, 'set')
+        .where('userId = :userId', { userId })
+        .getCount();
+      if (setCount >= MAX_SETS_PER_USER)
+        throw new ForbiddenException(
+          `Maximum allowed sets reached (${MAX_SETS_PER_USER}).`,
+          'SET_LIMIT_EXCEEDED',
+        );
+      createdSetId = (
+        await qr.manager.save(plainToClass(SetEntity, { ...set, userId }))
+      ).id;
+      await qr.commitTransaction();
+    } catch (err) {
+      await qr.rollbackTransaction();
+      throw err;
+    } finally {
+      await qr.release();
+    }
+    return this.findOneById(createdSetId, userId);
   }
 
   /**

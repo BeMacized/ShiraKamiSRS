@@ -8,54 +8,6 @@ app-checkbox {
     margin-right: 1em;
 }
 
-.status-overlay {
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow: hidden;
-    &,
-    &-bg,
-    &-content {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-    }
-
-    &-bg {
-        z-index: 0;
-        backdrop-filter: blur(3px);
-    }
-
-    &-content {
-        padding: $card-padding;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
-
-    * {
-        z-index: 1;
-    }
-
-    span {
-        margin-top: 2em;
-        font-weight: 500;
-    }
-
-    i.material-icons {
-        font-size: 7em;
-
-        &.success {
-            color: var(--color-success);
-        }
-        &.error {
-            color: var(--color-caution);
-        }
-    }
-}
-
 .modal-content {
     input {
         max-width: 100%;
@@ -66,7 +18,6 @@ app-checkbox {
 }
 
 .translations {
-    //background: var(--color-surface-mute);
     border: 1px solid var(--color-surface-border);
     width: 100%;
     border-radius: 0.25em;

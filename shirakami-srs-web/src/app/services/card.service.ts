@@ -9,14 +9,15 @@ import { ServiceError } from '../models/service-error.model';
     providedIn: 'root',
 })
 export class CardService {
-    constructor(private cardRepository: CardRepositoryService) {}
+    constructor(private cardRepository: CardRepositoryService) {
+    }
 
     async createCard(
         setId: string,
         enTranslations: string[],
         jpTranslations: [string, string?][],
         enNote?: string,
-        jpNote?: string
+        jpNote?: string,
     ): Promise<CardEntity> {
         try {
             const card = await this.cardRepository
@@ -34,6 +35,9 @@ export class CardService {
         } catch (e) {
             if (e instanceof HttpErrorResponse) {
                 switch (e.status) {
+                    case 403:
+                        if (e.error.error) throw new ServiceError(e.error.error);
+                        break;
                     case 0:
                         throw new ServiceError('SERVICE_UNAVAILABLE');
                 }
@@ -74,7 +78,7 @@ export class CardService {
     }
 
     async updateCard(
-        partialCard: Partial<CardEntity> & { id: string; setId: string }
+        partialCard: Partial<CardEntity> & { id: string; setId: string },
     ): Promise<CardEntity> {
         try {
             const card = await this.cardRepository

@@ -7,9 +7,11 @@ import {
     ViewChild,
 } from '@angular/core';
 import {
+    crossFade,
     fade,
     fadeUp,
     hshrink,
+    modalPage,
     triggerChildren,
     vshrink,
 } from '../../../utils/animations';
@@ -19,11 +21,16 @@ import { OperationStatus } from '../../../models/operation-status.model';
 import { minPromiseDuration } from '../../../utils/promise-utils';
 import { cloneDeep } from 'lodash';
 import { Modal } from '../../../utils/modal';
+import { ServiceError } from '../../../models/service-error.model';
+import { Subject } from 'rxjs';
+import { smoothHeight } from '../../../directives/smooth-height.directive';
 
 export interface CreateEditCardModalInput {
     setId: string;
     card?: CardEntity;
 }
+
+type Page = 'FORM' | 'PROCESSING';
 
 @Component({
     selector: 'app-create-edit-card-modal',
@@ -33,9 +40,11 @@ export interface CreateEditCardModalInput {
         triggerChildren('triggerModal', '@modal'),
         fade('bg', '0.4s ease'),
         fadeUp('modal', '0.4s ease'),
+        smoothHeight('smoothHeight', '.4s ease'),
+        modalPage('modalPage', '.4s ease'),
         vshrink(),
+        crossFade(),
         hshrink(),
-        fade(),
     ],
 })
 export class CreateEditCardModalComponent
@@ -45,8 +54,8 @@ export class CreateEditCardModalComponent
     readonly maxOptionals = 5;
 
     createAnother = false;
-    showStatusOverlay = false;
     createOrUpdateStatus: OperationStatus = 'IDLE';
+    errorMessage: string;
     setId: string;
     cardId: string;
     @ViewChild('englishInput') englishInput: ElementRef;
@@ -59,6 +68,8 @@ export class CreateEditCardModalComponent
     englishError = '';
     kanjiError = '';
     kanaError = '';
+    page: Page = 'FORM';
+
     get isEditing() {
         return !!this.cardId;
     }
@@ -99,9 +110,10 @@ export class CreateEditCardModalComponent
     }
 
     async createOrUpdateCard() {
-        if (this.showStatusOverlay) return;
+        if (this.createOrUpdateStatus === 'IN_PROGRESS') return;
+        this.errorMessage = '';
         this.createOrUpdateStatus = 'IN_PROGRESS';
-        this.showStatusOverlay = true;
+        this.page = 'PROCESSING';
         this.englishInput.nativeElement.blur();
         this.kanaInput.nativeElement.blur();
         this.kanjiInput.nativeElement.blur();
@@ -135,16 +147,30 @@ export class CreateEditCardModalComponent
                 this.enNote = '';
                 this.jpNote = '';
                 setTimeout(() => {
-                    this.englishInput.nativeElement.focus();
-                    this.showStatusOverlay = false;
-                }, 500);
+                    this.page = 'FORM';
+                    setTimeout(() => this.englishInput.nativeElement.focus());
+                }, 1500);
             } else {
                 setTimeout(() => this.close(), 1000);
             }
         } catch (e) {
             console.error(e);
             this.createOrUpdateStatus = 'ERROR';
-            setTimeout(() => (this.showStatusOverlay = false), 1000);
+            switch (e instanceof ServiceError ? e.code : '') {
+                case 'CARD_LIMIT_EXCEEDED':
+                    this.errorMessage =
+                        'You have reached the maximum allowed number of cards per set. Please remove another card before creating a new one.';
+                    break;
+                case 'SERVICE_UNAVAILABLE':
+                    this.errorMessage =
+                        'Could not reach the server. Please verify your connection, or try again later.';
+                    break;
+                default:
+                    console.error(e);
+                    this.errorMessage = this.cardId
+                        ? 'An unknown error occurred while trying to update the card.'
+                        : 'An unknown error occurred while trying to create the card.';
+            }
         }
     }
 

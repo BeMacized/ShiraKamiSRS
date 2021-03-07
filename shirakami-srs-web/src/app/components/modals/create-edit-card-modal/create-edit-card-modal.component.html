@@ -1,214 +1,263 @@
 <div class="modal-bg" @bg @triggerModal>
-    <div class="modal modal-sm" @modal (clickOutside)="close()">
-        <div class="modal-header">
-            <h1 *ngIf="!isEditing">Create a new card</h1>
-            <h1 *ngIf="isEditing">Edit Card</h1>
-        </div>
-        <div class="status-overlay" *ngIf="showStatusOverlay" [@fade]>
-            <div class="status-overlay-bg"></div>
-            <div
-                class="status-overlay-content"
-                @fade
-                *ngIf="createOrUpdateStatus === 'IN_PROGRESS'"
-            >
-                <app-spinner></app-spinner>
-                <span *ngIf="!isEditing">Creating card...</span>
-                <span *ngIf="isEditing">Updating card...</span>
+    <div
+        class="modal modal-sm"
+        @modal
+        (clickOutside)="close()"
+        [smoothHeight]="page"
+    >
+        <div class="modal-page" *ngIf="page === 'FORM'" @modalPage>
+            <div class="modal-header">
+                <h1 *ngIf="!isEditing">Create a new card</h1>
+                <h1 *ngIf="isEditing">Edit Card</h1>
             </div>
-            <div
-                class="status-overlay-content"
-                @fade
-                *ngIf="createOrUpdateStatus === 'SUCCESS'"
-            >
-                <i class="material-icons success">check_circle_outline</i>
-                <span *ngIf="!isEditing">Card created successfully!</span>
-                <span *ngIf="isEditing">Card updated successfully!</span>
-            </div>
-            <div
-                class="status-overlay-content"
-                @fade
-                *ngIf="createOrUpdateStatus === 'ERROR'"
-            >
-                <i class="material-icons error">error_outline</i>
-                <span *ngIf="!isEditing"
-                    >An error occurred while trying to create the card.</span
-                >
-                <span *ngIf="isEditing"
-                    >An error occurred while trying to update the card.</span
-                >
-            </div>
-        </div>
-        <div class="modal-content ai-start">
-            <h2>English</h2>
-            <div class="translations">
-                <div
-                    class="no-translations"
-                    *ngIf="!enTranslations.length"
-                    @vshrink
-                >
-                    <span>No translations</span>
-                </div>
-                <div
-                    class="translation"
-                    @vshrink
-                    *ngFor="
-                        let translation of enTranslations;
-                        let index = index
-                    "
-                >
-                    <div class="values">
-                        <span class="value value-en">{{ translation }}</span>
+            <div class="modal-content ai-start">
+                <h2>English</h2>
+                <div class="translations">
+                    <div
+                        class="no-translations"
+                        *ngIf="!enTranslations.length"
+                        @vshrink
+                    >
+                        <span>No translations</span>
                     </div>
-                    <div class="actions">
-                        <button
-                            class="action"
-                            (click)="enTranslations.splice(index, 1)"
-                        >
-                            <i class="material-icons">clear</i>
-                        </button>
+                    <div
+                        class="translation"
+                        @vshrink
+                        *ngFor="
+                            let translation of enTranslations;
+                            let index = index
+                        "
+                    >
+                        <div class="values">
+                            <span class="value value-en">{{
+                                translation
+                            }}</span>
+                        </div>
+                        <div class="actions">
+                            <button
+                                class="action"
+                                (click)="enTranslations.splice(index, 1)"
+                            >
+                                <i class="material-icons">clear</i>
+                            </button>
+                        </div>
                     </div>
                 </div>
+                <div class="alert alert-error" *ngIf="englishError" @vshrink>
+                    {{ englishError }}
+                </div>
+                <div class="input-row">
+                    <input
+                        id="english-input"
+                        class="input input-large"
+                        type="text"
+                        placeholder="English"
+                        maxlength="255"
+                        #englishInput
+                        (keyup.enter)="addEnTranslation(englishInput.value)"
+                    />
+                    <button
+                        class="btn btn-primary btn-rect btn-add-translation"
+                        [disabled]="enTranslations.length >= maxTranslations"
+                        (click)="addEnTranslation(englishInput.value)"
+                    >
+                        <i class="material-icons">add</i>
+                    </button>
+                </div>
+                <div class="input-row note">
+                    <input
+                        id="english-note-input"
+                        class="input input-large"
+                        type="text"
+                        placeholder="Translation Note"
+                        maxlength="255"
+                        [(ngModel)]="enNote"
+                    />
+                </div>
+                <h2>Japanese</h2>
+                <div class="translations">
+                    <div
+                        class="no-translations"
+                        *ngIf="!jpTranslations.length"
+                        @vshrink
+                    >
+                        <span>No translations</span>
+                    </div>
+                    <div
+                        class="translation"
+                        @vshrink
+                        *ngFor="
+                            let translation of jpTranslations;
+                            let index = index
+                        "
+                    >
+                        <div class="values">
+                            <span
+                                class="value value-jp"
+                                *ngIf="translation.length === 1"
+                                >{{ translation[0] }}</span
+                            >
+                            <span
+                                class="value value-jp"
+                                *ngIf="translation.length === 2"
+                                >{{ translation[0] }}（{{
+                                    translation[1]
+                                }}）</span
+                            >
+                        </div>
+                        <div class="actions">
+                            <button
+                                class="action"
+                                (click)="jpTranslations.splice(index, 1)"
+                            >
+                                <i class="material-icons">clear</i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-error" *ngIf="kanjiError" @vshrink>
+                    {{ kanjiError }}
+                </div>
+                <div class="input-row">
+                    <input
+                        id="kanji-input"
+                        class="input input-large"
+                        type="text"
+                        placeholder="漢字 (Optional)"
+                        maxlength="255"
+                        [wanakana]="true"
+                        #kanjiInput
+                    />
+                </div>
+                <div class="alert alert-error" *ngIf="kanaError" @vshrink>
+                    {{ kanaError }}
+                </div>
+                <div class="input-row">
+                    <input
+                        id="kana-input"
+                        class="input input-large"
+                        type="text"
+                        placeholder="かな"
+                        maxlength="255"
+                        #kanaInput
+                        [wanakana]="true"
+                        (keyup.enter)="
+                            addJpTranslation(kanaInput.value, kanjiInput.value)
+                        "
+                    />
+                    <button
+                        class="btn btn-primary btn-rect btn-add-translation"
+                        [disabled]="jpTranslations.length >= maxTranslations"
+                        (click)="
+                            addJpTranslation(kanaInput.value, kanjiInput.value)
+                        "
+                    >
+                        <i class="material-icons">add</i>
+                    </button>
+                </div>
+                <div class="input-row note">
+                    <input
+                        id="japanese-note-input"
+                        class="input input-large"
+                        type="text"
+                        placeholder="Translation Note"
+                        maxlength="255"
+                        [(ngModel)]="jpNote"
+                    />
+                </div>
+                <div
+                    class="flex-row ai-center"
+                    *ngIf="!isEditing"
+                    style="margin-top: 1em"
+                >
+                    <app-checkbox [(checked)]="createAnother"></app-checkbox>
+                    <span>Create another card</span>
+                </div>
             </div>
-            <div class="alert alert-error" *ngIf="englishError" @vshrink>
-                {{ englishError }}
-            </div>
-            <div class="input-row">
-                <input
-                    id="english-input"
-                    class="input input-large"
-                    type="text"
-                    placeholder="English"
-                    maxlength="255"
-                    #englishInput
-                    (keyup.enter)="addEnTranslation(englishInput.value)"
-                />
+            <div class="modal-actions">
+                <button class="button btn btn-secondary" (click)="close()">
+                    Cancel
+                </button>
                 <button
-                    class="btn btn-primary btn-rect btn-add-translation"
-                    [disabled]="enTranslations.length >= maxTranslations"
-                    (click)="addEnTranslation(englishInput.value)"
+                    class="button btn btn-primary"
+                    [disabled]="
+                        !enTranslations.length || !jpTranslations.length
+                    "
+                    (click)="createOrUpdateCard()"
                 >
-                    <i class="material-icons">add</i>
+                    {{ isEditing ? 'Save' : 'Create' }}
                 </button>
             </div>
-            <div class="input-row note">
-                <input
-                    id="english-note-input"
-                    class="input input-large"
-                    type="text"
-                    placeholder="Translation Note"
-                    maxlength="255"
-                    [(ngModel)]="enNote"
-                />
-            </div>
-            <h2>Japanese</h2>
-            <div class="translations">
-                <div
-                    class="no-translations"
-                    *ngIf="!jpTranslations.length"
-                    @vshrink
-                >
-                    <span>No translations</span>
-                </div>
-                <div
-                    class="translation"
-                    @vshrink
-                    *ngFor="
-                        let translation of jpTranslations;
-                        let index = index
-                    "
-                >
-                    <div class="values">
-                        <span
-                            class="value value-jp"
-                            *ngIf="translation.length === 1"
-                            >{{ translation[0] }}</span
-                        >
-                        <span
-                            class="value value-jp"
-                            *ngIf="translation.length === 2"
-                            >{{ translation[0] }}（{{ translation[1] }}）</span
-                        >
-                    </div>
-                    <div class="actions">
-                        <button
-                            class="action"
-                            (click)="jpTranslations.splice(index, 1)"
-                        >
-                            <i class="material-icons">clear</i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="alert alert-error" *ngIf="kanjiError" @vshrink>
-                {{ kanjiError }}
-            </div>
-            <div class="input-row">
-                <input
-                    id="kanji-input"
-                    class="input input-large"
-                    type="text"
-                    placeholder="漢字 (Optional)"
-                    maxlength="255"
-                    [wanakana]='true'
-                    #kanjiInput
-                />
-            </div>
-            <div class="alert alert-error" *ngIf="kanaError" @vshrink>
-                {{ kanaError }}
-            </div>
-            <div class="input-row">
-                <input
-                    id="kana-input"
-                    class="input input-large"
-                    type="text"
-                    placeholder="かな"
-                    maxlength="255"
-                    #kanaInput
-                    [wanakana]='true'
-                    (keyup.enter)="
-                        addJpTranslation(kanaInput.value, kanjiInput.value)
-                    "
-                />
-                <button
-                    class="btn btn-primary btn-rect btn-add-translation"
-                    [disabled]="jpTranslations.length >= maxTranslations"
-                    (click)="
-                        addJpTranslation(kanaInput.value, kanjiInput.value)
-                    "
-                >
-                    <i class="material-icons">add</i>
-                </button>
-            </div>
-            <div class="input-row note">
-                <input
-                    id="japanese-note-input"
-                    class="input input-large"
-                    type="text"
-                    placeholder="Translation Note"
-                    maxlength="255"
-                    [(ngModel)]="jpNote"
-                />
+        </div>
+        <div class="modal-page" *ngIf="page === 'PROCESSING'" @modalPage>
+            <div class="modal-header">
+                <h1 *ngIf="!isEditing">Create a new card</h1>
+                <h1 *ngIf="isEditing">Edit Card</h1>
             </div>
             <div
-                class="flex-row ai-center"
-                *ngIf="!isEditing"
-                style="margin-top: 1em"
+                class="modal-content ai-center no-padding"
+                [smoothHeight]="createOrUpdateStatus"
             >
-                <app-checkbox [(checked)]="createAnother"></app-checkbox>
-                <span>Create another card</span>
+                <div
+                    @crossFade
+                    class="modal-status-container"
+                    *ngIf="createOrUpdateStatus === 'IN_PROGRESS'"
+                >
+                    <app-spinner size="NORMAL"></app-spinner>
+                    <span class="status-message" *ngIf="isEditing">
+                        Updating card...
+                    </span>
+                    <span class="status-message" *ngIf="!isEditing">
+                        Creating card...
+                    </span>
+                </div>
+                <div
+                    @crossFade
+                    class="modal-status-container"
+                    *ngIf="createOrUpdateStatus === 'ERROR'"
+                >
+                    <i class="material-icons error-icon">error_outline</i>
+                    <span class="status-message">
+                        {{ errorMessage }}
+                    </span>
+                </div>
+                <div
+                    @crossFade
+                    class="modal-status-container"
+                    *ngIf="createOrUpdateStatus === 'SUCCESS'"
+                >
+                    <i class="material-icons success-icon"
+                        >check_circle_outline</i
+                    >
+                    <span class="status-message">
+                        <span *ngIf="isEditing">
+                            Card updated successfully!
+                        </span>
+                        <span *ngIf="!isEditing">
+                            Card created successfully!
+                        </span>
+                    </span>
+                </div>
             </div>
-        </div>
-        <div class="modal-actions">
-            <button class="button btn btn-secondary" (click)="close()">
-                Cancel
-            </button>
-            <button
-                class="button btn btn-primary"
-                [disabled]="!enTranslations.length || !jpTranslations.length"
-                (click)="createOrUpdateCard()"
-            >
-                {{ isEditing ? 'Save' : 'Create' }}
-            </button>
+            <div class="modal-actions">
+                <button
+                    class="button btn btn-secondary"
+                    (click)="page = 'FORM'"
+                    *ngIf="createOrUpdateStatus === 'ERROR'"
+                    @hshrink
+                >
+                    Back
+                </button>
+                <button
+                    class="button btn btn-secondary"
+                    (click)="close()"
+                    [disabled]="createOrUpdateStatus === 'IN_PROGRESS'"
+                    *ngIf="createOrUpdateStatus !== 'SUCCESS'"
+                    @vshrink
+                >
+                    Close
+                </button>
+            </div>
         </div>
     </div>
 </div>

@@ -15,6 +15,7 @@ import {
 import { SetsService } from '../sets.service';
 import { CreateOrUpdateCardDto } from './dtos/card.dto';
 import { plainToClass } from 'class-transformer';
+import { MAX_CARDS_PER_SET } from '../../v1.constants';
 
 @Injectable()
 export class CardsService {
@@ -125,9 +126,10 @@ export class CardsService {
         .from(CardEntity, 'card')
         .where('card.setId = :setId', { setId })
         .getCount();
-      if (cardCount >= 10000)
+      if (cardCount >= MAX_CARDS_PER_SET)
         throw new ForbiddenException(
-          'Maximum allowed cards per set reached (10000).',
+          `Maximum allowed cards per set reached (${MAX_CARDS_PER_SET}).`,
+          'CARD_LIMIT_EXCEEDED',
         );
       // Construct the entity to save
       const cardEntity: CreateOrUpdateCardEntity = {

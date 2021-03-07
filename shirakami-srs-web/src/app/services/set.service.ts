@@ -10,7 +10,8 @@ import { saveAs as saveFile } from 'file-saver';
     providedIn: 'root',
 })
 export class SetService {
-    constructor(private setRepository: SetRepositoryService) {}
+    constructor(private setRepository: SetRepositoryService) {
+    }
 
     async getSets(): Promise<SetEntity[]> {
         try {
@@ -56,6 +57,10 @@ export class SetService {
         } catch (e) {
             if (e instanceof HttpErrorResponse) {
                 switch (e.status) {
+                    case 403:
+                        if (e?.error?.error)
+                            throw new ServiceError(e.error.error);
+                        break;
                     case 0:
                         throw new ServiceError('SERVICE_UNAVAILABLE');
                 }
@@ -65,7 +70,7 @@ export class SetService {
     }
 
     async updateSet(
-        partialSet: Partial<SetEntity> & { id: string }
+        partialSet: Partial<SetEntity> & { id: string },
     ): Promise<SetEntity> {
         try {
             const set = await this.setRepository
@@ -111,7 +116,7 @@ export class SetService {
     async exportSet(
         setId: string,
         setName: string,
-        includeReviews = false
+        includeReviews = false,
     ): Promise<void> {
         try {
             const setData = await this.setRepository
@@ -119,7 +124,7 @@ export class SetService {
                 .toPromise();
             saveFile(
                 new Blob([setData], { type: 'text/plain;charset=utf-8' }),
-                setName.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.json'
+                setName.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.json',
             );
         } catch (e) {
             if (e instanceof HttpErrorResponse) {
@@ -134,7 +139,7 @@ export class SetService {
 
     async importSet(
         fileData: any,
-        includeReviews: boolean = false
+        includeReviews: boolean = false,
     ): Promise<SetEntity> {
         try {
             const set = await this.setRepository

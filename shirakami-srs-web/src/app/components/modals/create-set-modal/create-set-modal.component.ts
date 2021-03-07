@@ -72,7 +72,8 @@ export class CreateSetModalComponent
         this.goToPage('NAME');
     }
 
-    initModal(data: void | undefined) {}
+    initModal(data: void | undefined) {
+    }
 
     goToPage(page: Page) {
         setTimeout(() => {
@@ -93,7 +94,7 @@ export class CreateSetModalComponent
         try {
             const set = await minPromiseDuration(
                 this.setService.createSet(this.setName.trim(), this.modes),
-                500
+                500,
             );
             this.creationStatus = 'SUCCESS';
             setTimeout(() => {
@@ -103,6 +104,10 @@ export class CreateSetModalComponent
         } catch (e) {
             this.creationStatus = 'ERROR';
             switch (e instanceof ServiceError ? e.code : '') {
+                case 'SET_LIMIT_EXCEEDED':
+                    this.errorMessage =
+                        'You have reached the maximum allowed number of sets. Please remove another set before creating a new one.';
+                    break;
                 case 'SERVICE_UNAVAILABLE':
                     this.errorMessage =
                         'Could not reach the server. Please verify your connection, or try again later.';

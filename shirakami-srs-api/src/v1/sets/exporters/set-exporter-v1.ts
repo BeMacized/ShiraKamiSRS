@@ -17,13 +17,10 @@ import {
   buildSupportedCardModes,
   CreateOrUpdateCardEntity,
 } from '../cards/entities/card.entity';
-import {
-  ReviewDto,
-  ReviewMode,
-  ReviewModes,
-} from '../../reviews/dtos/review.dto';
+import { ReviewMode, ReviewModes } from '../../reviews/dtos/review.dto';
 import { flatten } from 'lodash';
 import { ReviewEntity } from '../../reviews/entities/review.entity';
+import { MAX_CARDS_PER_SET } from '../../v1.constants';
 
 export class SetExportV1 {
   exportVersion: 'v1';
@@ -33,11 +30,11 @@ export class SetExportV1 {
   name: string;
   @ValidateNested({ each: true })
   @Type(() => SetExportV1Card)
-  @ArrayMaxSize(10000)
+  @ArrayMaxSize(MAX_CARDS_PER_SET)
   cards: SetExportV1Card[];
   @ValidateNested({ each: true })
   @Type(() => SetExportV1Review)
-  @ArrayMaxSize(30000) // 3x the max allowed cards
+  @ArrayMaxSize(MAX_CARDS_PER_SET * 3)
   @IsOptional()
   reviews?: SetExportV1Review[];
 }
