@@ -45,6 +45,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
         APP_SERVE_HTTP: Joi.boolean().default(true),
         // Development Settings
         TYPEORM_LOGGING: Joi.boolean().default(false),
+        SMTP_SUPPRESS: Joi.boolean().default(false),
       }),
     }),
     ServeStaticModule.forRootAsync({

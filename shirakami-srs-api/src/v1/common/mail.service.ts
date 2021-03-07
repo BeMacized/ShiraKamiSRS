@@ -44,10 +44,12 @@ export class MailService {
     username: string,
     activationUrl: string,
   ) {
-    if (!this.mail)
+    if (!this.mail) {
+      if (this.configService.get<boolean>('SMTP_SUPPRESS')) return;
       throw new Error(
         'Tried sending a confirmation email, but SMTP settings were not configured.',
       );
+    }
     await this.mail.sendMail({
       from: this.from,
       to: email,
