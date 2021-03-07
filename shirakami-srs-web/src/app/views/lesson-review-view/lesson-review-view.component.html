@@ -89,7 +89,6 @@
                         class="lesson-lang-indicator-lang en"
                         [class.active]="lessonStage === 'ENGLISH'"
                         (click)="setLessonStage('ENGLISH')"
-
                     >
                         <span class="flag-icon flag-icon-gb"></span>
                         <span>English</span>
@@ -106,8 +105,18 @@
                     [modelToWatch]="page"
                     class="fit-text"
                 >
-                    <div class="line line-header" *ngIf='page.type === "LESSON_INPUT"'>Lesson</div>
-                    <div class="line line-header" *ngIf='page.type === "REVIEW"'>Review</div>
+                    <div
+                        class="line line-header"
+                        *ngIf="page.type === 'LESSON_INPUT'"
+                    >
+                        Lesson
+                    </div>
+                    <div
+                        class="line line-header"
+                        *ngIf="page.type === 'REVIEW'"
+                    >
+                        Review
+                    </div>
                     <ng-container *ngIf="page.mode === 'enToJp'">
                         <div class="line line-vocab">
                             {{ page.card.value.enTranslations[0] }}
@@ -217,6 +226,9 @@
             [class.success]="
                 inputStage === 'FEEDBACK' && inputFeedback === 'CORRECT'
             "
+            [class.ignored]="
+                inputStage === 'FEEDBACK' && inputFeedback === 'IGNORED'
+            "
             [class.failure]="
                 inputStage === 'FEEDBACK' && inputFeedback === 'INCORRECT'
             "
@@ -308,7 +320,11 @@
                 <span *ngIf="!answerShown">Show Answer</span>
                 <span *ngIf="answerShown">Hide Answer</span>
             </button>
-            <button class="btn btn-transparent" [disabled]="!canIgnoreAnswer">
+            <button
+                class="btn btn-transparent"
+                [disabled]="!canIgnoreAnswer"
+                (click)="ignoreAnswer()"
+            >
                 <i class="material-icons">redo</i>
                 <span>Ignore Answer</span>
             </button>

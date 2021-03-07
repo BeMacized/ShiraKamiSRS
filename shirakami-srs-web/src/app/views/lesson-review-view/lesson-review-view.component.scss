@@ -331,6 +331,16 @@
         }
     }
 
+    &.ignored {
+        button.btn-submit {
+            color: var(--color-on-warning);
+        }
+        input {
+            background: var(--color-warning);
+            color: var(--color-on-warning);
+        }
+    }
+
     &.failure {
         button.btn-submit {
             color: var(--color-on-caution);

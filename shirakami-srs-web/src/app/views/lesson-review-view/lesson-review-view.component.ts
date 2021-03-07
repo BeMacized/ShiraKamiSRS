@@ -55,7 +55,7 @@ class ReviewPage extends BasePage {
 
 type Page = LessonPage | LessonInputPage | ReviewPage;
 type InputStage = 'INPUT' | 'FEEDBACK';
-type InputFeedback = 'CORRECT' | 'INCORRECT';
+type InputFeedback = 'CORRECT' | 'INCORRECT' | 'IGNORED';
 type LessonStage = 'ENGLISH' | 'JAPANESE';
 
 @Component({
@@ -69,17 +69,21 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
     mode: LessonReviewMode;
     setId: string;
     pages: Page[] = [];
+
     get page(): Page {
         return this.pages[this.pageIndex];
     }
+
     _pageIndex = 0;
     get pageIndex(): number {
         return this._pageIndex;
     }
+
     set pageIndex(value: number) {
         this._pageIndex = value;
         this.onPageLoad();
     }
+
     loadStatus: OperationStatus = 'IDLE';
     shakeInputAnimation = false;
     itemsCorrect = 0;
@@ -94,6 +98,7 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
     answer = '';
     @ViewChild('answerInput') answerInputEl: ElementRef;
     answerShown = false;
+
     get enableIME(): boolean {
         if (
             !this.page ||
@@ -333,7 +338,7 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
         this.pageIndex = index;
     }
 
-    async processAnswer() {
+    async processUserInput() {
         if (this.page.type !== 'LESSON_INPUT' && this.page.type !== 'REVIEW')
             return;
         // Check input for obvious correctable mistakes
@@ -368,25 +373,10 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
         this.answerInputEl.nativeElement.blur();
         if (result.passing)
             this.answerInputEl.nativeElement.value = result.correctAnswer;
-        if (this.page.type === 'REVIEW') {
-            if (result.passing) {
-                if (this.page.score >= 0) this.page.score = 1;
-                this.itemsCorrect++;
-                this.totalItemsRemaining--;
-            } else {
-                this.page.score--;
-            }
-        } else if (this.page.type === 'LESSON_INPUT') {
-            if (result.passing) {
-                this.itemsCorrect++;
-                this.totalItemsRemaining--;
-            }
-        }
-        // Upload the score if needed
-        if (result.passing) await this.uploadFeedback(this.page);
-        // Immediately dismiss feedback if this is the last page and the answer was correct
+
         if (result.passing && this.pageIndex === this.pages.length - 1)
-            await this.dismissInputFeedback();
+            // Immediately dismiss feedback if this is the last page and the answer was correct
+            await this.processInputFeedback();
     }
 
     async uploadFeedback(page: ReviewPage | LessonInputPage) {
@@ -423,8 +413,30 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
         }
     }
 
-    async dismissInputFeedback() {
+    async processInputFeedback() {
         if (this.inputStage !== 'FEEDBACK') return;
+        // Process input feedback
+        if (this.page.type === 'REVIEW') {
+            if (this.inputFeedback === 'CORRECT') {
+                if (this.page.score >= 0) this.page.score = 1;
+                this.itemsCorrect++;
+                this.totalItemsRemaining--;
+            } else if (this.inputFeedback === 'INCORRECT') {
+                this.page.score--;
+            }
+        } else if (this.page.type === 'LESSON_INPUT') {
+            if (this.inputFeedback) {
+                this.itemsCorrect++;
+                this.totalItemsRemaining--;
+            }
+        }
+        // Upload feedback once the correct answer is given
+        if (this.inputFeedback === 'CORRECT') {
+            await this.uploadFeedback(
+                this.page as LessonInputPage | ReviewPage
+            );
+        }
+        // Move to the next item
         switch (this.inputFeedback) {
             case 'CORRECT':
                 // Go to next page if it exists
@@ -434,6 +446,7 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
                 // Otherwise, we're done
                 else await this.finishLessons();
                 break;
+            case 'IGNORED':
             case 'INCORRECT':
                 // Move the lesson somewhere further down the queue
                 const newIndex =
@@ -527,10 +540,10 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
                             document.activeElement ===
                                 this.answerInputEl?.nativeElement)
                     ) {
-                        await this.processAnswer();
+                        await this.processUserInput();
                     }
                 } else if (this.inputStage === 'FEEDBACK') {
-                    await this.dismissInputFeedback();
+                    await this.processInputFeedback();
                 }
                 break;
         }
@@ -578,5 +591,10 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
                 (this.page?.type === 'LESSON_INPUT' ||
                     this.page?.type === 'REVIEW'))
         );
+    }
+
+    ignoreAnswer() {
+        if (!this.canIgnoreAnswer) return;
+        this.inputFeedback = 'IGNORED';
     }
 }
