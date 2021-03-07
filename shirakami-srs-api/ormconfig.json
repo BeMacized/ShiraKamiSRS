@@ -1,0 +1,13 @@
+{
+    "__COMMENT": "FILE PRESENT FOR GENERATING MIGRATIONS.",
+    "type": "mariadb",
+    "host": "localhost",
+    "port": 3306,
+    "username": "shirakami",
+    "password": "shirakami",
+    "database": "shirakami",
+    "entities": ["src/**/*.entity.ts"],
+    "cli": {
+        "migrationsDir": "src/migrations"
+    }
+}
