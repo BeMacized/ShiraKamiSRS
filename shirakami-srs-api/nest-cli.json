@@ -3,5 +3,11 @@
   "sourceRoot": "src",
   "generateOptions": {
     "spec": false
+  },
+  "compilerOptions": {
+    "watchAssets": true,
+    "assets": [
+      "**/*.hbs"
+    ]
   }
 }

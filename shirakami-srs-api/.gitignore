@@ -36,3 +36,4 @@ lerna-debug.log*
 # Local Data
 /sqlite.db
 /.env
+src/assets/email-templates/*.html

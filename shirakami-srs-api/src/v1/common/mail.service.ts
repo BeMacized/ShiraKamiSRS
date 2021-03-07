@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import Mail from 'nodemailer/lib/mailer';
 import { createTransport } from 'nodemailer';
-import { escape as escapeHtml } from 'html-escaper';
 import { ConfigService } from '@nestjs/config';
+import * as fs from 'fs';
+import * as path from 'path';
+import Handlebars from 'handlebars';
+import * as inlineCss from 'inline-css';
 
 @Injectable()
 export class MailService {
@@ -39,10 +42,29 @@ export class MailService {
       : this.fromAddress;
   }
 
+  async parseTemplate(templateName: string, variables?: any): Promise<string> {
+    const template = Handlebars.compile(
+      fs
+        .readFileSync(
+          path.join(
+            __dirname,
+            '../../',
+            'assets',
+            'email-templates',
+            `${templateName}.hbs`,
+          ),
+        )
+        .toString('utf8'),
+    );
+    return inlineCss(template(variables), {
+      url: this.configService.get<string>('APP_BASE_URL'),
+    });
+  }
+
   async sendEmailVerification(
     email: string,
     username: string,
-    activationUrl: string,
+    verificationUrl: string,
   ) {
     if (!this.mail) {
       if (this.configService.get<boolean>('SMTP_SUPPRESS')) return;
@@ -50,16 +72,16 @@ export class MailService {
         'Tried sending a confirmation email, but SMTP settings were not configured.',
       );
     }
+    const html = await this.parseTemplate('email-verification', {
+      username,
+      verificationUrl,
+      publicUrl: this.configService.get<string>('APP_BASE_URL'),
+    });
     await this.mail.sendMail({
       from: this.from,
       to: email,
       subject: 'ShiraKamiSRS: Email Verification',
-      html: `
-<p>Hi ${escapeHtml(username)}!</p>      
-<p>
-  To verify your account, please click the <a href="${activationUrl}">here</a>!
-</p>
-<p>- ShiraKamiSRS</p>`,
+      html,
     });
   }
 }
