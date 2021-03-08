@@ -307,7 +307,9 @@ export class CreateEditCardModalComponent
                         return (
                             !this.kanaError &&
                             !this.kanjiError &&
-                            !this.jpTranslations.length
+                            (!this.jpTranslations.length ||
+                                !!this.kanjiInputValue ||
+                                !!this.kanaInputValue)
                         );
                     case 'VALID':
                         return (
@@ -323,7 +325,9 @@ export class CreateEditCardModalComponent
                         return !!this.englishError;
                     case 'PENDING':
                         return (
-                            !this.englishError && !this.enTranslations.length
+                            !this.englishError &&
+                            (!this.enTranslations.length ||
+                                !!this.englishInputValue)
                         );
                     case 'VALID':
                         return (
