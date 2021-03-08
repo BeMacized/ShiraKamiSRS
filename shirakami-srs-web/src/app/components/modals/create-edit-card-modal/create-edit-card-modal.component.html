@@ -114,52 +114,66 @@
                             </div>
                             <span class="input-label">Add Translation</span>
                             <div class="input-group">
-                                <span class="input-label">Kana (required)</span>
-                                <div class="input-row">
-                                    <input
-                                        id="kana-input"
-                                        class="input input-large"
-                                        type="text"
-                                        placeholder="かな"
-                                        maxlength="255"
-                                        #kanaInput
-                                        [wanakana]="true"
-                                        [(wkInput)]="kanaInputValue"
-                                        (keyup.enter)="
-                                            addJpTranslation(
-                                                kanaInputValue,
-                                                kanjiInputValue
-                                            )
-                                        "
-                                    />
-                                </div>
-                                <div
-                                    class="alert alert-error"
-                                    *ngIf="kanaError"
-                                    @vshrink
-                                >
-                                    {{ kanaError }}
-                                </div>
-                                <span class="input-label"
-                                    >Kanji (optional)</span
-                                >
-                                <div class="input-row">
-                                    <input
-                                        id="kanji-input"
-                                        class="input input-large"
-                                        type="text"
-                                        placeholder="漢字"
-                                        maxlength="255"
-                                        #kanjiInput
-                                        [wanakana]="true"
-                                        [(wkInput)]="kanjiInputValue"
-                                        (keyup.enter)="
-                                            addJpTranslation(
-                                                kanaInputValue,
-                                                kanjiInputValue
-                                            )
-                                        "
-                                    />
+                                <div class="jp-input-grid">
+                                    <div class="input-label">
+                                        Kana (required)
+                                    </div>
+                                    <div>
+                                        <input
+                                            id="kana-input"
+                                            class="input input-large"
+                                            type="text"
+                                            placeholder="かな"
+                                            maxlength="255"
+                                            #kanaInput
+                                            [wanakana]="true"
+                                            [(wkInput)]="kanaInputValue"
+                                            (keyup.enter)="
+                                                addJpTranslation(
+                                                    kanaInputValue,
+                                                    kanjiInputValue
+                                                )
+                                            "
+                                        />
+                                        <div
+                                            class="alert alert-error"
+                                            *ngIf="kanaError"
+                                            @vshrink
+                                        >
+                                            {{ kanaError }}
+                                        </div>
+                                    </div>
+                                    <div class="input-label">
+                                        Kanji (optional)
+                                    </div>
+                                    <div>
+                                        <input
+                                            id="kanji-input"
+                                            class="input input-large"
+                                            type="text"
+                                            placeholder="漢字"
+                                            maxlength="255"
+                                            #kanjiInput
+                                            [wanakana]="true"
+                                            [(wkInput)]="kanjiInputValue"
+                                            (keyup.enter)="
+                                                addJpTranslation(
+                                                    kanaInputValue,
+                                                    kanjiInputValue
+                                                )
+                                            "
+                                        />
+                                        <div
+                                            class="alert alert-error"
+                                            *ngIf="kanjiError"
+                                            @vshrink
+                                        >
+                                            {{ kanjiError }}
+                                        </div>
+                                    </div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
                                     <button
                                         class="btn btn-primary btn-rect btn-add-translation animate__animated animate__faster animate__infinite"
                                         [class.animate__pulse]="
@@ -179,13 +193,6 @@
                                     >
                                         <i class="material-icons">add</i>
                                     </button>
-                                </div>
-                                <div
-                                    class="alert alert-error"
-                                    *ngIf="kanjiError"
-                                    @vshrink
-                                >
-                                    {{ kanjiError }}
                                 </div>
                             </div>
                             <span class="input-label"

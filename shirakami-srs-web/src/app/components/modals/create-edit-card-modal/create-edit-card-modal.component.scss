@@ -104,6 +104,7 @@ app-checkbox {
 
     input {
         background: var(--color-surface);
+        width: 100%;
     }
 }
 
@@ -208,5 +209,25 @@ app-checkbox {
         flex-direction: column;
         align-items: stretch;
         width: 100%;
+    }
+}
+
+.jp-input-grid {
+    display: grid;
+    grid-auto-flow: column;
+    grid-gap: 0.5em;
+    grid-template-rows: repeat(4, auto);
+
+    input {
+        margin-top: 0;
+    }
+
+    .input-label {
+        margin-top: 0.25em;
+    }
+
+    > button {
+        //justify-self: center;
+        //align-self: center;
     }
 }
