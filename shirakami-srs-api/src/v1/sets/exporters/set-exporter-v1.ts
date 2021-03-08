@@ -2,6 +2,7 @@ import { CreateOrUpdateSetEntity, SetEntity } from '../entities/set.entity';
 import {
   ArrayMaxSize,
   ArrayMinSize,
+  ArrayUnique,
   IsEnum,
   IsNotEmpty,
   IsNumber,
@@ -32,6 +33,10 @@ export class SetExportV1 {
   @Type(() => SetExportV1Card)
   @ArrayMaxSize(MAX_CARDS_PER_SET)
   cards: SetExportV1Card[];
+  @ArrayMinSize(1)
+  @ArrayUnique()
+  @IsEnum(['enToJp', 'jpToEn', 'kanjiToKana'], { each: true })
+  modes: ReviewMode[];
   @ValidateNested({ each: true })
   @Type(() => SetExportV1Review)
   @ArrayMaxSize(MAX_CARDS_PER_SET * 3)
@@ -85,6 +90,7 @@ export const exportSetV1 = (
       enNote: card.value.enNote,
       jpNote: card.value.jpNote,
     })),
+    modes: set.modes.slice(),
     reviews: !includeReviews
       ? undefined
       : flatten(
@@ -112,7 +118,7 @@ export const importSetV1 = (
 } => {
   const set = {
     name: exportData.name,
-    modes: ReviewModes.slice(),
+    modes: exportData.modes ?? ReviewModes.slice(),
   };
   const cards = exportData.cards
     .map((cardData) => ({
