@@ -14,7 +14,7 @@ export abstract class Modal<I = any, O = any> {
     }
 
     protected emit = (value: O) => {
-        this._output.next(value);
+        if (this._output) this._output.next(value);
     };
 
     public abstract initModal(data?: I);

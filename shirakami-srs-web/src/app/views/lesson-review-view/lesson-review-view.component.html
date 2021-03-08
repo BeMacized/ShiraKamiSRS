@@ -242,7 +242,7 @@
                 [style.--animate-duration]="'0.5s'"
                 #answerInput
                 [wanakana]="enableIME"
-                (wkInput)="answer = $event"
+                (wkInputChange)="answer = $event"
                 [readOnly]="inputStage === 'FEEDBACK'"
             />
             <button

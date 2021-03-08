@@ -11,159 +11,293 @@
                 <h1 *ngIf="isEditing">Edit Card</h1>
             </div>
             <div class="modal-content ai-start">
-                <h2>English</h2>
-                <div class="translations">
-                    <div
-                        class="no-translations"
-                        *ngIf="!enTranslations.length"
-                        @vshrink
-                    >
-                        <span>No translations</span>
-                    </div>
-                    <div
-                        class="translation"
-                        @vshrink
-                        *ngFor="
-                            let translation of enTranslations;
-                            let index = index
-                        "
-                    >
-                        <div class="values">
-                            <span class="value value-en">{{
-                                translation
-                            }}</span>
-                        </div>
-                        <div class="actions">
-                            <button
-                                class="action"
-                                (click)="enTranslations.splice(index, 1)"
+                <div class="tab-container">
+                    <div class="tab-container-header">
+                        <div
+                            class="tab"
+                            [class.active]="activeTab === 'JAPANESE'"
+                            (click)="setActiveTab('JAPANESE')"
+                        >
+                            <span>Japanese</span>
+                            <i
+                                class="material-icons error"
+                                *ngIf="isLanguageState('JAPANESE', 'ERROR')"
+                                @hshrink
+                                >error</i
                             >
-                                <i class="material-icons">clear</i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="alert alert-error" *ngIf="englishError" @vshrink>
-                    {{ englishError }}
-                </div>
-                <div class="input-row">
-                    <input
-                        id="english-input"
-                        class="input input-large"
-                        type="text"
-                        placeholder="English"
-                        maxlength="255"
-                        #englishInput
-                        (keyup.enter)="addEnTranslation(englishInput.value)"
-                    />
-                    <button
-                        class="btn btn-primary btn-rect btn-add-translation"
-                        [disabled]="enTranslations.length >= maxTranslations"
-                        (click)="addEnTranslation(englishInput.value)"
-                    >
-                        <i class="material-icons">add</i>
-                    </button>
-                </div>
-                <div class="input-row note">
-                    <input
-                        id="english-note-input"
-                        class="input input-large"
-                        type="text"
-                        placeholder="Translation Note"
-                        maxlength="255"
-                        [(ngModel)]="enNote"
-                    />
-                </div>
-                <h2>Japanese</h2>
-                <div class="translations">
-                    <div
-                        class="no-translations"
-                        *ngIf="!jpTranslations.length"
-                        @vshrink
-                    >
-                        <span>No translations</span>
-                    </div>
-                    <div
-                        class="translation"
-                        @vshrink
-                        *ngFor="
-                            let translation of jpTranslations;
-                            let index = index
-                        "
-                    >
-                        <div class="values">
-                            <span
-                                class="value value-jp"
-                                *ngIf="translation.length === 1"
-                                >{{ translation[0] }}</span
+                            <i
+                                class="material-icons valid"
+                                *ngIf="isLanguageState('JAPANESE', 'VALID')"
+                                @hshrink
+                                >check</i
                             >
-                            <span
-                                class="value value-jp"
-                                *ngIf="translation.length === 2"
-                                >{{ translation[0] }}（{{
-                                    translation[1]
-                                }}）</span
+                            <i
+                                class="material-icons pending"
+                                *ngIf="isLanguageState('JAPANESE', 'PENDING')"
+                                @hshrink
+                                >pending</i
                             >
                         </div>
-                        <div class="actions">
-                            <button
-                                class="action"
-                                (click)="jpTranslations.splice(index, 1)"
+                        <div
+                            class="tab"
+                            [class.active]="activeTab === 'ENGLISH'"
+                            (click)="setActiveTab('ENGLISH')"
+                        >
+                            <span>English</span>
+                            <i
+                                class="material-icons error"
+                                *ngIf="isLanguageState('ENGLISH', 'ERROR')"
+                                @hshrink
+                                >error</i
                             >
-                                <i class="material-icons">clear</i>
-                            </button>
+                            <i
+                                class="material-icons valid"
+                                *ngIf="isLanguageState('ENGLISH', 'VALID')"
+                                @hshrink
+                                >check</i
+                            >
+                            <i
+                                class="material-icons pending"
+                                *ngIf="isLanguageState('ENGLISH', 'PENDING')"
+                                @hshrink
+                                >pending</i
+                            >
                         </div>
                     </div>
-                </div>
-                <div class="alert alert-error" *ngIf="kanjiError" @vshrink>
-                    {{ kanjiError }}
-                </div>
-                <div class="input-row">
-                    <input
-                        id="kanji-input"
-                        class="input input-large"
-                        type="text"
-                        placeholder="漢字 (Optional)"
-                        maxlength="255"
-                        [wanakana]="true"
-                        #kanjiInput
-                    />
-                </div>
-                <div class="alert alert-error" *ngIf="kanaError" @vshrink>
-                    {{ kanaError }}
-                </div>
-                <div class="input-row">
-                    <input
-                        id="kana-input"
-                        class="input input-large"
-                        type="text"
-                        placeholder="かな"
-                        maxlength="255"
-                        #kanaInput
-                        [wanakana]="true"
-                        (keyup.enter)="
-                            addJpTranslation(kanaInput.value, kanjiInput.value)
-                        "
-                    />
-                    <button
-                        class="btn btn-primary btn-rect btn-add-translation"
-                        [disabled]="jpTranslations.length >= maxTranslations"
-                        (click)="
-                            addJpTranslation(kanaInput.value, kanjiInput.value)
-                        "
-                    >
-                        <i class="material-icons">add</i>
-                    </button>
-                </div>
-                <div class="input-row note">
-                    <input
-                        id="japanese-note-input"
-                        class="input input-large"
-                        type="text"
-                        placeholder="Translation Note"
-                        maxlength="255"
-                        [(ngModel)]="jpNote"
-                    />
+                    <div style="position: relative" [@noop]="activeTab">
+                        <div
+                            class="tab-container-content"
+                            *ngIf="activeTab === 'JAPANESE'"
+                        >
+                            <div class="translations">
+                                <div
+                                    class="no-translations"
+                                    *ngIf="!jpTranslations.length"
+                                    @vshrink
+                                >
+                                    <span class="flag-icon flag-icon-jp"></span>
+                                    <span>No translations added</span>
+                                </div>
+                                <div
+                                    class="translation"
+                                    @vshrink
+                                    *ngFor="
+                                        let translation of jpTranslations;
+                                        let index = index
+                                    "
+                                >
+                                    <div class="values">
+                                        <span
+                                            class="value value-jp"
+                                            *ngIf="translation.length === 1"
+                                            >{{ translation[0] }}</span
+                                        >
+                                        <span
+                                            class="value value-jp"
+                                            *ngIf="translation.length === 2"
+                                            >{{ translation[0] }}（{{
+                                                translation[1]
+                                            }}）</span
+                                        >
+                                    </div>
+                                    <div class="actions">
+                                        <button
+                                            class="action"
+                                            (click)="
+                                                jpTranslations.splice(index, 1)
+                                            "
+                                        >
+                                            <i class="material-icons">clear</i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="input-label">Add Translation</span>
+                            <div class="input-group">
+                                <span class="input-label">Kana (required)</span>
+                                <div class="input-row">
+                                    <input
+                                        id="kana-input"
+                                        class="input input-large"
+                                        type="text"
+                                        placeholder="かな"
+                                        maxlength="255"
+                                        #kanaInput
+                                        [wanakana]="true"
+                                        [(wkInput)]="kanaInputValue"
+                                        (keyup.enter)="
+                                            addJpTranslation(
+                                                kanaInputValue,
+                                                kanjiInputValue
+                                            )
+                                        "
+                                    />
+                                </div>
+                                <div
+                                    class="alert alert-error"
+                                    *ngIf="kanaError"
+                                    @vshrink
+                                >
+                                    {{ kanaError }}
+                                </div>
+                                <span class="input-label"
+                                    >Kanji (optional)</span
+                                >
+                                <div class="input-row">
+                                    <input
+                                        id="kanji-input"
+                                        class="input input-large"
+                                        type="text"
+                                        placeholder="漢字"
+                                        maxlength="255"
+                                        #kanjiInput
+                                        [wanakana]="true"
+                                        [(wkInput)]="kanjiInputValue"
+                                        (keyup.enter)="
+                                            addJpTranslation(
+                                                kanaInputValue,
+                                                kanjiInputValue
+                                            )
+                                        "
+                                    />
+                                    <button
+                                        class="btn btn-primary btn-rect btn-add-translation animate__animated animate__faster animate__infinite"
+                                        [class.animate__pulse]="
+                                            !!kanaInputValue.trim()
+                                        "
+                                        [disabled]="
+                                            jpTranslations.length >=
+                                                maxTranslations ||
+                                            !kanaInputValue
+                                        "
+                                        (click)="
+                                            addJpTranslation(
+                                                kanaInputValue,
+                                                kanjiInputValue
+                                            )
+                                        "
+                                    >
+                                        <i class="material-icons">add</i>
+                                    </button>
+                                </div>
+                                <div
+                                    class="alert alert-error"
+                                    *ngIf="kanjiError"
+                                    @vshrink
+                                >
+                                    {{ kanjiError }}
+                                </div>
+                            </div>
+                            <span class="input-label"
+                                >Translation Note (optional)</span
+                            >
+                            <div class="input-row note">
+                                <input
+                                    id="japanese-note-input"
+                                    class="input input-large"
+                                    type="text"
+                                    placeholder="Note"
+                                    maxlength="255"
+                                    [(ngModel)]="jpNote"
+                                />
+                            </div>
+                        </div>
+                        <div
+                            class="tab-container-content"
+                            *ngIf="activeTab === 'ENGLISH'"
+                        >
+                            <div class="translations">
+                                <div
+                                    class="no-translations"
+                                    *ngIf="!enTranslations.length"
+                                    @vshrink
+                                >
+                                    <span class="flag-icon flag-icon-gb"></span>
+                                    <span>No translations added</span>
+                                </div>
+                                <div
+                                    class="translation"
+                                    @vshrink
+                                    *ngFor="
+                                        let translation of enTranslations;
+                                        let index = index
+                                    "
+                                >
+                                    <div class="values">
+                                        <span class="value value-en">{{
+                                            translation
+                                        }}</span>
+                                    </div>
+                                    <div class="actions">
+                                        <button
+                                            class="action"
+                                            (click)="
+                                                enTranslations.splice(index, 1)
+                                            "
+                                        >
+                                            <i class="material-icons">clear</i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                class="alert alert-error"
+                                *ngIf="englishError"
+                                @vshrink
+                            >
+                                {{ englishError }}
+                            </div>
+                            <span class="input-label">Add Translation</span>
+                            <div class="input-group">
+                                <span class="input-label"
+                                    >English Translation (required)</span
+                                >
+                                <div class="input-row">
+                                    <input
+                                        id="english-input"
+                                        class="input input-large"
+                                        type="text"
+                                        placeholder="English"
+                                        maxlength="255"
+                                        #englishInput
+                                        [(ngModel)]="englishInputValue"
+                                        (keyup.enter)="
+                                            addEnTranslation(englishInputValue)
+                                        "
+                                    />
+                                    <button
+                                        class="btn btn-primary btn-rect btn-add-translation animate__animated animate__faster animate__infinite"
+                                        [class.animate__pulse]="
+                                            !!englishInputValue.trim()
+                                        "
+                                        [disabled]="
+                                            enTranslations.length >=
+                                                maxTranslations ||
+                                            !englishInputValue
+                                        "
+                                        (click)="
+                                            addEnTranslation(englishInputValue)
+                                        "
+                                    >
+                                        <i class="material-icons">add</i>
+                                    </button>
+                                </div>
+                            </div>
+                            <span class="input-label"
+                                >Translation Note (optional)</span
+                            >
+                            <div class="input-row note">
+                                <input
+                                    id="english-note-input"
+                                    class="input input-large"
+                                    type="text"
+                                    placeholder="Note"
+                                    maxlength="255"
+                                    [(ngModel)]="enNote"
+                                />
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div
                     class="flex-row ai-center"
