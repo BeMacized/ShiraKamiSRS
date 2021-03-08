@@ -61,6 +61,7 @@ export abstract class AnswerMatcher {
         return answer
             .replace(/[（]/g, '(')
             .replace(/[）]/g, ')')
-            .replace(/\s+/g, '');
+            .replace(/\s+/g, '')
+            .toLowerCase();
     }
 }
