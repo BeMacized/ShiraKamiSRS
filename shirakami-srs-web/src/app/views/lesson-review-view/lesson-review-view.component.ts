@@ -468,19 +468,21 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
     }
 
     async finishLessons() {
-        const modalData =
+        const modalData: ConfirmationModalInput =
             this.totalItemsRemaining > 0
                 ? {
                       title: 'Lessons complete',
                       message: `You have more lessons available. Do you want to continue doing more lessons?`,
                       cancelText: `No, stop here`,
                       confirmText: `Yes, do more`,
+                      pressEnterConfirm: false,
                   }
                 : {
                       title: 'Lessons complete',
                       message: `There are no more lessons to do!`,
                       confirmText: `Go to dashboard`,
                       showCancel: false,
+                      pressEnterConfirm: false,
                   };
 
         const result = await this.modalService
