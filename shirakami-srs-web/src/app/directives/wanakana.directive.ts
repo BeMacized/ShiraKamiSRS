@@ -15,6 +15,7 @@ import * as wanakana from 'wanakana';
 export class WanakanaDirective implements AfterViewInit {
     enabled = false;
     initialized = false;
+
     @Input() set wanakana(value: boolean) {
         this.enabled = value;
         if (this.initialized) {
@@ -26,7 +27,12 @@ export class WanakanaDirective implements AfterViewInit {
         }
     }
 
-    @Output() wkInput: EventEmitter<string> = new EventEmitter<string>();
+    @Input() set wkInput(value: string) {
+        if (value === this.elementRef.nativeElement.value) return;
+        this.elementRef.nativeElement.value = value;
+    }
+
+    @Output() wkInputChange: EventEmitter<string> = new EventEmitter<string>();
 
     constructor(private elementRef: ElementRef) {}
 
@@ -37,7 +43,9 @@ export class WanakanaDirective implements AfterViewInit {
             }
             this.elementRef.nativeElement.addEventListener('input', () => {
                 setTimeout(() => {
-                    this.wkInput.emit(this.elementRef.nativeElement.value);
+                    this.wkInputChange.emit(
+                        this.elementRef.nativeElement.value
+                    );
                 });
             });
             this.initialized = true;
