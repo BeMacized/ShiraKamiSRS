@@ -8,7 +8,7 @@ import {
 import { ReviewEntity, ReviewMode } from '../../../models/review.model';
 import moment from 'moment';
 import { CollapsibleComponent } from '../collapsible/collapsible.component';
-import { flatten } from '@angular/compiler';
+import { flatten, orderBy } from 'lodash';
 
 @Component({
     selector: 'app-review-forecast',
@@ -24,12 +24,14 @@ export class ReviewForecastComponent {
         this._days = value;
         this.buildData();
     }
+
     _reviews: ReviewEntity[] = [];
     @Input() set reviews(reviews: ReviewEntity[]) {
         if (!reviews) this._reviews = [];
         this._reviews = reviews;
         this.buildData();
     }
+
     dayItems: Array<{
         title: string;
         total: number;
@@ -48,10 +50,11 @@ export class ReviewForecastComponent {
         this.dayItems = [...Array(this._days).keys()]
             .map((i) => {
                 const dayStart = moment().startOf('day').add(i, 'days');
+                const hourStart = moment().startOf('hour');
                 const dayReviews = this._reviews.filter((r) => {
                     const unix = moment(r.reviewDate).unix();
                     return (
-                        unix >= dayStart.unix() &&
+                        unix >= Math.max(dayStart.unix(), hourStart.unix()) &&
                         unix < dayStart.clone().add(1, 'day').unix()
                     );
                 });
@@ -83,7 +86,7 @@ export class ReviewForecastComponent {
                                 barWidth: '0%',
                             });
                         }
-                        return hourItems;
+                        return orderBy(hourItems, ['time'], ['asc']);
                     }, []),
                 };
             })
