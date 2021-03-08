@@ -341,6 +341,7 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
     async processUserInput() {
         if (this.page.type !== 'LESSON_INPUT' && this.page.type !== 'REVIEW')
             return;
+
         // Check input for obvious correctable mistakes
         const input = this.answer.trim();
         // Empty input
@@ -365,6 +366,7 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
                     return this.shakeInput();
                 break;
         }
+
         // Check the answer
         const result = matchAnswer(input, this.page.mode, this.page.card);
         // Process the feedback
@@ -425,7 +427,7 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
                 this.page.score--;
             }
         } else if (this.page.type === 'LESSON_INPUT') {
-            if (this.inputFeedback) {
+            if (this.inputFeedback === 'CORRECT') {
                 this.itemsCorrect++;
                 this.totalItemsRemaining--;
             }

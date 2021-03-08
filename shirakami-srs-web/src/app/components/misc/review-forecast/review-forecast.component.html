@@ -1,17 +1,18 @@
 <div class="card">
     <app-collapsible
-        [title]="'Today'"
         *ngFor="let dayItem of dayItems; let index = index"
         [locked]="!dayItem.hourItems.length"
     >
         <div class="collapsible-header schedule-row-header">
             <i class="material-icons">expand_less</i>
             <span class="title"> {{ dayItem.title }} </span>
-            <span class="addition">+{{dayItem.mod}}</span>
-            <span class="total">{{dayItem.total}}</span>
+            <span class="addition">+{{ dayItem.mod }}</span>
+            <span class="total">{{ dayItem.total }}</span>
         </div>
         <div class="schedule-row" *ngFor="let hourItem of dayItem.hourItems">
-            <div class="time">{{ (hourItem.time | amFromUnix) | amDateFormat:'hA' }}</div>
+            <div class="time">
+                {{ hourItem.time | amFromUnix | amDateFormat: 'hA' }}
+            </div>
             <div class="bar">
                 <div class="bar-fill" [style.width]="hourItem.barWidth"></div>
             </div>

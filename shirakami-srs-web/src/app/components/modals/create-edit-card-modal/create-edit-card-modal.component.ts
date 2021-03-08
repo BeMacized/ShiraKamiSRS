@@ -12,6 +12,7 @@ import {
     fadeUp,
     hshrink,
     modalPage,
+    noop,
     triggerChildren,
     vshrink,
 } from '../../../utils/animations';
@@ -45,6 +46,7 @@ type Page = 'FORM' | 'PROCESSING';
         vshrink(),
         crossFade(),
         hshrink(),
+        noop(),
     ],
 })
 export class CreateEditCardModalComponent
@@ -69,6 +71,10 @@ export class CreateEditCardModalComponent
     kanjiError = '';
     kanaError = '';
     page: Page = 'FORM';
+    activeTab: 'JAPANESE' | 'ENGLISH' = 'JAPANESE';
+    englishInputValue = '';
+    kanaInputValue = '';
+    kanjiInputValue = '';
 
     get isEditing() {
         return !!this.cardId;
@@ -82,7 +88,14 @@ export class CreateEditCardModalComponent
 
     ngAfterViewInit() {
         setTimeout(() => {
-            this.englishInput.nativeElement.focus();
+            switch (this.activeTab) {
+                case 'JAPANESE':
+                    this.kanaInput.nativeElement.focus();
+                    break;
+                case 'ENGLISH':
+                    this.englishInput.nativeElement.focus();
+                    break;
+            }
         });
     }
 
@@ -114,9 +127,9 @@ export class CreateEditCardModalComponent
         this.errorMessage = '';
         this.createOrUpdateStatus = 'IN_PROGRESS';
         this.page = 'PROCESSING';
-        this.englishInput.nativeElement.blur();
-        this.kanaInput.nativeElement.blur();
-        this.kanjiInput.nativeElement.blur();
+        this.englishInput?.nativeElement?.blur();
+        this.kanaInput?.nativeElement?.blur();
+        this.kanjiInput?.nativeElement?.blur();
         try {
             const card = await minPromiseDuration(
                 this.cardId
@@ -144,11 +157,15 @@ export class CreateEditCardModalComponent
             if (this.createAnother) {
                 this.enTranslations = [];
                 this.jpTranslations = [];
+                this.kanaInputValue = '';
+                this.kanjiInputValue = '';
+                this.englishInputValue = '';
                 this.enNote = '';
                 this.jpNote = '';
                 setTimeout(() => {
+                    this.activeTab = 'JAPANESE';
                     this.page = 'FORM';
-                    setTimeout(() => this.englishInput.nativeElement.focus());
+                    setTimeout(() => this.kanaInput?.nativeElement?.focus());
                 }, 1500);
             } else {
                 setTimeout(() => this.close(), 1000);
@@ -198,7 +215,7 @@ export class CreateEditCardModalComponent
             return;
         }
         this.enTranslations.push(english);
-        this.englishInput.nativeElement.value = '';
+        this.englishInputValue = '';
     }
 
     async addJpTranslation(kana: string, kanji: string) {
@@ -244,8 +261,8 @@ export class CreateEditCardModalComponent
             return;
         }
         this.jpTranslations.push(kanji ? [kana, kanji] : [kana]);
-        this.kanaInput.nativeElement.value = '';
-        this.kanjiInput.nativeElement.value = '';
+        this.kanaInputValue = '';
+        this.kanjiInputValue = '';
     }
 
     async validateParentheses(value: string) {
@@ -275,5 +292,51 @@ export class CreateEditCardModalComponent
         this.englishError = null;
         this.kanaError = null;
         this.kanjiError = null;
+    }
+
+    isLanguageState(
+        language: 'JAPANESE' | 'ENGLISH',
+        state: 'ERROR' | 'PENDING' | 'VALID'
+    ): boolean {
+        switch (language) {
+            case 'JAPANESE':
+                switch (state) {
+                    case 'ERROR':
+                        return !!(this.kanaError || this.kanjiError);
+                    case 'PENDING':
+                        return (
+                            !this.kanaError &&
+                            !this.kanjiError &&
+                            !this.jpTranslations.length
+                        );
+                    case 'VALID':
+                        return (
+                            !this.kanaError &&
+                            !this.kanjiError &&
+                            !!this.jpTranslations.length
+                        );
+                }
+                break;
+            case 'ENGLISH':
+                switch (state) {
+                    case 'ERROR':
+                        return !!this.englishError;
+                    case 'PENDING':
+                        return (
+                            !this.englishError && !this.enTranslations.length
+                        );
+                    case 'VALID':
+                        return (
+                            !this.englishError && !!this.enTranslations.length
+                        );
+                }
+                break;
+        }
+        return false;
+    }
+
+    setActiveTab(language: 'JAPANESE' | 'ENGLISH') {
+        if (this.activeTab === language) return;
+        this.activeTab = language;
     }
 }
