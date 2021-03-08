@@ -69,6 +69,7 @@ export class ReviewsService {
           0,
         ),
       })
+      .andWhere('set.userId = :userId', { userId: user.id })
       .andWhere(`set.modes LIKE '%'||mode||'%'`);
     if (setId)
       reviewQuery = reviewQuery.andWhere('card.setId = :setId', {
