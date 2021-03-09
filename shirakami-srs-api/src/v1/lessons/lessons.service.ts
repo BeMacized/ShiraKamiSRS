@@ -6,6 +6,7 @@ import { LessonDto, LessonSetDto } from './dtos/lesson.dto';
 import { SetEntity } from '../sets/entities/set.entity';
 import { CardDto } from '../sets/cards/dtos/card.dto';
 import { ReviewEntity } from '../reviews/entities/review.entity';
+import { SetDto } from '../sets/dtos/set.dto';
 
 @Injectable()
 export class LessonsService {
@@ -88,13 +89,25 @@ ${limit ? `LIMIT ?` : ``}
     }
 
     // Get cards for all lessons
-    const cards: CardDto[] = await this.cardRepository
+    const cardEntities = await this.cardRepository
       .createQueryBuilder('card')
+      .leftJoinAndSelect('card.set', 'set')
       .where('card.id IN (:...cardIds)', {
         cardIds: lessons.map((l) => l.cardId),
       })
-      .getMany()
-      .then((entities) => entities.map((entity) => CardDto.fromEntity(entity)));
+      .getMany();
+    const cards: CardDto[] = cardEntities.map((entity) =>
+      CardDto.fromEntity(entity),
+    );
+
+    // Get all sets for all cards
+    const sets: SetDto[] = cardEntities
+      .map((c) => c.set)
+      .reduce((acc, set) => {
+        if (!acc.find((s) => s.id === set.id)) acc.push(set);
+        return acc;
+      }, [] as SetEntity[])
+      .map((set) => SetDto.fromEntity(set));
 
     // Find out total amount of lessons
     const countQuery = `
@@ -139,6 +152,7 @@ ${setId ? 'AND setModes.setId = ?' : ''}
 
     return {
       total,
+      sets,
       cards,
       lessons,
     };

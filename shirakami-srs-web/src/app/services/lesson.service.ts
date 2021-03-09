@@ -14,13 +14,13 @@ export class LessonService {
         options: Partial<{ setId: string; limit: number }>
     ): Promise<{ total: number; lessons: LessonEntity[] }> {
         try {
-            const set: LessonSetDto = await this.lessonRepository
+            const lessonSet: LessonSetDto = await this.lessonRepository
                 .getLessons(options.setId, options.limit)
                 .toPromise();
             return {
-                total: set.total,
-                lessons: set.lessons.map((l) =>
-                    LessonEntity.fromDto(l, set.cards)
+                total: lessonSet.total,
+                lessons: lessonSet.lessons.map((l) =>
+                    LessonEntity.fromDto(l, lessonSet.cards, lessonSet.sets)
                 ),
             };
         } catch (e) {

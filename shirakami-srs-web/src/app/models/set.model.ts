@@ -20,7 +20,9 @@ export class SetEntity {
             name: dto.name,
             modes: dto.modes,
             cards: dto.cards?.map((card) => CardEntity.fromDto(card)),
-            srsStatus: SetSrsStatusEntity.fromDto(dto.srsStatus),
+            srsStatus: dto.srsStatus
+                ? SetSrsStatusEntity.fromDto(dto.srsStatus)
+                : null,
         });
     }
 }

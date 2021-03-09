@@ -16,6 +16,8 @@ import { CardsService } from '../sets/cards/cards.service';
 import { CardDto } from '../sets/cards/dtos/card.dto';
 import { CardEntity } from '../sets/cards/entities/card.entity';
 import { omit } from 'lodash';
+import { SetEntity } from '../sets/entities/set.entity';
+import { SetDto } from '../sets/dtos/set.dto';
 
 @Injectable()
 export class ReviewsService {
@@ -87,6 +89,13 @@ export class ReviewsService {
         ReviewDto.fromEntity(omit(entity, ['card'])),
       ),
       cards: cards.map((entity) => CardDto.fromEntity(entity)),
+      sets: cards
+        .map((entity) => entity.set)
+        .reduce((acc, set) => {
+          if (!acc.find((s) => s.id === set.id)) acc.push(set);
+          return acc;
+        }, [] as SetEntity[])
+        .map((set) => SetDto.fromEntity(set)),
     };
   }
 

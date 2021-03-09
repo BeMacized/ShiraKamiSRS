@@ -315,6 +315,8 @@ export class CreateEditCardModalComponent
                         return (
                             !this.kanaError &&
                             !this.kanjiError &&
+                            !this.kanjiInputValue &&
+                            !this.kanaInputValue &&
                             !!this.jpTranslations.length
                         );
                 }
@@ -331,7 +333,9 @@ export class CreateEditCardModalComponent
                         );
                     case 'VALID':
                         return (
-                            !this.englishError && !!this.enTranslations.length
+                            !this.englishError &&
+                            !this.englishInputValue &&
+                            !!this.enTranslations.length
                         );
                 }
                 break;

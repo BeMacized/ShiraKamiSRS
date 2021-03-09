@@ -10,71 +10,74 @@
         </div>
         <div class="content" *ngIf="page">
             <div class="content-inner" *ngIf="page.type === 'LESSON'">
-                <div
-                    [fittext]="true"
-                    [maxFontSize]="50"
-                    [modelToWatch]="[page, lessonStage]"
-                    class="fit-text"
-                >
-                    <div class="line line-header">Lesson</div>
-                    <ng-container *ngIf="lessonStage === 'ENGLISH'">
-                        <ng-container
-                            *ngFor="
-                                let translation of page.card.value
-                                    .enTranslations;
-                                let last = last;
-                                let count = count
-                            "
-                        >
-                            <div class="line line-vocab">
-                                {{ translation }}
-                            </div>
+                <div class="fit-text-container" #lessonFitText>
+                    <div
+                        [fittext]="true"
+                        [maxFontSize]="50"
+                        [modelToWatch]="[page, lessonStage]"
+                        [container]="lessonFitText"
+                        class="fit-text"
+                    >
+                        <div class="line line-header">Lesson</div>
+                        <ng-container *ngIf="lessonStage === 'ENGLISH'">
+                            <ng-container
+                                *ngFor="
+                                    let translation of page.card.value
+                                        .enTranslations;
+                                    let last = last;
+                                    let count = count
+                                "
+                            >
+                                <div class="line line-vocab">
+                                    {{ translation }}
+                                </div>
+                                <div
+                                    class="line line-label"
+                                    *ngIf="count > 1 && !last"
+                                >
+                                    or
+                                </div>
+                            </ng-container>
                             <div
                                 class="line line-label"
-                                *ngIf="count > 1 && !last"
+                                *ngIf="page.card.value.enNote"
                             >
-                                or
+                                Note: {{ page.card.value.enNote }}
                             </div>
                         </ng-container>
-                        <div
-                            class="line line-label"
-                            *ngIf="page.card.value.enNote"
-                        >
-                            Note: {{ page.card.value.enNote }}
-                        </div>
-                    </ng-container>
-                    <ng-container *ngIf="lessonStage === 'JAPANESE'">
-                        <ng-container
-                            *ngFor="
-                                let translation of page.card.value
-                                    .jpTranslations;
-                                let last = last;
-                                let count = count
-                            "
-                        >
-                            <div
-                                class="line line-vocab-furigana"
-                                *ngIf="translation[1]"
+                        <ng-container *ngIf="lessonStage === 'JAPANESE'">
+                            <ng-container
+                                *ngFor="
+                                    let translation of page.card.value
+                                        .jpTranslations;
+                                    let last = last;
+                                    let count = count
+                                "
                             >
-                                {{ translation[0] }}
-                            </div>
-                            <div class="line line-vocab">
-                                {{ translation[1] || translation[0] }}
-                            </div>
+                                <div
+                                    class="line line-vocab-furigana"
+                                    *ngIf="translation[1]"
+                                >
+                                    {{ translation[0] }}
+                                </div>
+                                <div class="line line-vocab">
+                                    {{ translation[1] || translation[0] }}
+                                </div>
+                                <div
+                                    class="line line-label"
+                                    *ngIf="count > 1 && !last"
+                                >
+                                    or
+                                </div>
+                            </ng-container>
                             <div
                                 class="line line-label"
-                                *ngIf="count > 1 && !last"
+                                *ngIf="page.card.value.jpNote"
                             >
-                                or
+                                Note: {{ page.card.value.jpNote }}
                             </div>
                         </ng-container>
-                        <div
-                            class="line line-label"
-                            *ngIf="page.card.value.jpNote"
-                        >
-                            Note: {{ page.card.value.jpNote }}
-                        </div>
-                    </ng-container>
+                    </div>
                 </div>
                 <div class="lesson-lang-indicator">
                     <button
@@ -220,6 +223,7 @@
                 </ng-container>
             </ng-container>
         </div>
+
         <div
             class="input-bar"
             *ngIf="['LESSON_INPUT', 'REVIEW'].includes(page?.type)"
@@ -251,6 +255,11 @@
             >
                 <i class="material-icons">arrow_forward_ios</i>
             </button>
+        </div>
+        <div class="set-bar" *ngIf="page?.card?.set?.name" @vshrink>
+            <span class="set-bar-set">
+                {{ page.card.set.name }}
+            </span>
         </div>
         <div
             class="card answer-card"
