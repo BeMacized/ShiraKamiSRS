@@ -62,6 +62,7 @@ export class JpToEnAnswerMatcher extends AnswerMatcher {
                 .replace(/[\u0300-\u036f]/g, '')
                 // Remove all non relevant characters
                 .replace(/[^a-zA-Z0-9]/g, '')
+                .toLowerCase()
         );
     }
 

@@ -1,4 +1,5 @@
 import { CardDto, CardEntity } from './card.model';
+import { SetDto, SetEntity } from './set.model';
 
 export type ReviewMode = 'enToJp' | 'jpToEn' | 'kanjiToKana';
 
@@ -17,10 +18,19 @@ export class ReviewEntity {
     reviewDate: Date;
     currentLevel: number;
 
-    static fromDto(review: ReviewDto, cards?: CardDto[]): ReviewEntity {
+    static fromDto(
+        review: ReviewDto,
+        cards?: CardDto[],
+        sets?: SetDto[]
+    ): ReviewEntity {
+        const card = cards
+            ? CardEntity.fromDto(cards.find((c) => c.id === review.cardId))
+            : null;
+        if (card && sets)
+            card.set = SetEntity.fromDto(sets.find((s) => s.id === card.setId));
         return Object.assign(new ReviewEntity(), {
+            card,
             id: review.id,
-            card: cards ? cards.find((c) => c.id === review.cardId) : null,
             cardId: review.cardId,
             mode: review.mode,
             creationDate: new Date(review.creationDate * 1000),
@@ -31,6 +41,7 @@ export class ReviewEntity {
 }
 
 export class ReviewSetDto {
+    sets: SetDto[];
     cards: CardDto[];
     reviews: ReviewDto[];
 }

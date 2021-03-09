@@ -236,14 +236,16 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
         }
     }
 
-    async loadReviews() {
+    async loadReviews(reviews?: ReviewEntity[]) {
         if (this.loadStatus === 'IN_PROGRESS') return;
         this.loadStatus = 'IN_PROGRESS';
         try {
-            // Fetch reviews
-            const reviews = await this.reviewService.getAvailableReviews({
-                setId: this.setId,
-            });
+            // Fetch reviews if none provided
+            if (!reviews) {
+                reviews = await this.reviewService.getAvailableReviews({
+                    setId: this.setId,
+                });
+            }
             // Return to dashboard if no reviews are available
             if (!reviews.length) {
                 await this.router.navigate(['dashboard']);
@@ -446,7 +448,10 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
                     this.pageIndex++;
                 }
                 // Otherwise, we're done
-                else await this.finishLessons();
+                else if (this.page.type === 'LESSON_INPUT')
+                    await this.finishLessons();
+                else if (this.page.type === 'REVIEW')
+                    await this.finishReviews();
                 break;
             case 'IGNORED':
             case 'INCORRECT':
@@ -497,6 +502,49 @@ export class LessonReviewViewComponent implements OnInit, OnDestroy {
 
         if (result && this.totalItemsRemaining > 0) {
             await this.loadLessons();
+        } else {
+            await this.router.navigate(['dashboard']);
+        }
+    }
+
+    async finishReviews() {
+        // Check if new reviews have popped up since starting our review
+        let reviews;
+        try {
+            reviews = await this.reviewService.getAvailableReviews({
+                setId: this.setId,
+            });
+        } catch (e) {
+            // Ignore any failure to fetch the reviews.
+        }
+        const modalData: ConfirmationModalInput = reviews?.length
+            ? {
+                  title: 'Reviews complete',
+                  message: `${reviews.length} more ${
+                      reviews.length === 1 ? 'review has' : 'reviews have'
+                  } become available in the meantime. Do you want to continue reviewing?`,
+                  cancelText: `No, stop here`,
+                  confirmText: `Yes, continue`,
+                  pressEnterConfirm: false,
+              }
+            : {
+                  title: 'Reviews complete',
+                  message: `You have finished doing your reviews!`,
+                  confirmText: `Go to dashboard`,
+                  showCancel: false,
+                  pressEnterConfirm: false,
+              };
+
+        const result = await this.modalService
+            .showModal<
+                ConfirmationModalComponent,
+                ConfirmationModalInput,
+                ConfirmationModalOutput
+            >(ConfirmationModalComponent, modalData)
+            .toPromise();
+
+        if (reviews?.length && result) {
+            await this.loadReviews(reviews);
         } else {
             await this.router.navigate(['dashboard']);
         }
