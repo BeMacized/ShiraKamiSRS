@@ -169,6 +169,7 @@ app-checkbox {
             flex: 1;
             cursor: pointer;
             border-radius: 0.5em 0.5em 0 0;
+            user-select: none;
 
             &:not(.active) {
                 color: var(--color-on-surface-mute);

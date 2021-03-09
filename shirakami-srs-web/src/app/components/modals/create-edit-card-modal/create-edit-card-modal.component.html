@@ -322,7 +322,11 @@
                 <button
                     class="button btn btn-primary"
                     [disabled]="
-                        !enTranslations.length || !jpTranslations.length
+                        !enTranslations.length ||
+                        !jpTranslations.length ||
+                        !!kanaInputValue ||
+                        !!kanjiInputValue ||
+                        !!englishInputValue
                     "
                     (click)="createOrUpdateCard()"
                 >

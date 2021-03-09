@@ -1,6 +1,6 @@
 import { CardDto, CardEntity } from './card.model';
 import { ReviewMode } from './review.model';
-import { CardValueDto } from './card-value.model';
+import { SetDto, SetEntity } from './set.model';
 
 //
 // Entities
@@ -10,11 +10,17 @@ export class LessonEntity {
     card: CardEntity;
     mode: ReviewMode;
 
-    static fromDto(lesson: LessonDto, cards: CardDto[]): LessonEntity {
-        return Object.assign(new LessonEntity(), {
-            card: cards.find((c) => c.id === lesson.cardId),
-            mode: lesson.mode,
-        });
+    static fromDto(
+        lesson: LessonDto,
+        cards: CardDto[],
+        sets: SetDto[]
+    ): LessonEntity {
+        const card = CardEntity.fromDto(
+            cards.find((c) => c.id === lesson.cardId)
+        );
+        card.set = SetEntity.fromDto(sets.find((s) => s.id === card.setId));
+        const mode = lesson.mode;
+        return Object.assign(new LessonEntity(), { card, mode });
     }
 }
 
@@ -24,6 +30,7 @@ export class LessonEntity {
 
 export class LessonSetDto {
     total: number;
+    sets: SetDto[];
     cards: CardDto[];
     lessons: LessonDto[];
 }
