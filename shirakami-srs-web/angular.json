@@ -28,15 +28,13 @@
                         "tsConfig": "tsconfig.app.json",
                         "aot": true,
                         "assets": ["src/favicon.ico", "src/assets"],
-                        "styles": [
-                            "src/styles.scss"
-                        ],
-                        "scripts": [
-                        ],
+                        "styles": ["src/styles.scss"],
+                        "scripts": [],
                         "stylePreprocessorOptions": {
                             "includePaths": ["src/styles"]
                         },
-                        "outputHashing": "all"
+                        "outputHashing": "all",
+                        "showCircularDependencies": false
                     },
                     "configurations": {
                         "production": {

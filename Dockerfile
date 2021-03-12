@@ -12,7 +12,7 @@ RUN yarn && yarn apply-build-version "$BUILD_VERSION" && yarn build
 
 FROM node:14-buster
 WORKDIR /app
-RUN apt-get update && apt-get install -y gettext && yarn global add bcrypt-cli@1.1.0
+RUN apt-get update && apt-get install -y gettext mariadb-client && yarn global add bcrypt-cli@1.1.0
 COPY --from=buildBackend /app/dist .
 COPY --from=buildBackend /app/node_modules ./node_modules
 COPY --from=buildFrontend /app/dist/shirakami-srs-web ./web
