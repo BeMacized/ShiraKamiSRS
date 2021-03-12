@@ -29,7 +29,7 @@ export class TokensService {
     private readonly configService: ConfigService,
   ) {}
 
-  @Cron(CronExpression.EVERY_12_HOURS)
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   public async runRefreshTokenCleanup() {
     const result = await this.refreshTokenRepository.delete({
       expiration: LessThan(new Date()),
