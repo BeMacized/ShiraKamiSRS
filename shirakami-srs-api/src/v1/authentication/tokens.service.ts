@@ -7,7 +7,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { UserEntity } from '../users/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { LessThan, Repository } from 'typeorm';
 import { RefreshTokenEntity } from './entities/refresh-token.entity';
 import {
   AccessTokenPayload,
@@ -17,6 +17,7 @@ import {
 import { TokenExpiredError, JsonWebTokenError } from 'jsonwebtoken';
 import { UsersService } from '../users/users.service';
 import { ConfigService } from '@nestjs/config';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class TokensService {
@@ -27,6 +28,19 @@ export class TokensService {
     private readonly userService: UsersService,
     private readonly configService: ConfigService,
   ) {}
+
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  public async runRefreshTokenCleanup() {
+    const result = await this.refreshTokenRepository.delete({
+      expiration: LessThan(new Date()),
+    });
+    if (result.affected)
+      console.log(
+        `Cleaned up ${result.affected} expired refresh ${
+          result.affected === 1 ? 'token' : 'tokens'
+        }`,
+      );
+  }
 
   public async generateAccessToken(user: UserEntity): Promise<string> {
     const payload: AccessTokenPayload = {

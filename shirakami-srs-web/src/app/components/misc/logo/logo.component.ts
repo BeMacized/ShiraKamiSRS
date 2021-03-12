@@ -68,7 +68,7 @@ export class LogoComponent implements OnInit {
     ngOnInit(): void {}
 
     fbkActivate(event: MouseEvent) {
-        if (event.detail !== 5 || this.fbkActive) return;
+        if (event.detail !== 3 || this.fbkActive) return;
         this.fbkActive = true;
         let totalDelay = 0;
         this.fbkString = '⠀';
