@@ -93,6 +93,28 @@ export class AuthService {
         }
     }
 
+    async resetPassword(email: string): Promise<{ success: true }> {
+        try {
+            await this.authRepository.resetPassword(email).toPromise();
+            return { success: true };
+        } catch (e) {
+            if (e instanceof HttpErrorResponse) {
+                switch (e.status) {
+                    case 429:
+                        throw new ServiceError('RATE_LIMITED');
+                    case 409:
+                    case 500:
+                        if (['MAILER_FAILED'].includes(e.error.error))
+                            throw new ServiceError(e.error.error);
+                        break;
+                    case 0:
+                        throw new ServiceError('SERVICE_UNAVAILABLE');
+                }
+            }
+            throw e;
+        }
+    }
+
     async register(
         email: string,
         username: string,
