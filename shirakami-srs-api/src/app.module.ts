@@ -14,6 +14,7 @@ import { ReviewEntity } from './v1/reviews/entities/review.entity';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -85,6 +86,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
     }),
     RouterModule.forRoutes(APP_ROUTES),
     ThrottlerModule.forRoot(),
+    ScheduleModule.forRoot(),
     V1Module,
   ],
   controllers: [AppController],
