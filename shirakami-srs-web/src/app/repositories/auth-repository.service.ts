@@ -26,7 +26,7 @@ export class AuthRepositoryService {
     }
 
     public resetPassword(email: string): Observable<void> {
-        return this.getApiUrl(`/auth/resetPassword`).pipe(
+        return this.getApiUrl(`/auth/passwordReset/request`).pipe(
             switchMap((url) =>
                 this.http.post(url, {
                     email,

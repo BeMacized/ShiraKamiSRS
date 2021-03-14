@@ -12,6 +12,7 @@ import { RefreshTokenEntity } from './entities/refresh-token.entity';
 import {
   AccessTokenPayload,
   EmailVerificationTokenPayload,
+  PasswordResetTokenPayload,
   RefreshTokenPayload,
 } from './interfaces/token-payload.interface';
 import { TokenExpiredError, JsonWebTokenError } from 'jsonwebtoken';
@@ -61,6 +62,16 @@ export class TokensService {
       email: user.email,
     };
     return this.jwt.signAsync(payload);
+  }
+
+  async generatePasswordResetToken(user: UserEntity) {
+    const payload: PasswordResetTokenPayload = {
+      type: 'PASSWORD_RESET',
+      userId: user.id,
+    };
+    return this.jwt.signAsync(payload, {
+      expiresIn: 60 * 60 * 24,
+    });
   }
 
   public async generateRefreshToken(user: UserEntity): Promise<string> {

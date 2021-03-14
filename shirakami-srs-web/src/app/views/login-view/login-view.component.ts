@@ -183,6 +183,9 @@ export class LoginViewComponent implements OnInit {
         this.registerStatus = 'IDLE';
         this.loginStatus = 'IDLE';
         this.resetStatus = 'IDLE';
+        this.loginForm.reset();
+        this.registerForm.reset();
+        this.resetForm.reset();
     }
 
     showForInvalid(registerForm: FormGroup, controlName: string) {
