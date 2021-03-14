@@ -15,11 +15,11 @@ export class AppSettingsService {
 
     constructor(private http: HttpClient) {}
 
-    get<T>(key: string): Promise<T> {
+    get<T>(key: keyof AppSettings): Promise<T> {
         return this.appSettings
             .pipe(
                 take(1),
-                map((s) => s[key])
+                map((s) => (s[key] as unknown) as T)
             )
             .toPromise();
     }

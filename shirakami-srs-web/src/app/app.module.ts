@@ -41,6 +41,7 @@ import { ExportSetModalComponent } from './components/modals/export-set-modal/ex
 import { ImportSetModalComponent } from './components/modals/import-set-modal/import-set-modal.component';
 import { buildVersion } from '../assets/build-version.json';
 import { EmailVerificationViewComponent } from './views/email-verification-view/email-verification-view.component';
+import { PasswordResetViewComponent } from './views/password-reset-view/password-reset-view.component';
 
 export function initializeApp(appInitService: AppInitService) {
     return () => appInitService.init();
@@ -77,6 +78,7 @@ export function initializeApp(appInitService: AppInitService) {
         ExportSetModalComponent,
         ImportSetModalComponent,
         EmailVerificationViewComponent,
+        PasswordResetViewComponent,
     ],
     imports: [
         BrowserModule,

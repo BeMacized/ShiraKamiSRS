@@ -15,6 +15,7 @@ import {
 } from './utils/route-transitions';
 import { LessonReviewViewComponent } from './views/lesson-review-view/lesson-review-view.component';
 import { EmailVerificationViewComponent } from './views/email-verification-view/email-verification-view.component';
+import { PasswordResetViewComponent } from './views/password-reset-view/password-reset-view.component';
 
 const routes: Routes = [
     {
@@ -51,6 +52,11 @@ const routes: Routes = [
         path: 'emailverification',
         component: EmailVerificationViewComponent,
         data: { animation: 'emailverification' },
+    },
+    {
+        path: 'passwordreset',
+        component: PasswordResetViewComponent,
+        data: { animation: 'passwordreset' },
     },
     {
         path: 'debug',
