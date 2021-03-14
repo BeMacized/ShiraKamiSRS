@@ -188,8 +188,8 @@ export class LoginViewComponent implements OnInit {
         this.resetForm.reset();
     }
 
-    showForInvalid(registerForm: FormGroup, controlName: string) {
-        const control = registerForm.get(controlName);
+    showForInvalid(form: FormGroup, controlName: string) {
+        const control = form.get(controlName);
         return control.invalid && (control.dirty || control.touched);
     }
 
@@ -200,7 +200,7 @@ export class LoginViewComponent implements OnInit {
         this.resetStatus = 'IN_PROGRESS';
         try {
             const { email } = this.resetForm.value;
-            await this.auth.resetPassword(email);
+            await this.auth.requestPasswordReset(email);
             this.resetStatus = 'SUCCESS';
         } catch (e) {
             this.resetStatus = 'ERROR';

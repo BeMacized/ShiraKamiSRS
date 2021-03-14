@@ -26,7 +26,6 @@ import { Throttle } from '@nestjs/throttler';
 import { RequestPasswordResetRequestDto } from './dtos/request-password-reset-request.dto';
 import { UserEntity } from '../users/entities/user.entity';
 import { SubmitPasswordResetRequestDto } from './dtos/submit-password-reset.-request.dto';
-import * as bcrypt from 'bcrypt';
 
 @Controller()
 export class AuthenticationController {
@@ -80,7 +79,7 @@ export class AuthenticationController {
     // Send the password reset email
     const resetUrl = `${this.configService.get<string>(
       'APP_BASE_URL',
-    )}/passwordReset?token=${resetToken}`;
+    )}/passwordreset?token=${resetToken}`;
     try {
       await this.mailService.sendPasswordResetMail(
         user.email,
@@ -94,7 +93,9 @@ export class AuthenticationController {
         'MAILER_FAILED',
       );
     }
-
+    console.log(
+      `Password reset requested (${user.email}). To reset the account password, visit ${resetUrl}`,
+    );
     return { success: true };
   }
 

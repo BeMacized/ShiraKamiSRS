@@ -25,11 +25,23 @@ export class AuthRepositoryService {
         );
     }
 
-    public resetPassword(email: string): Observable<void> {
+    public requestPasswordReset(email: string): Observable<void> {
         return this.getApiUrl(`/auth/passwordReset/request`).pipe(
             switchMap((url) =>
                 this.http.post(url, {
                     email,
+                })
+            ),
+            map(() => {})
+        );
+    }
+
+    public submitPasswordReset(token: string, password: any): Observable<void> {
+        return this.getApiUrl(`/auth/passwordReset/submit`).pipe(
+            switchMap((url) =>
+                this.http.post(url, {
+                    token,
+                    password,
                 })
             ),
             map(() => {})
