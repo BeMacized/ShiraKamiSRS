@@ -67,7 +67,12 @@
         >
             Register
         </button>
-        <a href="#" class="forgot-password">I forgot my password</a>
+        <a
+            [routerLink]=""
+            (click)="setMode('FORGOT_PASSWORD')"
+            class="forgot-password"
+            >I forgot my password</a
+        >
     </div>
 </div>
 
@@ -236,11 +241,14 @@
 <div class="dialog-container" *ngIf="mode === 'ACCOUNT_CREATED'" @fadeUp>
     <div class="card dialog">
         <span class="title">Account Created</span>
-        <span class="text">
-            Your account has been created!
-            <br />
-            You can continue by signing in with the credentials you provided.
-        </span>
+        <div>
+            <div class="text">
+                Your account has been created!
+                <br />
+                You can continue by signing in with the credentials you
+                provided.
+            </div>
+        </div>
         <button class="btn btn-secondary" (click)="setMode('LOGIN')">
             Sign In
         </button>
@@ -250,14 +258,129 @@
 <div class="dialog-container" *ngIf="mode === 'VERIFY_EMAIL'" @fadeUp>
     <div class="card dialog">
         <span class="title">Activate Account</span>
-        <span class="text">
-            Your account has been created!
-            <br />
-            Before you can sign in, you must verify your e&#8209;mail address to activate your account. Click
-            the link in the verification e&#8209;mail that has been sent to you to activate your account.
-        </span>
+        <div>
+            <div class="text">
+                Your account has been created!
+                <br />
+                Before you can sign in, you must verify your e&#8209;mail
+                address to activate your account. Click the link in the
+                verification e&#8209;mail that has been sent to you to activate
+                your account.
+            </div>
+        </div>
         <button class="btn btn-secondary" (click)="setMode('LOGIN')">
             Sign In
+        </button>
+    </div>
+</div>
+
+<div
+    class="dialog-container"
+    *ngIf="mode === 'FORGOT_PASSWORD' && !enablePasswordResets"
+    @fadeUp
+>
+    <div class="card dialog">
+        <span class="title">Forgotten Password</span>
+        <div>
+            <div class="text">
+                Password resets have not been enabled for this instance of
+                ShiraKamiSRS.
+            </div>
+            <div class="text">
+                In order to reset your password, please contact an administrator
+                to reset your password for you.
+            </div>
+            <div class="text">
+                In case you are the administrator, you can find instructions on
+                resetting passwords, or configuring password resets
+                <a
+                    href="https://github.com/BeMacized/ShiraKamiSRS/wiki/Password-Resets"
+                    >here</a
+                >.
+            </div>
+        </div>
+        <button class="btn btn-secondary" (click)="setMode('LOGIN')">
+            Back
+        </button>
+    </div>
+</div>
+
+<div
+    class="dialog-container"
+    *ngIf="mode === 'FORGOT_PASSWORD' && enablePasswordResets"
+    @fadeUp
+>
+    <div class="card dialog">
+        <span class="title">Forgotten Password</span>
+        <div *ngIf="resetStatus !== 'SUCCESS'" @vshrink>
+            <div class="text">
+                To request a password reset, please submit your email address
+                below:
+            </div>
+            <form
+                class="input-block"
+                [formGroup]="resetForm"
+                (ngSubmit)="onResetClick()"
+            >
+                <input
+                    class="input"
+                    type="text"
+                    name="email"
+                    placeholder="E-mail address"
+                    formControlName="email"
+                />
+                <div
+                    class="alert alert-error login-error"
+                    *ngIf="resetError"
+                    @vshrink
+                >
+                    {{ resetError }}
+                </div>
+                <input
+                    type="submit"
+                    style="visibility: hidden; position: absolute"
+                />
+            </form>
+        </div>
+        <div *ngIf="resetStatus === 'SUCCESS'" @vshrink>
+            <div class="text">Success!</div>
+            <div class="text">
+                If an account that is tied to the email address you provided
+                exists, an email has been sent to it containing a link you can
+                use to reset your password.
+            </div>
+        </div>
+        <button
+            class="btn btn-primary"
+            (click)="onResetClick()"
+            [disabled]="
+                resetStatus === 'IN_PROGRESS' ||
+                resetStatus === 'SUCCESS' ||
+                resetForm.invalid
+            "
+        >
+            <div class="flex-row jc-center ai-center">
+                <div *ngIf="resetStatus === 'IN_PROGRESS'" @hshrink>
+                    <app-spinner [size]="'SMALL'"></app-spinner>
+                </div>
+                <div
+                    *ngIf="resetStatus === 'IDLE' || resetStatus === 'ERROR'"
+                    @hshrink
+                    class="nowrap"
+                >
+                    Request Password Reset
+                </div>
+                <div *ngIf="resetStatus === 'SUCCESS'" @hshrink>
+                    <i class="material-icons">done</i>
+                </div>
+            </div>
+        </button>
+        <button
+            class="btn btn-secondary"
+            (click)="setMode('LOGIN')"
+            [disabled]="resetStatus === 'IN_PROGRESS'"
+        >
+            Back
         </button>
     </div>
 </div>

@@ -44,6 +44,7 @@ import { ScheduleModule } from '@nestjs/schedule';
         // Application Settings
         APP_BASE_URL: Joi.string().default(''),
         APP_SERVE_HTTP: Joi.boolean().default(true),
+        ENABLE_PASSWORD_RESETS: Joi.bool().default(false),
         // Development Settings
         TYPEORM_LOGGING: Joi.boolean().default(false),
         SMTP_SUPPRESS: Joi.boolean().default(false),

@@ -11,12 +11,8 @@ const main = async () => {
     );
     await replace({
         files: path.join(__dirname, '../src/assets/appsettings.json'),
-        from: [
-            /\${API_BASE_URL}/g,
-        ],
-        to: [
-            'http://localhost:3000/api/v1',
-        ],
+        from: [/\${API_BASE_URL}/g, /\${ENABLE_PASSWORD_RESETS}/g],
+        to: ['http://localhost:3000/api/v1', 'false'],
     });
 };
 

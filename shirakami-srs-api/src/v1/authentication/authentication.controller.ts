@@ -23,6 +23,9 @@ import { ConfigService } from '@nestjs/config';
 import { EmailVerificationTokenPayload } from './interfaces/token-payload.interface';
 import { MailService } from '../common/mail.service';
 import { Throttle } from '@nestjs/throttler';
+import { RequestPasswordResetRequestDto } from './dtos/request-password-reset-request.dto';
+import { UserEntity } from '../users/entities/user.entity';
+import { SubmitPasswordResetRequestDto } from './dtos/submit-password-reset.-request.dto';
 
 @Controller()
 export class AuthenticationController {
@@ -32,6 +35,69 @@ export class AuthenticationController {
     private configService: ConfigService,
     private mailService: MailService,
   ) {}
+
+  @Post('/passwordReset/submit')
+  public async submitPasswordReset(
+    @Body() body: SubmitPasswordResetRequestDto,
+  ) {
+    // Parse the token
+    const payload = await this.tokensService.decodeToken<EmailVerificationTokenPayload>(
+      body.token,
+      'password reset',
+    );
+    // Get the user for the token
+    const user = await this.usersService.findById(payload.userId);
+    // Update the user with the new password
+    await this.usersService.updatePassword(user, body.password);
+    return { success: true };
+  }
+
+  @Post('/passwordReset/request')
+  @Throttle(10, 60 * 60)
+  public async requestPasswordReset(
+    @Body() body: RequestPasswordResetRequestDto,
+  ) {
+    // Check if password resets are enabled
+    if (!this.configService.get<boolean>('ENABLE_PASSWORD_RESETS'))
+      throw new ForbiddenException(
+        'Passwords resets have not been enabled.',
+        'PASSWORD_RESETS_DISABLED',
+      );
+    // Find the user for the provided email address
+    let user: UserEntity;
+    try {
+      user = await this.usersService.findByEmail(body.email);
+    } catch (e) {
+      // If the user does not exist, just return a success, as we do not let want to hint at the existence of a user.
+      if (e instanceof NotFoundException) return { success: true };
+      throw e;
+    }
+    // Generate a password reset token
+    const resetToken = await this.tokensService.generatePasswordResetToken(
+      user,
+    );
+    // Send the password reset email
+    const resetUrl = `${this.configService.get<string>(
+      'APP_BASE_URL',
+    )}/passwordreset?token=${resetToken}`;
+    try {
+      await this.mailService.sendPasswordResetMail(
+        user.email,
+        user.username,
+        resetUrl,
+      );
+    } catch (e) {
+      console.error(e);
+      throw new InternalServerErrorException(
+        'Could not send password reset email. Check the logs.',
+        'MAILER_FAILED',
+      );
+    }
+    console.log(
+      `Password reset requested (${user.email}). To reset the account password, visit ${resetUrl}`,
+    );
+    return { success: true };
+  }
 
   @Post('/register')
   @Throttle(10, 60 * 60)

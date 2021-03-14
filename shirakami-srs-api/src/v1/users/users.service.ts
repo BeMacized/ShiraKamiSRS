@@ -8,6 +8,7 @@ import { CreateUserEntity, UserEntity } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
+import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class UsersService {
@@ -91,5 +92,15 @@ export class UsersService {
 
   async remove(userId: string) {
     await this.userRepository.delete(userId);
+  }
+
+  async updatePassword(user: UserEntity, password: string) {
+    const passwordHash = await bcrypt.hash(password, 10);
+    await this.userRepository.save(
+      plainToClass(UserEntity, {
+        ...user,
+        passwordHash,
+      }),
+    );
   }
 }
