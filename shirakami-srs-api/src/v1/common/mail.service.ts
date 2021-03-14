@@ -66,8 +66,8 @@ export class MailService {
     username: string,
     verificationUrl: string,
   ) {
+    if (this.configService.get<boolean>('SMTP_SUPPRESS')) return;
     if (!this.mail) {
-      if (this.configService.get<boolean>('SMTP_SUPPRESS')) return;
       throw new Error(
         'Tried sending a confirmation email, but SMTP settings were not configured.',
       );
@@ -81,6 +81,30 @@ export class MailService {
       from: this.from,
       to: email,
       subject: 'ShiraKamiSRS: Email Verification',
+      html,
+    });
+  }
+
+  async sendPasswordResetMail(
+    email: string,
+    username: string,
+    resetUrl: string,
+  ) {
+    if (this.configService.get<boolean>('SMTP_SUPPRESS')) return;
+    if (!this.mail) {
+      throw new Error(
+        'Tried sending a password reset email, but SMTP settings were not configured.',
+      );
+    }
+    const html = await this.parseTemplate('password-reset', {
+      username,
+      resetUrl,
+      publicUrl: this.configService.get<string>('APP_BASE_URL'),
+    });
+    await this.mail.sendMail({
+      from: this.from,
+      to: email,
+      subject: 'ShiraKamiSRS: Password Reset',
       html,
     });
   }

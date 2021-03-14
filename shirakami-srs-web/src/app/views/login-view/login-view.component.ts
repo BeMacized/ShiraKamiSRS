@@ -6,8 +6,14 @@ import { OperationStatus } from '../../models/operation-status.model';
 import { fadeUp, hshrink, vshrink } from '../../utils/animations';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AppSettingsService } from '../../services/app-settings.service';
 
-type Mode = 'LOGIN' | 'REGISTER' | 'VERIFY_EMAIL' | 'ACCOUNT_CREATED';
+type Mode =
+    | 'LOGIN'
+    | 'REGISTER'
+    | 'VERIFY_EMAIL'
+    | 'ACCOUNT_CREATED'
+    | 'FORGOT_PASSWORD';
 
 @Component({
     selector: 'app-login-view',
@@ -17,13 +23,22 @@ type Mode = 'LOGIN' | 'REGISTER' | 'VERIFY_EMAIL' | 'ACCOUNT_CREATED';
 })
 export class LoginViewComponent implements OnInit {
     mode: Mode = 'LOGIN';
+    enablePasswordResets = false;
+
     loginError: string;
+    resetError: string;
     registerError: string;
+
     loginStatus: OperationStatus = 'IDLE';
+    resetStatus: OperationStatus = 'IDLE';
     registerStatus: OperationStatus = 'IDLE';
+
     loginForm: FormGroup = new FormGroup({
         email: new FormControl('', [Validators.required]),
         password: new FormControl('', [Validators.required]),
+    });
+    resetForm: FormGroup = new FormGroup({
+        email: new FormControl('', [Validators.required, Validators.email]),
     });
     registerForm: FormGroup = new FormGroup(
         {
@@ -52,11 +67,16 @@ export class LoginViewComponent implements OnInit {
 
     constructor(
         public themeService: ThemeService,
+        public appSettingsService: AppSettingsService,
         private auth: AuthService,
         private router: Router
     ) {}
 
-    ngOnInit(): void {}
+    async ngOnInit() {
+        this.enablePasswordResets = await this.appSettingsService.get<boolean>(
+            'enablePasswordResets'
+        );
+    }
 
     async onLoginClick() {
         if (
@@ -162,10 +182,46 @@ export class LoginViewComponent implements OnInit {
         this.mode = mode;
         this.registerStatus = 'IDLE';
         this.loginStatus = 'IDLE';
+        this.resetStatus = 'IDLE';
+        this.loginForm.reset();
+        this.registerForm.reset();
+        this.resetForm.reset();
     }
 
-    showForInvalid(registerForm: FormGroup, controlName: string) {
-        const control = registerForm.get(controlName);
+    showForInvalid(form: FormGroup, controlName: string) {
+        const control = form.get(controlName);
         return control.invalid && (control.dirty || control.touched);
+    }
+
+    async onResetClick() {
+        if (this.resetStatus === 'IN_PROGRESS' || this.resetForm.invalid)
+            return;
+        this.resetError = null;
+        this.resetStatus = 'IN_PROGRESS';
+        try {
+            const { email } = this.resetForm.value;
+            await this.auth.requestPasswordReset(email);
+            this.resetStatus = 'SUCCESS';
+        } catch (e) {
+            this.resetStatus = 'ERROR';
+            if (e instanceof ServiceError) {
+                switch (e.code) {
+                    case 'RATE_LIMITED':
+                        this.resetError =
+                            'There have been too many password reset requests from your address. Please try again later.';
+                        return;
+                    case 'MAILER_FAILED':
+                        this.resetError =
+                            'The password reset email could not be sent. Please contact an administrator.';
+                        return;
+                    case 'SERVICE_UNAVAILABLE':
+                        this.resetError =
+                            'The server was unavailable. Please try again later.';
+                        return;
+                }
+            }
+            this.resetError = 'An unknown error occurred.';
+            console.error(e);
+        }
     }
 }

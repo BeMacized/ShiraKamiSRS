@@ -14,3 +14,8 @@ export interface EmailVerificationTokenPayload {
   userId: string;
   email: string;
 }
+
+export interface PasswordResetTokenPayload {
+  type: 'PASSWORD_RESET';
+  userId: string;
+}
