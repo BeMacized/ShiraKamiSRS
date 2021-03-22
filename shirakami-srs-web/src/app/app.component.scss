@@ -1,8 +1,18 @@
+@import 'shadows.scss';
+
 :host {
     display: block;
     height: 0;
     min-height: 100%;
     width: 100%;
+    overflow-x: hidden;
+}
+
+app-mobile-nav {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: min(100%, 320px);
 }
 
 .route-container {
@@ -10,6 +20,15 @@
     height: 0;
     min-height: 100%;
     width: 100%;
+    &,
+    &:before {
+        transition: all 0.15s ease-in-out;
+    }
+
+    &.showMobileMenu {
+        @include shadow(5, false);
+        transform: translateX(min(100%, 320px));
+    }
 }
 
 #global-overlay-container {

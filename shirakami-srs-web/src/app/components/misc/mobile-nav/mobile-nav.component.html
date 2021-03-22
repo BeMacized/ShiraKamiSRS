@@ -1,0 +1,40 @@
+<div class="action-header">
+    <button
+        class="btn btn-rect btn-action"
+        (click)="menuService.toggleMobileMenu()"
+    >
+        <i class="material-icons">clear</i>
+    </button>
+</div>
+<div class="account-block" *ngIf="user">
+    <div class="avatar">
+        <svg
+            [attr.data-jdenticon-value]="
+                user.username + '#' + (user.discriminator + '').padStart(4, '0')
+            "
+        ></svg>
+    </div>
+    <span class="username">
+        <span>{{ user.username }}</span>
+        <span>#{{ (user.discriminator + '').padStart(4, '0') }}</span>
+    </span>
+    <span class="email">
+        {{ user.email }}
+    </span>
+</div>
+<div class="separator"></div>
+
+<div class="menu-block">
+    <button class="menu-item" routerLink="/dashboard" routerLinkActive="active">
+        <i class="material-icons">dashboard</i>
+        <span>Dashboard</span>
+    </button>
+    <button
+        class="menu-item"
+        routerLink="/browsesets"
+        routerLinkActive="active"
+    >
+        <i class="material-icons">move_to_inbox</i>
+        <span>Discover Sets</span>
+    </button>
+</div>

@@ -16,6 +16,7 @@ import {
 import { LessonReviewViewComponent } from './views/lesson-review-view/lesson-review-view.component';
 import { EmailVerificationViewComponent } from './views/email-verification-view/email-verification-view.component';
 import { PasswordResetViewComponent } from './views/password-reset-view/password-reset-view.component';
+import { SetBrowseViewComponent } from './views/set-browse-view/set-browse-view.component';
 
 const routes: Routes = [
     {
@@ -47,6 +48,12 @@ const routes: Routes = [
         canActivate: [AuthGuardService],
         component: SetViewComponent,
         data: { animation: 'setDetails' },
+    },
+    {
+        path: 'browsesets',
+        canActivate: [AuthGuardService],
+        component: SetBrowseViewComponent,
+        data: { animation: 'browsesets' },
     },
     {
         path: 'emailverification',
