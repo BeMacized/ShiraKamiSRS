@@ -8,6 +8,7 @@ import { AuthGuardService } from './guards/auth-guard.service';
 import { SetViewComponent } from './views/set-view/set-view.component';
 import { trigger } from '@angular/animations';
 import {
+    routeFade,
     routeFadeUpPop,
     routeFadeUpPush,
     routeSlidePop,
@@ -87,6 +88,9 @@ export const routeAnimations = trigger('routeAnimations', [
 
     routeFadeUpPush('*', 'reviews'),
     routeFadeUpPop('reviews', '*'),
+
+    routeFade('dashboard', 'browsesets'),
+    routeFade('browsesets', 'dashboard'),
 ]);
 
 @NgModule({
