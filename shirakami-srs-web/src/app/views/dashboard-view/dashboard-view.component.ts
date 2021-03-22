@@ -8,21 +8,11 @@ import { OperationStatus } from '../../models/operation-status.model';
 import { SetService } from '../../services/set.service';
 import { minPromiseDuration } from '../../utils/promise-utils';
 import { fade, vshrink } from '../../utils/animations';
-import { EditSetModesModalComponent } from '../../components/modals/edit-set-modes-modal/edit-set-modes-modal.component';
-import { EditSetNameModalComponent } from '../../components/modals/edit-set-name-modal/edit-set-name-modal.component';
-import { DeleteSetModalComponent } from '../../components/modals/delete-set-modal/delete-set-modal.component';
 import { Router } from '@angular/router';
 import { SrsService } from '../../services/srs.service';
 import { ReviewEntity } from '../../models/review.model';
 import { ReviewService } from '../../services/review.service';
 import moment from 'moment';
-import {
-    ConfirmationModalComponent,
-    ConfirmationModalInput,
-    ConfirmationModalOutput,
-} from '../../components/modals/confirmation-modal/confirmation-modal.component';
-import { ServiceError } from '../../models/service-error.model';
-import { ExportSetModalComponent } from '../../components/modals/export-set-modal/export-set-modal.component';
 import { ImportSetModalComponent } from '../../components/modals/import-set-modal/import-set-modal.component';
 
 @Component({
@@ -138,7 +128,9 @@ export class DashboardViewComponent implements OnInit {
 
     createSet = async () => {
         const set = await this.modalService
-            .showModal<CreateSetModalComponent, void, SetEntity>(CreateSetModalComponent)
+            .showModal<CreateSetModalComponent, void, SetEntity>(
+                CreateSetModalComponent
+            )
             .toPromise();
         if (set) await this.router.navigate(['set', set.id]);
     };

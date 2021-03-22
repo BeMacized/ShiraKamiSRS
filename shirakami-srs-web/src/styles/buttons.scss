@@ -52,7 +52,7 @@ button.btn {
         }
 
         body.dark & {
-            --scoped-border-color: var(--color-on-surface);
+            --scoped-border-color: var(--color-surface-border);
         }
 
         &:disabled {
@@ -93,5 +93,4 @@ button.btn {
     &.btn-rect {
         border-radius: 0.25em;
     }
-
 }

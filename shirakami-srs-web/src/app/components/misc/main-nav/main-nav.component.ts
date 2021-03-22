@@ -6,7 +6,8 @@ import { takeUntil } from 'rxjs/operators';
 import { User } from '../../../models/user.model';
 import { fadeDown, hshrink } from '../../../utils/animations';
 import { Router } from '@angular/router';
-import {ThemeService} from '../../../services/theme.service';
+import { ThemeService } from '../../../services/theme.service';
+import { MenuService } from '../../../services/menu.service';
 
 @Component({
     selector: 'app-main-nav',
@@ -24,7 +25,8 @@ export class MainNavComponent implements OnInit, OnDestroy {
         public authService: AuthService,
         private userService: UserService,
         private router: Router,
-        public theme: ThemeService
+        public theme: ThemeService,
+        private menuService: MenuService
     ) {
         this.userService.user
             .pipe(takeUntil(this.destroy$))
@@ -45,5 +47,9 @@ export class MainNavComponent implements OnInit, OnDestroy {
 
     goBack() {
         this.router.navigate(this.backRoute);
+    }
+
+    toggleMenu() {
+        this.menuService.toggleMobileMenu();
     }
 }
