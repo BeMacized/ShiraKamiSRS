@@ -4,6 +4,7 @@
 
 .modal {
     @include surface();
+    border-width: 1px;
     width: 100%;
     overflow-x: hidden;
     overflow-y: auto;
@@ -25,7 +26,6 @@
 
     &-md {
         max-width: $breakpoint-sm;
-
     }
 
     &-sm {

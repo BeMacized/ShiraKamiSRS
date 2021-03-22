@@ -20,13 +20,15 @@ app-mobile-nav {
     height: 0;
     min-height: 100%;
     width: 100%;
+
     &,
     &:before {
         transition: all 0.15s ease-in-out;
     }
 
     &.showMobileMenu {
-        @include shadow(5, false);
+        @include shadow(5);
+        transition: all 0.15s ease-in-out;
         transform: translateX(min(100%, 320px));
     }
 }
