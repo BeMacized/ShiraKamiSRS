@@ -102,108 +102,112 @@
                 class="content-inner"
                 *ngIf="page.type === 'LESSON_INPUT' || page.type === 'REVIEW'"
             >
-                <div
-                    [fittext]="true"
-                    [maxFontSize]="50"
-                    [modelToWatch]="page"
-                    class="fit-text"
-                >
+                <div class="fit-text-container" #inputPageFitText>
                     <div
-                        class="line line-header"
-                        *ngIf="page.type === 'LESSON_INPUT'"
+                        [fittext]="true"
+                        [maxFontSize]="50"
+                        [modelToWatch]="page"
+                        [container]="inputPageFitText"
+                        class="fit-text"
                     >
-                        Lesson
+                        <div
+                            class="line line-header"
+                            *ngIf="page.type === 'LESSON_INPUT'"
+                        >
+                            Lesson
+                        </div>
+                        <div
+                            class="line line-header"
+                            *ngIf="page.type === 'REVIEW'"
+                        >
+                            Review
+                        </div>
+                        <ng-container *ngIf="page.mode === 'enToJp'">
+                            <ng-container
+                                *ngFor="
+                                    let translation of page.card.value
+                                        .enTranslations;
+                                    let last = last;
+                                    let count = count
+                                "
+                            >
+                                <div class="line line-vocab">
+                                    {{ translation }}
+                                </div>
+                                <div
+                                    class="line line-label"
+                                    *ngIf="count > 1 && !last"
+                                >
+                                    or
+                                </div>
+                            </ng-container>
+                            <div
+                                class="line line-label"
+                                *ngIf="page.card.value.enNote"
+                            >
+                                Note: {{ page.card.value.enNote }}
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="page.mode === 'jpToEn'">
+                            <ng-container
+                                *ngFor="
+                                    let translation of page.card.value
+                                        .jpTranslations;
+                                    let last = last;
+                                    let count = count
+                                "
+                            >
+                                <div
+                                    class="line line-vocab-furigana"
+                                    *ngIf="translation[1]"
+                                >
+                                    {{ translation[0] }}
+                                </div>
+                                <div class="line line-vocab">
+                                    {{ translation[1] || translation[0] }}
+                                </div>
+                                <div
+                                    class="line line-label"
+                                    *ngIf="count > 1 && !last"
+                                >
+                                    or
+                                </div>
+                            </ng-container>
+                            <div
+                                class="line line-label"
+                                *ngIf="page.card.value.jpNote"
+                            >
+                                Note: {{ page.card.value.jpNote }}
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="page.mode === 'kanjiToKana'">
+                            <ng-container
+                                *ngFor="
+                                    let translation of page.card.value
+                                        .jpTranslations
+                                        | filterBy: ['length']:2;
+                                    let last = last;
+                                    let count = count
+                                "
+                            >
+                                <div class="line line-vocab">
+                                    {{ translation[1] }}
+                                </div>
+                                <div
+                                    class="line line-label"
+                                    *ngIf="count > 1 && !last"
+                                >
+                                    or
+                                </div>
+                            </ng-container>
+                            <div
+                                class="line line-label"
+                                *ngIf="page.card.value.jpNote"
+                            >
+                                Note: {{ page.card.value.jpNote }}
+                            </div>
+                        </ng-container>
                     </div>
-                    <div
-                        class="line line-header"
-                        *ngIf="page.type === 'REVIEW'"
-                    >
-                        Review
-                    </div>
-                    <ng-container *ngIf="page.mode === 'enToJp'">
-                        <ng-container
-                            *ngFor="
-                                let translation of page.card.value
-                                    .enTranslations;
-                                let last = last;
-                                let count = count
-                            "
-                        >
-                            <div class="line line-vocab">
-                                {{ translation }}
-                            </div>
-                            <div
-                                class="line line-label"
-                                *ngIf="count > 1 && !last"
-                            >
-                                or
-                            </div>
-                        </ng-container>
-                        <div
-                            class="line line-label"
-                            *ngIf="page.card.value.enNote"
-                        >
-                            Note: {{ page.card.value.enNote }}
-                        </div>
-                    </ng-container>
-                    <ng-container *ngIf="page.mode === 'jpToEn'">
-                        <ng-container
-                            *ngFor="
-                                let translation of page.card.value
-                                    .jpTranslations;
-                                let last = last;
-                                let count = count
-                            "
-                        >
-                            <div
-                                class="line line-vocab-furigana"
-                                *ngIf="translation[1]"
-                            >
-                                {{ translation[0] }}
-                            </div>
-                            <div class="line line-vocab">
-                                {{ translation[1] || translation[0] }}
-                            </div>
-                            <div
-                                class="line line-label"
-                                *ngIf="count > 1 && !last"
-                            >
-                                or
-                            </div>
-                        </ng-container>
-                        <div
-                            class="line line-label"
-                            *ngIf="page.card.value.jpNote"
-                        >
-                            Note: {{ page.card.value.jpNote }}
-                        </div>
-                    </ng-container>
-                    <ng-container *ngIf="page.mode === 'kanjiToKana'">
-                        <ng-container
-                            *ngFor="
-                                let translation of page.card.value
-                                    .jpTranslations | filterBy: ['length']:2;
-                                let last = last;
-                                let count = count
-                            "
-                        >
-                            <div class="line line-vocab">
-                                {{ translation[1] }}
-                            </div>
-                            <div
-                                class="line line-label"
-                                *ngIf="count > 1 && !last"
-                            >
-                                or
-                            </div>
-                        </ng-container>
-                        <div
-                            class="line line-label"
-                            *ngIf="page.card.value.jpNote"
-                        >
-                            Note: {{ page.card.value.jpNote }}
-                        </div>
-                    </ng-container>
                 </div>
             </div>
         </div>
