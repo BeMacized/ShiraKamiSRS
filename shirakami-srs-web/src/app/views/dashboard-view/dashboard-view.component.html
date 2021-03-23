@@ -2,7 +2,7 @@
 <div class="page-container">
     <div class="grid xs-1 sm-3">
         <!-- MAIN COLUMN -->
-        <div class="grid xs-span-1 sm-span-2">
+        <div class="grid xs-1 sm-1 xs-span-1 sm-span-2">
             <!-- ALL SETS-->
             <div class="section-header">
                 <h1 class="section-header-title">All Sets</h1>
@@ -48,7 +48,7 @@
             <div class="srs-groups grid xs-2 sm-5">
                 <div
                     class="card srs-group"
-                    [class.xs-span-2]='index === 0'
+                    [class.xs-span-2]="index === 0"
                     *ngFor="
                         let group of srsService.srsGroups;
                         let index = index

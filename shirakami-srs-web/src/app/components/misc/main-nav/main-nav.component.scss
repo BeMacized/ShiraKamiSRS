@@ -1,8 +1,7 @@
 @import '../../../../../node_modules/sass-material-colors/sass/sass-material-colors';
 @import 'src/styles/layouts';
 @import 'src/styles/shadows';
-
-$nav-height: 6em;
+@import 'variables.scss';
 
 :host {
     display: block;
@@ -13,6 +12,13 @@ $nav-height: 6em;
     @include shadow(3, true);
     background-color: var(--color-surface);
     z-index: 100;
+}
+
+button.btn.btn-action {
+    padding: 0.7em 0.25em;
+    i.material-icons {
+        font-size: 2.5em;
+    }
 }
 
 .nav-container {
@@ -46,7 +52,7 @@ $nav-height: 6em;
         }
 
         .nav-item-content {
-            padding: 0 0.5em;
+            padding: 0 1em;
             height: 100%;
             display: flex;
             flex-direction: row;
@@ -91,6 +97,10 @@ $nav-height: 6em;
 
             .active &:after {
                 height: 4px;
+            }
+
+            i.material-icons {
+                margin-right: 0.25em;
             }
         }
     }

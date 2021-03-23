@@ -1,8 +1,13 @@
+<app-mobile-nav
+    *ngIf="menuService.showMobileMenu | async"
+    [@fade]
+></app-mobile-nav>
 <div
     [@routeAnimations]="
         o && o.activatedRouteData && o.activatedRouteData['animation']
     "
     class="route-container"
+    [class.showMobileMenu]="menuService.showMobileMenu | async"
 >
     <router-outlet #o="outlet"></router-outlet>
 </div>

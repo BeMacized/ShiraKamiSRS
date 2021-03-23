@@ -1,5 +1,38 @@
 import { animate, group, query, style, transition } from '@angular/animations';
 
+export function routeFade(from: string, to: string, duration = '.25s ease') {
+    return transition(`${from} => ${to}`, [
+        group([
+            query(
+                ':enter, :leave',
+                style({ position: 'fixed', width: '100%' }),
+                {
+                    optional: true,
+                }
+            ),
+            query(
+                ':enter',
+                [
+                    style({
+                        opacity: 0,
+                        'z-index': 1,
+                    }),
+                    animate(duration, style({ opacity: 1 })),
+                ],
+                { optional: true }
+            ),
+            query(
+                ':leave',
+                [
+                    style({ 'z-index': 0 }),
+                    animate(duration, style({ opacity: 0 })),
+                ],
+                { optional: true }
+            ),
+        ]),
+    ]);
+}
+
 export function routeFadeUpPush(
     from: string,
     to: string,

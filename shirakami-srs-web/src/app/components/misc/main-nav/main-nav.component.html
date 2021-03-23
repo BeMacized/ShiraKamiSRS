@@ -1,6 +1,17 @@
 <div class="nav-container">
-    <button class="btn btn-rect" *ngIf="backRoute" @hshrink (click)="goBack()">
+    <button
+        class="btn btn-rect btn-action"
+        *ngIf="backRoute"
+        (click)="goBack()"
+    >
         <i class="material-icons">arrow_back_ios_new</i>
+    </button>
+    <button
+        class="btn btn-rect btn-action sm-hidden"
+        *ngIf="!backRoute"
+        (click)="toggleMenu()"
+    >
+        <i class="material-icons">menu</i>
     </button>
     <app-logo></app-logo>
     <div
@@ -9,9 +20,20 @@
         routerLinkActive="active"
     >
         <button class="nav-item-content">
+            <i class="material-icons">dashboard</i>
             <span>Dashboard</span>
         </button>
     </div>
+    <!--    <div-->
+    <!--        class="nav-item xs-hidden"-->
+    <!--        routerLink="/browsesets"-->
+    <!--        routerLinkActive="active"-->
+    <!--    >-->
+    <!--        <button class="nav-item-content">-->
+    <!--            <i class="material-icons">move_to_inbox</i>-->
+    <!--            <span>Discover Sets</span>-->
+    <!--        </button>-->
+    <!--    </div>-->
     <div class="left">
         <div
             class="nav-item"
@@ -59,7 +81,7 @@
                 <div class="dropdown-username username sm-hidden">
                     <span>{{ user.username }}</span>
                     <span
-                    >#{{ (user.discriminator + '').padStart(4, '0') }}</span
+                        >#{{ (user.discriminator + '').padStart(4, '0') }}</span
                     >
                 </div>
                 <div class="dropdown-item" (click)="authService.logout()">

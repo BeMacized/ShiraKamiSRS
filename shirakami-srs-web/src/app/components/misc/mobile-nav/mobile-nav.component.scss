@@ -1,0 +1,120 @@
+@import '../../../../../node_modules/sass-material-colors/sass/sass-material-colors';
+@import 'variables.scss';
+@import 'shadows.scss';
+
+.action-header {
+    height: $nav-height;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0 0.5em;
+
+    button.btn.btn-action {
+        background: none;
+
+        i.material-icons {
+            font-size: 2.5em;
+            color: var(--color-on-background-mute);
+        }
+    }
+}
+
+.account-block {
+    padding: 0.5em 2em;
+
+    .avatar {
+        @include shadow(1, true);
+        background-color: material-color('grey', '900');
+        position: relative;
+        border-radius: 9999999px;
+        width: 6em;
+        height: 6em;
+        flex-shrink: 0;
+        overflow: hidden;
+        margin-bottom: 2em;
+        border: 0.25em solid var(--color-surface);
+
+        img,
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+    }
+
+    .username {
+        font-size: 1.75em;
+
+        span:first-child {
+            color: var(--color-on-surface);
+        }
+
+        span:last-child {
+            color: var(--color-on-surface-mute);
+        }
+    }
+
+    .email {
+        font-size: 1.25em;
+        color: var(--color-on-surface-mute);
+    }
+}
+
+.separator {
+    height: 1px;
+    width: calc(100% - 2em * 2);
+    margin: 2em;
+    background: var(--color-on-background-mute);
+    opacity: 0.5;
+}
+
+.menu-block {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1em 1em;
+
+    button.menu-item {
+        transition: all 0.15s ease;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        border-radius: 0.75em;
+        color: var(--color-on-background);
+        padding: 1em 1em;
+        border: none;
+        background: transparent;
+        outline: none;
+        cursor: pointer;
+
+        i.material-icons {
+            flex-shrink: 0;
+            margin-right: 0.5em;
+            font-size: 1.5em;
+        }
+
+        span {
+            flex: 1;
+            text-align: left;
+            font-weight: 500;
+        }
+
+        &:hover {
+            background: var(--color-surface);
+        }
+
+        &.active {
+            background: var(--color-primary);
+            color: var(--color-on-primary);
+
+            &:hover {
+                background: var(--color-primary-hover);
+            }
+
+            &:active {
+                opacity: 0.75;
+            }
+        }
+    }
+}

@@ -2,7 +2,6 @@
 @import 'shadows.scss';
 
 @mixin baseTheme() {
-
     --color-primary: #{material-color('cyan', '400')};
     --color-primary-dark: #{material-color('cyan', '800')};
     --color-primary-hover: #{material-color('cyan', '300')};
@@ -39,6 +38,8 @@
     --color-on-alert-warning: var(--color-on-warning);
     --color-alert-error: var(--color-caution);
     --color-on-alert-error: var(--color-on-caution);
+
+    --border-width-surface: 0;
 }
 
 @mixin lightTheme() {
@@ -55,8 +56,8 @@
     --color-on-surface-mute: #{material-color('grey', '400')};
 
     @for $i from 1 through 5 {
-        --shadow-#{$i}: #{build-shadow($i, true, false)};
-        --shadow-inset-#{$i}: #{build-shadow($i, true, true)};
+        --shadow-#{$i}: #{build-shadow($i, false, false)};
+        --shadow-inset-#{$i}: #{build-shadow($i, false, true)};
     }
 
     --color-caution: #{material-color('red', '600')};
@@ -75,19 +76,24 @@
 @mixin darkTheme() {
     --theme-name: 'dark';
 
-    --color-background: #{black};
-    --color-on-background: #{material-color('grey', '100')};
-    --color-on-background-mute: #{material-color('grey', '400')};
+    --color-secondary: #010409;
+    --color-secondary-dark: black;
+    --color-secondary-hover: #161b22;
+    --color-on-secondary: #f0f6fc;
 
-    --color-surface: #{material-color('grey', '900')};
-    --color-surface-mute: #{material-color('grey', '800')};
-    --color-on-surface: #{material-color('grey', '100')};
-    --color-on-surface-mute: #{material-color('grey', '400')};
-    --color-surface-border: #{material-color('grey', '800')};
+    --color-background: #010409;
+    --color-on-background: #f0f6fc;
+    --color-on-background-mute: #9e8b95;
+
+    --color-surface: #161b22;
+    --color-surface-mute: #30363d;
+    --color-on-surface: #f0f6fc;
+    --color-on-surface-mute: #9e8b95;
+    --color-surface-border: #30363d;
 
     @for $i from 1 through 5 {
-        --shadow-#{$i}: #{build-shadow($i, false, false)};
-        --shadow-inset-#{$i}: #{build-shadow($i, false, true)};
+        --shadow-#{$i}: #{build-shadow($i, true, false)};
+        --shadow-inset-#{$i}: #{build-shadow($i, true, true)};
     }
 
     --color-caution: #{material-color('red', '900')};
