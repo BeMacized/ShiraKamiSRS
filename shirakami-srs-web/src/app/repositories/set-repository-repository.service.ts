@@ -8,6 +8,7 @@ import {
     SetRepositoryEntity,
 } from '../models/set-repository.model';
 import { AppSettingsService } from '../services/app-settings.service';
+import { SetRepositoryIndexDto } from '../models/set-repository-index.model';
 
 @Injectable({
     providedIn: 'root',
@@ -35,6 +36,14 @@ export class SetRepositoryRepositoryService {
             switchMap((url) =>
                 this.http.post<SetRepositoryDto>(url, { indexUrl })
             )
+        );
+    }
+
+    public getSetRepositoryIndex(
+        repoId: string
+    ): Observable<SetRepositoryIndexDto> {
+        return this.getApiUrl(`/setrepositories/${repoId}/index`).pipe(
+            switchMap((url) => this.http.get<SetRepositoryIndexDto>(url))
         );
     }
 

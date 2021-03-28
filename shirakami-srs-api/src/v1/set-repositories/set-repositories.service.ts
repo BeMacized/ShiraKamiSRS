@@ -126,7 +126,6 @@ export class SetRepositoriesService {
         case 'CANNOT_REACH':
           throw new BadGatewayException(e.message, 'REPOSITORY_UNAVAILABLE');
         case 'RESPONSE_ERROR':
-          throw new BadGatewayException(e.message, 'REPOSITORY_ERROR');
         case 'NOT_OK_RESPONSE':
           throw new BadGatewayException(e.message, 'REPOSITORY_ERROR');
         case 'INVALID_INDEX':

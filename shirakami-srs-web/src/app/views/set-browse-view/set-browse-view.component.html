@@ -43,8 +43,11 @@
                     </div>
                     <div
                         class="repository"
-                        [class.active]="false"
                         *ngFor="let repository of repositories"
+                        [class.active]="
+                            activePublicRepositoryId === repository.publicId
+                        "
+                        (click)="selectRepository(repository)"
                         [@vshrink]
                     >
                         <div class="repository-icon">
@@ -69,25 +72,61 @@
             <div class="section-header">
                 <h1 class="section-header-title">
                     <span>Sets</span>
-                    <span class="repository-label">ShiraKamiSRS Public</span>
+                    <span
+                        class="repository-label"
+                        *ngIf="activeRepository"
+                        [@hshrink]
+                        >{{ activeRepository?.name }}</span
+                    >
                 </h1>
             </div>
-            <div class="card set" *ngFor="let number of [0, 1, 2, 3, 4]">
+            <div
+                class="card-flat-outline index-status"
+                *ngIf="
+                    !repositoryIndex ||
+                    repositoryIndexFetchStatus === 'IN_PROGRESS'
+                "
+                @vshrink
+            >
+                <div
+                    *ngIf="
+                        !repositoryIndex &&
+                        repositoryIndexFetchStatus !== 'IN_PROGRESS'
+                    "
+                    @vshrink
+                >
+                    <span>No repository selected.</span>
+                </div>
+                <div
+                    *ngIf="repositoryIndexFetchStatus === 'IN_PROGRESS'"
+                    @vshrink
+                >
+                    <app-spinner></app-spinner>
+                    <span> Loading repository index... </span>
+                </div>
+            </div>
+            <div
+                class="card set"
+                *ngFor="let set of repositoryIndex?.sets || []"
+            >
                 <h1>
-                    <span>Genki 1 (3rd Edition): Lesson 1</span>
+                    <span>{{ set.name }}</span>
                 </h1>
                 <div class="set-review-modes">
                     <app-review-mode-chip
-                        *ngFor="let mode of ['jpToEn', 'enToJp', 'kanjiToKana']"
+                        *ngFor="let mode of set.modes"
                         [mode]="asReviewMode(mode)"
                     ></app-review-mode-chip>
                 </div>
-                <div class="set-description">
-                    A card set containing all vocabulary from the first lesson
-                    of Genki 1, 3rd edition.
+                <div class="set-description" *ngIf="set.description">
+                    {{ set.description }}
                 </div>
                 <div class="set-footer">
-                    <div class="set-footer-card-count">245 Cards</div>
+                    <div class="set-footer-card-count">
+                        {{ set.cardCount }} Card{{
+                            set.cardCount === 1 ? '' : 's'
+                        }}
+                    </div>
                     <div class="set-footer-actions">
                         <button class="btn btn-secondary">
                             <i class="material-icons">preview</i>
