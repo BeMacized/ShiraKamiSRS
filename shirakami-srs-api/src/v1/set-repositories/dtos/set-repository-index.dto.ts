@@ -6,6 +6,7 @@ import {
   IsOptional,
   IsString,
   IsUrl,
+  IsUUID,
   MaxLength,
   ValidateIf,
   ValidateNested,
@@ -19,6 +20,8 @@ import {
 } from '../entities/set-repository-index.entity';
 
 export class SetRepositoryIndexDto {
+  @IsUUID()
+  publicId: string;
   @IsString()
   @MaxLength(32)
   version: 'v1';
@@ -42,6 +45,7 @@ export class SetRepositoryIndexDto {
   static fromEntity(entity: SetRepositoryIndexEntity): SetRepositoryIndexDto {
     if (!entity) return null;
     return {
+      publicId: entity.publicId,
       version: entity.version,
       name: entity.name,
       imageUrl: entity.imageUrl,
@@ -53,6 +57,7 @@ export class SetRepositoryIndexDto {
   static toEntity(dto: SetRepositoryIndexDto): SetRepositoryIndexEntity {
     if (!dto) return null;
     return {
+      publicId: dto.publicId,
       version: dto.version,
       name: dto.name,
       imageUrl: dto.imageUrl,

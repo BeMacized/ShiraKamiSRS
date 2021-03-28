@@ -5,6 +5,9 @@ export class SetRepositoryEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column()
+  publicId: string;
+
   @Column({ nullable: true })
   userId: string | null;
 

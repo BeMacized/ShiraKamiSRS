@@ -1,5 +1,6 @@
 import {
   BadGatewayException,
+  ConflictException,
   ForbiddenException,
   HttpService,
   Injectable,
@@ -74,9 +75,22 @@ export class SetRepositoriesService {
           );
       }
     }
+    // Check if a repository with this public ID was already added for the user
+    if (
+      await this.setRepositoryRepository.findOne({
+        publicId: index.publicId,
+        userId,
+      })
+    ) {
+      throw new ConflictException(
+        `This repository (or another repository with the same public ID) has already been added.`,
+        'REPOSITORY_EXISTS',
+      );
+    }
     // Save the repository reference
     const repository: SetRepositoryEntity = await this.setRepositoryRepository.save(
       {
+        publicId: index.publicId,
         userId,
         indexUrl,
         name: index.name,

@@ -16,7 +16,9 @@ export class CreateOrUpdateSetRepositoryDto {
 
 export class SetRepositoryDto extends CreateOrUpdateSetRepositoryDto {
   @IsUUID()
-  public readonly id: string;
+  id: string;
+  @IsUUID()
+  publicId: string;
   @IsString()
   @MaxLength(255)
   name: string;
@@ -30,6 +32,7 @@ export class SetRepositoryDto extends CreateOrUpdateSetRepositoryDto {
     if (!entity) return null;
     return {
       id: entity.id,
+      publicId: entity.publicId,
       indexUrl: entity.indexUrl,
       name: entity.name,
       imageUrl: entity.imageUrl,
