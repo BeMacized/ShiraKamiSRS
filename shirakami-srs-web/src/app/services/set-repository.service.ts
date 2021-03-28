@@ -38,13 +38,21 @@ export class SetRepositoryService {
                 .toPromise();
         } catch (e) {
             if (e instanceof HttpErrorResponse) {
+                console.log('EYY', e);
                 switch (e.status) {
                     case 0:
                         throw new ServiceError('SERVICE_UNAVAILABLE');
+                    case 404:
+                        throw new ServiceError('REPOSITORY_NOT_FOUND');
+                    case 403:
+                        throw new ServiceError('SET_NOT_OWNED');
                     case 502: // Gateway error (Issues with repository)
-                    case 409: // Conflict (Repository already added)
                         if (e.error.error)
-                            throw new ServiceError(e.error.error);
+                            throw new ServiceError(
+                                e.error.error,
+                                e.error.message,
+                                e.error.validationErrors
+                            );
                         break;
                 }
             }

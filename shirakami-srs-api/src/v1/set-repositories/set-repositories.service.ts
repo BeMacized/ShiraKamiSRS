@@ -57,11 +57,11 @@ export class SetRepositoriesService {
         case 'CANNOT_REACH':
           throw new BadGatewayException(e.message, 'REPOSITORY_UNAVAILABLE');
         case 'RESPONSE_ERROR':
-        case 'NOT_OK_RESPONSE':
+        case 'NON_OK_RESPONSE':
           throw new BadGatewayException(e.message, 'REPOSITORY_ERROR');
         case 'INVALID_INDEX':
           throw new BadGatewayException({
-            code: 'REPOSITORY_INVALID_INDEX',
+            error: 'REPOSITORY_INVALID_INDEX',
             message: e.message,
             validationErrors: e.validationErrors ?? [],
           });
@@ -126,11 +126,11 @@ export class SetRepositoriesService {
         case 'CANNOT_REACH':
           throw new BadGatewayException(e.message, 'REPOSITORY_UNAVAILABLE');
         case 'RESPONSE_ERROR':
-        case 'NOT_OK_RESPONSE':
+        case 'NON_OK_RESPONSE':
           throw new BadGatewayException(e.message, 'REPOSITORY_ERROR');
         case 'INVALID_INDEX':
           throw new BadGatewayException({
-            code: 'REPOSITORY_INVALID_INDEX',
+            error: 'REPOSITORY_INVALID_INDEX',
             message: e.message,
             validationErrors: e.validationErrors ?? [],
           });
@@ -155,10 +155,11 @@ export class SetRepositoriesService {
     await this.setRepositoryRepository.remove(repository);
   }
 
-  @memoizeAsync({
-    expirationTimeMs: 1000 * 60 * 5,
-    // TODO: When moving to multiple instances, add redis implementation for caching
-  })
+  // @memoizeAsync({
+  // expirationTimeMs: 1000 * 60 * 5,
+  // cache: new Map(),
+  // TODO: When moving to multiple instances, add redis implementation for caching
+  // })
   async fetchRepositoryIndex(
     indexUrl: string,
   ): Promise<SetRepositoryIndexEntity> {
@@ -171,6 +172,11 @@ export class SetRepositoriesService {
           timeoutErrorMessage: 'The connection to the repository timed out.',
           maxContentLength: MAX_SET_REPOSITORY_INDEX_SIZE,
           maxBodyLength: MAX_SET_REPOSITORY_INDEX_SIZE,
+          headers: {
+            'Cache-Control': 'no-cache',
+            Pragma: 'no-cache',
+            Expires: '0',
+          },
         })
         .toPromise();
     } catch (e) {
@@ -216,7 +222,6 @@ export class SetRepositoriesService {
     try {
       index = plainToClass(SetRepositoryIndexDto, resp.data);
     } catch (e) {
-      console.error(e);
       throw {
         code: 'INVALID_INDEX',
         message: 'The index provided by the repository could not be parsed.',

@@ -6,6 +6,7 @@ import { SetRepositoryService } from '../../services/set-repository.service';
 import { hshrink, vshrink } from '../../utils/animations';
 import { SetRepositoryIndexEntity } from '../../models/set-repository-index.model';
 import { minPromiseDuration } from '../../utils/promise-utils';
+import { ServiceError } from '../../models/service-error.model';
 
 @Component({
     selector: 'app-set-browse-view',
@@ -19,6 +20,8 @@ export class SetBrowseViewComponent implements OnInit {
     activePublicRepositoryId: string;
     repositoryIndexFetchStatus: OperationStatus = 'IDLE';
     repositoryIndex: SetRepositoryIndexEntity;
+    indexFetchErrorReason: string;
+    indexFetchErrorDetails: string;
 
     get activeRepository(): SetRepositoryEntity {
         return this.repositories?.find(
@@ -63,6 +66,8 @@ export class SetBrowseViewComponent implements OnInit {
     async fetchRepositoryIndex() {
         if (!this.activeRepository) return;
         this.repositoryIndexFetchStatus = 'IN_PROGRESS';
+        this.indexFetchErrorReason = null;
+        this.indexFetchErrorDetails = null;
         this.repositoryIndex = null;
         const fetchPublicId = this.activeRepository.publicId;
         try {
@@ -78,6 +83,43 @@ export class SetBrowseViewComponent implements OnInit {
         } catch (e) {
             if (this.activePublicRepositoryId === fetchPublicId) {
                 this.repositoryIndexFetchStatus = 'ERROR';
+                if (e instanceof ServiceError) {
+                    switch (e.code) {
+                        case 'SERVICE_UNAVAILABLE':
+                            this.indexFetchErrorReason =
+                                'The servers could not be reached. Are you sure you are connected to the internet? Please try again later.';
+                            return;
+                        case 'REPOSITORY_NOT_FOUND':
+                            this.indexFetchErrorReason =
+                                'The repository index could not be found. Please contact your repository administrator.';
+                            return;
+                        case 'SET_NOT_OWNED':
+                            this.indexFetchErrorReason =
+                                'You do not have permission to load an index for this set. You could try removing it and adding it back.';
+                            return;
+                        case 'REPOSITORY_UNAVAILABLE':
+                            this.indexFetchErrorReason =
+                                'The repository could not be reached, likely due to it not being online. Please try again later.';
+                            return;
+                        case 'REPOSITORY_ERROR':
+                            this.indexFetchErrorReason =
+                                'The repository gave an invalid response. Please contact your repository administrator.';
+                            this.indexFetchErrorDetails = e.description;
+                            return;
+                        case 'REPOSITORY_INVALID_INDEX':
+                            this.indexFetchErrorReason =
+                                'The repository gave an invalid response. Please contact your repository administrator.';
+                            this.indexFetchErrorDetails =
+                                'Validation errors:\n\n' +
+                                JSON.stringify(e.data, null, 2);
+                            return;
+                        case 'REPOSITORY_UNKNOWN_ERROR':
+                            this.indexFetchErrorReason = e.description;
+                            return;
+                    }
+                }
+                this.indexFetchErrorReason =
+                    'An unknown error occurred. Please contact a developer.';
             }
             console.error(e);
         }

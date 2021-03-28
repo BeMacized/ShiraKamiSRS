@@ -38,7 +38,7 @@
                             class="btn btn-small btn-secondary"
                             (click)="fetchRepositories()"
                         >
-                            Retry Load
+                            Retry Loading Repositories
                         </button>
                     </div>
                     <div
@@ -84,14 +84,16 @@
                 class="card-flat-outline index-status"
                 *ngIf="
                     !repositoryIndex ||
-                    repositoryIndexFetchStatus === 'IN_PROGRESS'
+                    repositoryIndexFetchStatus === 'IN_PROGRESS' ||
+                    repositoryIndexFetchStatus === 'ERROR'
                 "
                 @vshrink
             >
                 <div
                     *ngIf="
                         !repositoryIndex &&
-                        repositoryIndexFetchStatus !== 'IN_PROGRESS'
+                        repositoryIndexFetchStatus !== 'IN_PROGRESS' &&
+                        repositoryIndexFetchStatus !== 'ERROR'
                     "
                     @vshrink
                 >
@@ -103,6 +105,32 @@
                 >
                     <app-spinner></app-spinner>
                     <span> Loading repository index... </span>
+                </div>
+                <div
+                    *ngIf="repositoryIndexFetchStatus === 'ERROR'"
+                    @vshrink
+                    class="index-status-error"
+                >
+                    <i class="material-icons">warning</i>
+                    <div>
+                        Could not fetch repository index:
+                        <br />
+                        <br />
+                        {{ indexFetchErrorReason }}
+                    </div>
+                    <app-collapsible
+                        title="Technical details"
+                        *ngIf="indexFetchErrorDetails"
+                        @vshrink
+                    >
+                        <pre>{{ indexFetchErrorDetails }}</pre>
+                    </app-collapsible>
+                    <button
+                        class="btn btn-transparent"
+                        (click)="fetchRepositoryIndex()"
+                    >
+                        Retry Loading Index
+                    </button>
                 </div>
             </div>
             <div
