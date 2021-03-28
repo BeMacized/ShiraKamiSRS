@@ -7,6 +7,7 @@ import {
   IsString,
   IsUrl,
   MaxLength,
+  ValidateIf,
   ValidateNested,
 } from 'class-validator';
 import { ReviewMode } from '../../reviews/dtos/review.dto';
@@ -27,10 +28,12 @@ export class SetRepositoryIndexDto {
   @IsUrl()
   @IsOptional()
   @MaxLength(2048)
+  @ValidateIf((e) => e.imageUrl !== '')
   imageUrl?: string;
   @IsUrl()
   @IsOptional()
   @MaxLength(2048)
+  @ValidateIf((e) => e.imageUrl !== '')
   homePageUrl?: string;
   @ValidateNested()
   @Type(() => SetRepositoryIndexSetDto)
@@ -46,6 +49,17 @@ export class SetRepositoryIndexDto {
       sets: entity.sets?.map(SetRepositoryIndexSetDto.fromEntity),
     };
   }
+
+  static toEntity(dto: SetRepositoryIndexDto): SetRepositoryIndexEntity {
+    if (!dto) return null;
+    return {
+      version: dto.version,
+      name: dto.name,
+      imageUrl: dto.imageUrl,
+      homePageUrl: dto.homePageUrl,
+      sets: dto.sets?.map(SetRepositoryIndexSetDto.toEntity),
+    };
+  }
 }
 
 export class SetRepositoryIndexSetDto {
@@ -57,6 +71,7 @@ export class SetRepositoryIndexSetDto {
   exportVersion: string;
   @IsString()
   @MaxLength(2048)
+  @IsOptional()
   description?: string;
   @ArrayMinSize(1)
   @ArrayUnique()
@@ -79,6 +94,18 @@ export class SetRepositoryIndexSetDto {
       modes: entity.modes,
       cardCount: entity.cardCount,
       file: entity.file,
+    };
+  }
+
+  static toEntity(dto: SetRepositoryIndexSetDto): SetRepositoryIndexSetDto {
+    if (!dto) return null;
+    return {
+      name: dto.name,
+      exportVersion: dto.exportVersion,
+      description: dto.description,
+      modes: dto.modes,
+      cardCount: dto.cardCount,
+      file: dto.file,
     };
   }
 }

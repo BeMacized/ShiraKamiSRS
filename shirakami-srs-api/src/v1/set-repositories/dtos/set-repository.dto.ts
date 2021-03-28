@@ -4,11 +4,12 @@ import {
   IsUrl,
   IsUUID,
   MaxLength,
+  ValidateIf,
 } from 'class-validator';
 import { SetRepositoryEntity } from '../entities/set-repository.entity';
 
 export class CreateOrUpdateSetRepositoryDto {
-  // @IsUrl()
+  @IsUrl()
   @MaxLength(2048)
   indexUrl: string;
 }
@@ -22,6 +23,7 @@ export class SetRepositoryDto extends CreateOrUpdateSetRepositoryDto {
   @IsUrl()
   @MaxLength(2048)
   @IsOptional()
+  @ValidateIf((e) => e.imageUrl !== '')
   imageUrl?: string;
 
   static fromEntity(entity: SetRepositoryEntity): SetRepositoryDto {

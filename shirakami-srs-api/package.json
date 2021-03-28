@@ -34,6 +34,7 @@
     "@nestjs/serve-static": "^2.1.4",
     "@nestjs/throttler": "^1.1.1",
     "@nestjs/typeorm": "^7.1.5",
+    "@types/axios": "^0.14.0",
     "@types/html-escaper": "^3.0.0",
     "@types/nodemailer": "^6.4.0",
     "bcrypt": "^5.0.0",
