@@ -12,23 +12,55 @@
             </div>
             <div class="card">
                 <div class="repositories">
-                    <div class="repository active">
-                        <div class="repository-icon">
-                            <div class="repository-icon-bg">
-                                <span>S</span>
-                            </div>
-                        </div>
-                        <div class="repository-name">ShiraKamiSRS Public</div>
+                    <div
+                        class="repositories-loading"
+                        [@vshrink]
+                        *ngIf="repositoriesFetchStatus === 'IN_PROGRESS'"
+                    >
+                        <app-spinner [size]="'SMALL'"></app-spinner>
+                        <span>Loading repositories</span>
                     </div>
-                    <div class="repository">
+                    <div
+                        class="repositories-empty"
+                        *ngIf="
+                            repositoriesFetchStatus === 'SUCCESS' &&
+                            !repositories.length
+                        "
+                    >
+                        <span>No repositories found!</span>
+                    </div>
+                    <div
+                        class="repositories-error"
+                        *ngIf="repositoriesFetchStatus === 'ERROR'"
+                    >
+                        <span>Could not fetch repositories!</span>
+                        <button
+                            class="btn btn-small btn-secondary"
+                            (click)="fetchRepositories()"
+                        >
+                            Retry Load
+                        </button>
+                    </div>
+                    <div
+                        class="repository"
+                        [class.active]="false"
+                        *ngFor="let repository of repositories"
+                        [@vshrink]
+                    >
                         <div class="repository-icon">
                             <div class="repository-icon-bg">
+                                <span *ngIf="!repository.imageUrl">{{
+                                    repository.name
+                                        .substring(0, 1)
+                                        .toUpperCase()
+                                }}</span>
                                 <img
-                                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/15-09-26-RalfR-WLC-0098.jpg/170px-15-09-26-RalfR-WLC-0098.jpg"
+                                    *ngIf="repository.imageUrl"
+                                    [srcset]="repository.imageUrl"
                                 />
                             </div>
                         </div>
-                        <div class="repository-name">3rd Party Repository</div>
+                        <div class="repository-name">{{ repository.name }}</div>
                     </div>
                 </div>
             </div>

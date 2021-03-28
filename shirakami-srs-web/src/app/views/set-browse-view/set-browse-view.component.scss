@@ -20,6 +20,36 @@
     flex-direction: column;
     align-items: stretch;
 
+    &-loading,
+    &-empty,
+    &-error {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 0.5em;
+        justify-content: center;
+        font-weight: 500;
+
+        span {
+            flex: 1;
+        }
+
+        app-spinner {
+            flex-shrink: 0;
+            margin-right: 0.5em;
+            width: 3em;
+        }
+    }
+
+    &-error {
+        flex-direction: column;
+
+        button {
+            margin-top: 1em;
+            width: 100%;
+        }
+    }
+
     .repository {
         display: flex;
         flex-direction: row;
