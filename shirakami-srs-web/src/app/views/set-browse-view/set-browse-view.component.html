@@ -1,1 +1,73 @@
 <app-main-nav></app-main-nav>
+<div class="page-container">
+    <div class="grid xs-12 sm-12">
+        <div class="xs-span-12 sm-span-4 md-span-3 grid xs-1 sm-1">
+            <div class="section-header">
+                <h1 class="section-header-title">Set Repositories</h1>
+                <div class="section-header-actions">
+                    <button class="btn btn-rect btn-transparent">
+                        <i class="material-icons">add</i>
+                    </button>
+                </div>
+            </div>
+            <div class="card">
+                <div class="repositories">
+                    <div class="repository active">
+                        <div class="repository-icon">
+                            <div class="repository-icon-bg">
+                                <span>S</span>
+                            </div>
+                        </div>
+                        <div class="repository-name">ShiraKamiSRS Public</div>
+                    </div>
+                    <div class="repository">
+                        <div class="repository-icon">
+                            <div class="repository-icon-bg">
+                                <img
+                                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/15-09-26-RalfR-WLC-0098.jpg/170px-15-09-26-RalfR-WLC-0098.jpg"
+                                />
+                            </div>
+                        </div>
+                        <div class="repository-name">3rd Party Repository</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="xs-span-12 sm-span-8 md-span-9 grid xs-1 sm-1">
+            <div class="section-header">
+                <h1 class="section-header-title">
+                    <span>Sets</span>
+                    <span class="repository-label">ShiraKamiSRS Public</span>
+                </h1>
+            </div>
+            <div class="card set" *ngFor="let number of [0, 1, 2, 3, 4]">
+                <h1>
+                    <span>Genki 1 (3rd Edition): Lesson 1</span>
+                </h1>
+                <div class="set-review-modes">
+                    <app-review-mode-chip
+                        *ngFor="let mode of ['jpToEn', 'enToJp', 'kanjiToKana']"
+                        [mode]="asReviewMode(mode)"
+                    ></app-review-mode-chip>
+                </div>
+                <div class="set-description">
+                    A card set containing all vocabulary from the first lesson
+                    of Genki 1, 3rd edition.
+                </div>
+                <div class="set-footer">
+                    <div class="set-footer-card-count">245 Cards</div>
+                    <div class="set-footer-actions">
+                        <button class="btn btn-secondary">
+                            <i class="material-icons">preview</i>
+                            <span>View Cards</span>
+                        </button>
+                        <button class="btn btn-primary">
+                            <i class="material-icons">download</i>
+                            <span>Import</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

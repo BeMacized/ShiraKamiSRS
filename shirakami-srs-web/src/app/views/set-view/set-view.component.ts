@@ -2,9 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { SetEntity } from '../../models/set.model';
 import { SetService } from '../../services/set.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { EditSetModesModalComponent } from '../../components/modals/edit-set-modes-modal/edit-set-modes-modal.component';
-import { EditSetNameModalComponent } from '../../components/modals/edit-set-name-modal/edit-set-name-modal.component';
-import { DeleteSetModalComponent } from '../../components/modals/delete-set-modal/delete-set-modal.component';
 import { ModalService } from '../../services/modal.service';
 import { fadeUp, vshrink } from '../../utils/animations';
 import { CardEntity } from '../../models/card.model';
@@ -19,7 +16,6 @@ import {
     ConfirmationModalOutput,
 } from '../../components/modals/confirmation-modal/confirmation-modal.component';
 import { CardService } from '../../services/card.service';
-import { ExportSetModalComponent } from '../../components/modals/export-set-modal/export-set-modal.component';
 
 @Component({
     selector: 'app-set-view',

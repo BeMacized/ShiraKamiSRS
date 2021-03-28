@@ -1,0 +1,19 @@
+:host {
+    background-color: var(--color-background);
+    border-radius: 0.25em;
+    padding: 0.25em 0.5em;
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    min-height: 2em;
+
+    span {
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    i.material-icons {
+        font-size: 1em;
+        margin: 0 0.25em;
+    }
+}
