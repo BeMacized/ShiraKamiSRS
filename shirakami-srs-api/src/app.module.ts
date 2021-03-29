@@ -15,6 +15,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ScheduleModule } from '@nestjs/schedule';
+import { SetRepositoryEntity } from './v1/set-repositories/entities/set-repository.entity';
 
 @Module({
   imports: [
@@ -78,6 +79,7 @@ import { ScheduleModule } from '@nestjs/schedule';
           UserEntity,
           RefreshTokenEntity,
           ReviewEntity,
+          SetRepositoryEntity,
         ],
         logging: configService.get<boolean>('TYPEORM_LOGGING'),
         synchronize: false,

@@ -63,10 +63,12 @@ export class SetRepositoryService {
 
     public importSet(
         fileData: any,
-        includeReviews: boolean = false
+        includeReviews: boolean = false,
+        dryRun: boolean = false
     ): Observable<SetDto> {
         let params = new HttpParams();
         if (includeReviews) params = params.append('includeReviews', '1');
+        if (dryRun) params = params.append('dryRun', '1');
         return this.getApiUrl(`/sets/import`).pipe(
             switchMap((url) =>
                 this.http.post<SetDto>(url, fileData, { params })

@@ -8,7 +8,7 @@ import { ConfigService } from '@nestjs/config';
 async function bootstrap() {
   console.log(`Starting ShiraKamiSRS v${buildVersion}`);
   const app = await NestFactory.create(AppModule);
-  app.use(helmet());
+  app.use(helmet({ contentSecurityPolicy: false }));
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

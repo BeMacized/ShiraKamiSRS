@@ -298,6 +298,7 @@ GROUP BY setId, srsLevel
     exportData: SetExportV1,
     user?: string | UserEntity,
     includeReviews = false,
+    dryRun = false,
   ): Promise<SetEntity> {
     // Ensure user object exists
     if (user) {
@@ -329,53 +330,61 @@ GROUP BY setId, srsLevel
           'Export could not be imported, due to the presence conflicting reviews.',
         );
     }
-    const qr = this.con.createQueryRunner();
-    await qr.connect();
-    await qr.startTransaction();
-    let createdSetId: string;
-    let cardIds: string[];
-    try {
-      // Create the set
-      createdSetId = (
-        await qr.manager.save(
-          plainToClass(SetEntity, {
-            ...set,
-            userId: (user as UserEntity).id,
-          }),
-        )
-      ).id;
-      // Create the cards for the set
-      cardIds = (
-        await qr.manager.save(
-          cards.map((card, sortIndex) =>
-            plainToClass(CardEntity, {
-              ...card,
-              setId: createdSetId,
-              sortIndex,
-            }),
-          ),
-        )
-      ).map((c) => c.id);
-      // Optionally import reviews
-      if (includeReviews && reviews && reviews.length) {
-        await qr.manager.save(
-          reviews.map((reviewData) => {
-            const { cardIndex, ...review } = reviewData;
-            return plainToClass(ReviewEntity, {
-              ...review,
-              cardId: cardIds[cardIndex],
-            });
-          }),
-        );
-      }
-      await qr.commitTransaction();
-    } catch (err) {
-      await qr.rollbackTransaction();
-      throw err;
-    } finally {
-      await qr.release();
+    // Construct set entity
+    const setEntity = plainToClass(SetEntity, {
+      ...set,
+      userId: (user as UserEntity).id,
+    });
+    // Construct card entity
+    const cardEntities = (setId) =>
+      cards.map((card, sortIndex) =>
+        plainToClass(CardEntity, {
+          ...card,
+          setId,
+          sortIndex,
+        }),
+      );
+    // Dry run, return the set
+    if (dryRun) {
+      setEntity.cards = cardEntities(null);
+      return setEntity;
     }
-    // Optionally import reviews
-    return this.findOneById(createdSetId, (user as UserEntity).id);
+    // Not a dry run, save the entities
+    else {
+      // Save entities
+      const qr = this.con.createQueryRunner();
+      await qr.connect();
+      await qr.startTransaction();
+      let createdSetId: string;
+      let cardIds: string[];
+      try {
+        // Create the set
+        createdSetId = (await qr.manager.save(setEntity)).id;
+        // Create the cards for the set
+        cardIds = (await qr.manager.save(cardEntities(createdSetId))).map(
+          (c) => c.id,
+        );
+        // Optionally import reviews
+        if (includeReviews && reviews && reviews.length) {
+          await qr.manager.save(
+            reviews.map((reviewData) => {
+              const { cardIndex, ...review } = reviewData;
+              return plainToClass(ReviewEntity, {
+                ...review,
+                cardId: cardIds[cardIndex],
+              });
+            }),
+          );
+        }
+        await qr.commitTransaction();
+      } catch (err) {
+        await qr.rollbackTransaction();
+        throw err;
+      } finally {
+        await qr.release();
+      }
+      // Optionally import reviews
+      return this.findOneById(createdSetId, (user as UserEntity).id);
+    }
   }
 }
