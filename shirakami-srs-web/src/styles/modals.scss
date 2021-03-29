@@ -32,6 +32,12 @@
         max-width: $breakpoint-sm / 2;
     }
 
+    &-page {
+        display: flex;
+        flex-direction: column;
+        max-height: 100%;
+    }
+
     &-header,
     &-content,
     &-actions {

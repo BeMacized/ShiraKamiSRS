@@ -28,6 +28,7 @@ export class SetRepositoryIndexSetEntity {
     public readonly modes: ReviewMode[];
     public readonly cardCount: number;
     public readonly file: string;
+    public readonly supported: boolean;
 
     static fromDto(dto: SetRepositoryIndexSetDto): SetRepositoryIndexSetEntity {
         if (!dto) return null;
@@ -38,6 +39,7 @@ export class SetRepositoryIndexSetEntity {
             modes: dto.modes,
             cardCount: dto.cardCount,
             file: dto.file,
+            supported: dto.supported,
         });
     }
 }
@@ -58,4 +60,5 @@ export class SetRepositoryIndexSetDto {
     public readonly modes: ReviewMode[];
     public readonly cardCount: number;
     public readonly file: string;
+    public readonly supported: boolean;
 }

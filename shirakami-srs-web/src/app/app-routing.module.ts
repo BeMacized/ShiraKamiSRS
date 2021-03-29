@@ -80,6 +80,9 @@ export const routeAnimations = trigger('routeAnimations', [
     routeSlidePush('dashboard', 'setDetails'),
     routeSlidePop('setDetails', 'dashboard'),
 
+    routeSlidePush('browsesets', 'setDetails'),
+    routeSlidePop('setDetails', 'browsesets'),
+
     routeFadeUpPush('login', '*'),
     routeFadeUpPop('*', 'login'),
 

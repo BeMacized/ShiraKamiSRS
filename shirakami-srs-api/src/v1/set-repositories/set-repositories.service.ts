@@ -16,12 +16,14 @@ import {
   MAX_CARDS_PER_SET,
   MAX_SET_REPOSITORIES_PER_USER,
   MAX_SET_REPOSITORY_INDEX_SIZE,
+  SUPPORTED_REPOSITORY_INDEX_VERSIONS,
 } from '../v1.constants';
 import { memoizeAsync } from 'utils-decorators';
 import { SetRepositoryIndexDto } from './dtos/set-repository-index.dto';
 import { AxiosResponse } from 'axios';
 import { plainToClass } from 'class-transformer';
 import { validateOrReject } from 'class-validator';
+import { buildVersion } from '../../assets/build-version.json';
 
 @Injectable()
 export class SetRepositoriesService {
@@ -59,6 +61,13 @@ export class SetRepositoriesService {
         case 'RESPONSE_ERROR':
         case 'NON_OK_RESPONSE':
           throw new BadGatewayException(e.message, 'REPOSITORY_ERROR');
+        case 'UNSUPPORTED_INDEX':
+          throw new BadGatewayException({
+            error: 'REPOSITORY_UNSUPPORTED_INDEX',
+            message: `The index version of the repository (${e.version}) is not supported by ShiraKamiSRS (${buildVersion})`,
+            indexVersion: e.version ?? null,
+            buildVersion,
+          });
         case 'INVALID_INDEX':
           throw new BadGatewayException({
             error: 'REPOSITORY_INVALID_INDEX',
@@ -77,8 +86,12 @@ export class SetRepositoriesService {
     // Check if a repository with this public ID was already added for the user
     if (
       await this.setRepositoryRepository.findOne({
-        publicId: index.publicId,
-        userId,
+        where: {
+          publicId: index.publicId,
+          userId: Raw((alias) => `${alias} IS NULL OR ${alias} = :userId`, {
+            userId,
+          }),
+        },
       })
     ) {
       throw new ConflictException(
@@ -119,8 +132,9 @@ export class SetRepositoriesService {
       throw new ForbiddenException(
         'Cannot fetch index for set repository that is owned by someone else.',
       );
+    let index: SetRepositoryIndexEntity;
     try {
-      return await this.fetchRepositoryIndex(repository.indexUrl);
+      index = await this.fetchRepositoryIndex(repository.indexUrl);
     } catch (e) {
       switch (e?.code) {
         case 'CANNOT_REACH':
@@ -128,6 +142,13 @@ export class SetRepositoriesService {
         case 'RESPONSE_ERROR':
         case 'NON_OK_RESPONSE':
           throw new BadGatewayException(e.message, 'REPOSITORY_ERROR');
+        case 'UNSUPPORTED_INDEX':
+          throw new BadGatewayException({
+            error: 'REPOSITORY_UNSUPPORTED_INDEX',
+            message: `The index version of the repository (${e.version}) is not supported by ShiraKamiSRS (${buildVersion})`,
+            indexVersion: e.version ?? null,
+            buildVersion,
+          });
         case 'INVALID_INDEX':
           throw new BadGatewayException({
             error: 'REPOSITORY_INVALID_INDEX',
@@ -143,6 +164,12 @@ export class SetRepositoriesService {
           );
       }
     }
+    // Update db entry
+    await this.setRepositoryRepository.update(repoId, {
+      name: index.name,
+      imageUrl: index.imageUrl,
+    });
+    return index;
   }
 
   async removeRepository(userId: string, repoId: string): Promise<void> {
@@ -155,11 +182,11 @@ export class SetRepositoriesService {
     await this.setRepositoryRepository.remove(repository);
   }
 
-  // @memoizeAsync({
-  // expirationTimeMs: 1000 * 60 * 5,
-  // cache: new Map(),
-  // TODO: When moving to multiple instances, add redis implementation for caching
-  // })
+  @memoizeAsync({
+    expirationTimeMs: 1000 * 60 * 5,
+    cache: new Map(),
+    // TODO: When moving to multiple instances, add redis implementation for caching
+  })
   async fetchRepositoryIndex(
     indexUrl: string,
   ): Promise<SetRepositoryIndexEntity> {
@@ -218,6 +245,13 @@ export class SetRepositoriesService {
         code: 'INVALID_INDEX',
         message: 'The index provided by the repository is not valid JSON.',
       };
+    if (!SUPPORTED_REPOSITORY_INDEX_VERSIONS.includes(resp.data.version)) {
+      throw {
+        code: 'UNSUPPORTED_INDEX',
+        message: 'The index provided by the repository could not be parsed.',
+        version: resp.data.version,
+      };
+    }
     let index: SetRepositoryIndexDto;
     try {
       index = plainToClass(SetRepositoryIndexDto, resp.data);

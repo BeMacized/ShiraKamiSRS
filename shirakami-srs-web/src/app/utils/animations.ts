@@ -9,7 +9,7 @@ import {
 } from '@angular/animations';
 
 export function noop(name = 'noop') {
-    return trigger(name, [transition('* => *', [style({})])]);
+    return trigger(name, [transition('* => *', [])]);
 }
 
 export function triggerChildren(name = 'triggerChildren', childQuery = '@*') {

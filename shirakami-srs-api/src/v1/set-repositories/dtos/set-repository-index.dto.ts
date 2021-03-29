@@ -1,6 +1,7 @@
 import {
   ArrayMinSize,
   ArrayUnique,
+  IsBoolean,
   IsEnum,
   IsNumber,
   IsOptional,
@@ -18,6 +19,7 @@ import {
   SetRepositoryIndexEntity,
   SetRepositoryIndexSetEntity,
 } from '../entities/set-repository-index.entity';
+import { SUPPORTED_SET_IMPORT_VERSIONS } from '../../v1.constants';
 
 export class SetRepositoryIndexDto {
   @IsUUID()
@@ -87,6 +89,9 @@ export class SetRepositoryIndexSetDto {
   @IsString()
   @MaxLength(2048)
   file: string;
+  @IsBoolean()
+  @IsOptional()
+  supported?: boolean;
 
   static fromEntity(
     entity: SetRepositoryIndexSetEntity,
@@ -99,10 +104,11 @@ export class SetRepositoryIndexSetDto {
       modes: entity.modes,
       cardCount: entity.cardCount,
       file: entity.file,
+      supported: SUPPORTED_SET_IMPORT_VERSIONS.includes(entity.exportVersion),
     };
   }
 
-  static toEntity(dto: SetRepositoryIndexSetDto): SetRepositoryIndexSetDto {
+  static toEntity(dto: SetRepositoryIndexSetDto): SetRepositoryIndexSetEntity {
     if (!dto) return null;
     return {
       name: dto.name,

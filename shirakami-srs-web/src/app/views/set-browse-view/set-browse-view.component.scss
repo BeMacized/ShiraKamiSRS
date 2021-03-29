@@ -151,6 +151,17 @@
         padding: 1em;
     }
 
+    &-unsupported {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        i.material-icons {
+            font-size: 1.25em;
+            margin-right: 0.5em;
+            color: var(--color-warning);
+        }
+    }
+
     &-footer {
         display: flex;
         flex-direction: row;
@@ -170,6 +181,12 @@
             justify-content: flex-end;
 
             button {
+                > div {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                }
+
                 i.material-icons {
                     margin-right: 0.25em;
                 }

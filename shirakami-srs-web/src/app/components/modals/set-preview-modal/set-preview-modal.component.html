@@ -1,0 +1,86 @@
+<div class="modal-bg" @bg @triggerModal>
+    <div
+        class="modal modal-md"
+        @modal
+        (clickOutside)="close()"
+        [smoothHeight]="setDataFetchStatus"
+    >
+        <div class="modal-page" @modalPage>
+            <div class="modal-header">
+                <h1>{{ set?.name || 'Preview Set' }}</h1>
+            </div>
+            <div class="modal-content" style="overflow-y: auto">
+                <div
+                    class="spinner-container"
+                    @crossFade
+                    *ngIf="setDataFetchStatus === 'IN_PROGRESS'"
+                >
+                    <app-spinner></app-spinner>
+                </div>
+                <div
+                    @crossFade
+                    class="modal-status-container"
+                    *ngIf="setDataFetchStatus === 'ERROR'"
+                >
+                    <i class="material-icons error-icon">error_outline</i>
+                    <span class="status-message">
+                        {{ errorMessage }}
+                    </span>
+                </div>
+                <div @crossFade *ngIf="setDataFetchStatus === 'SUCCESS' && set">
+                    <h3 style="text-align: center; margin-bottom: 1em">
+                        {{ set.cards.length }} Card{{
+                            set.cards.length === 1 ? '' : 's'
+                        }}
+                    </h3>
+                    <div class="grid xs-1 sm-2">
+                        <div class="card" *ngFor="let card of set.cards">
+                            <div class="card-col">
+                                <div class="card-col-header">
+                                    <span class="flag-icon flag-icon-jp"></span>
+                                    <span>Japanese</span>
+                                </div>
+                                <div
+                                    class="card-col-value"
+                                    *ngFor="
+                                        let translation of card.value
+                                            .jpTranslations
+                                    "
+                                >
+                                    {{
+                                        translation.length === 2
+                                            ? translation[1] +
+                                              ' (' +
+                                              translation[0] +
+                                              ')'
+                                            : translation[0]
+                                    }}
+                                </div>
+                            </div>
+                            <div class="card-col">
+                                <div class="card-col-header">
+                                    <span class="flag-icon flag-icon-gb"></span>
+                                    <span>English</span>
+                                </div>
+                                <div
+                                    class="card-col-value"
+                                    *ngFor="
+                                        let translation of card.value
+                                            .enTranslations
+                                    "
+                                >
+                                    {{ translation }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="button btn btn-secondary" (click)="close()">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

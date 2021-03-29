@@ -112,7 +112,7 @@
                     class="index-status-error"
                 >
                     <i class="material-icons">warning</i>
-                    <div>
+                    <div style="white-space: pre">
                         Could not fetch repository index:
                         <br />
                         <br />
@@ -135,7 +135,11 @@
             </div>
             <div
                 class="card set"
-                *ngFor="let set of repositoryIndex?.sets || []"
+                *ngFor="
+                    let set of repositoryIndex?.sets || [];
+                    let setIndex = index
+                "
+                [@noop]
             >
                 <h1>
                     <span>{{ set.name }}</span>
@@ -149,6 +153,13 @@
                 <div class="set-description" *ngIf="set.description">
                     {{ set.description }}
                 </div>
+                <div class="set-unsupported" *ngIf="!set.supported">
+                    <i class="material-icons">warning</i>
+                    <span>
+                        This set is not supported by this version of
+                        ShiraKamiSRS
+                    </span>
+                </div>
                 <div class="set-footer">
                     <div class="set-footer-card-count">
                         {{ set.cardCount }} Card{{
@@ -156,13 +167,52 @@
                         }}
                     </div>
                     <div class="set-footer-actions">
-                        <button class="btn btn-secondary">
+                        <button
+                            class="btn btn-secondary"
+                            [disabled]="!set.supported"
+                            (click)="previewSet(set)"
+                        >
                             <i class="material-icons">preview</i>
                             <span>View Cards</span>
                         </button>
-                        <button class="btn btn-primary">
-                            <i class="material-icons">download</i>
-                            <span>Import</span>
+                        <button
+                            class="btn btn-primary"
+                            [disabled]="
+                                !set.supported ||
+                                setImportStatus === 'SUCCESS' ||
+                                setImportStatus === 'IN_PROGRESS'
+                            "
+                            (click)="importSet(setIndex, set)"
+                        >
+                            <div
+                                [@hshrink]
+                                *ngIf="
+                                    setImportRef !== setIndex ||
+                                    (setImportStatus !== 'IN_PROGRESS' &&
+                                        setImportStatus !== 'SUCCESS')
+                                "
+                            >
+                                <i class="material-icons">download</i>
+                                <span>Import</span>
+                            </div>
+                            <div
+                                [@hshrink]
+                                *ngIf="
+                                    setImportStatus === 'IN_PROGRESS' &&
+                                    setImportRef === setIndex
+                                "
+                            >
+                                <app-spinner [size]="'SMALL'"></app-spinner>
+                            </div>
+                            <div
+                                [@hshrink]
+                                *ngIf="
+                                    setImportStatus === 'SUCCESS' &&
+                                    setImportRef === setIndex
+                                "
+                            >
+                                <i class="material-icons">done</i>
+                            </div>
                         </button>
                     </div>
                 </div>
