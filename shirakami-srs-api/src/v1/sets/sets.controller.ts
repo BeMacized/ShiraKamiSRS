@@ -64,11 +64,14 @@ export class SetsController {
     @User() user: UserEntity,
     @Query('includeReviews', new DefaultValuePipe('0'), ParseIntPipe)
     includeReviews,
+    @Query('dryRun', new DefaultValuePipe('0'), ParseIntPipe)
+    dryRun,
   ): Promise<SetDto> {
     const entity = await this.setsService.importSet(
       set,
       user,
       includeReviews === 1,
+      dryRun === 1,
     );
     return SetDto.fromEntity(entity);
   }

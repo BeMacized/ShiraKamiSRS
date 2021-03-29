@@ -1,0 +1,58 @@
+@import 'responsive.scss';
+
+.spinner-container {
+    padding: 3em;
+}
+
+.modal-content {
+    overflow-y: scroll;
+
+    // Disable scrollbar
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+    &::-webkit-scrollbar {
+        /* Chrome / Safari / Opera */
+        display: none;
+    }
+}
+
+.card-grid {
+}
+
+.card {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    background: var(--color-surface-mute);
+    color: var(--color-on-surface);
+    padding: 0.5em;
+    border-radius: 0.25em;
+
+    @include bp(xs) {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    &-col {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+
+        &-header {
+            font-weight: 500;
+            margin-bottom: 0.5em;
+            .flag-icon {
+                margin-right: 0.5em;
+            }
+        }
+        &-value {
+        }
+
+        @include bp(xs) {
+            &:not(:first-child) {
+                margin-top: 0.5em;
+            }
+        }
+    }
+}

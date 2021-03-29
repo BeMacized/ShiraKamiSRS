@@ -7,6 +7,7 @@ import { AuthenticationModule } from './authentication/authentication.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { LessonsModule } from './lessons/lessons.module';
 import { CommonModule } from './common/common.module';
+import { SetRepositoriesModule } from './set-repositories/set-repositories.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { CommonModule } from './common/common.module';
     ReviewsModule,
     LessonsModule,
     CommonModule,
+    SetRepositoriesModule,
   ],
   controllers: [V1Controller],
   providers: [],

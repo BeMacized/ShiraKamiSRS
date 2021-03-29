@@ -71,7 +71,9 @@ export class AuthService {
                         throw new ServiceError('RATE_LIMITED');
                     case 403:
                     case 401:
-                        throw new ServiceError(e.error.error);
+                        if (e.error.error)
+                            throw new ServiceError(e.error.error);
+                        break;
                     case 0:
                         throw new ServiceError('SERVICE_UNAVAILABLE');
                 }

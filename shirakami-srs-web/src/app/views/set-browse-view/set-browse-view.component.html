@@ -1,1 +1,222 @@
 <app-main-nav></app-main-nav>
+<div class="page-container">
+    <div class="grid xs-12 sm-12">
+        <div class="xs-span-12 sm-span-4 md-span-3 grid xs-1 sm-1">
+            <div class="section-header">
+                <h1 class="section-header-title">Set Repositories</h1>
+                <div class="section-header-actions">
+                    <button class="btn btn-rect btn-transparent">
+                        <i class="material-icons">add</i>
+                    </button>
+                </div>
+            </div>
+            <div class="card">
+                <div class="repositories">
+                    <div
+                        class="repositories-loading"
+                        [@vshrink]
+                        *ngIf="repositoriesFetchStatus === 'IN_PROGRESS'"
+                    >
+                        <app-spinner [size]="'SMALL'"></app-spinner>
+                        <span>Loading repositories</span>
+                    </div>
+                    <div
+                        class="repositories-empty"
+                        *ngIf="
+                            repositoriesFetchStatus === 'SUCCESS' &&
+                            !repositories.length
+                        "
+                    >
+                        <span>No repositories found!</span>
+                    </div>
+                    <div
+                        class="repositories-error"
+                        *ngIf="repositoriesFetchStatus === 'ERROR'"
+                    >
+                        <span>Could not fetch repositories!</span>
+                        <button
+                            class="btn btn-small btn-secondary"
+                            (click)="fetchRepositories()"
+                        >
+                            Retry Loading Repositories
+                        </button>
+                    </div>
+                    <div
+                        class="repository"
+                        *ngFor="let repository of repositories"
+                        [class.active]="
+                            activePublicRepositoryId === repository.publicId
+                        "
+                        (click)="selectRepository(repository)"
+                        [@vshrink]
+                    >
+                        <div class="repository-icon">
+                            <div class="repository-icon-bg">
+                                <span *ngIf="!repository.imageUrl">{{
+                                    repository.name
+                                        .substring(0, 1)
+                                        .toUpperCase()
+                                }}</span>
+                                <img
+                                    *ngIf="repository.imageUrl"
+                                    [srcset]="repository.imageUrl"
+                                />
+                            </div>
+                        </div>
+                        <div class="repository-name">{{ repository.name }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="xs-span-12 sm-span-8 md-span-9 grid xs-1 sm-1">
+            <div class="section-header">
+                <h1 class="section-header-title">
+                    <span>Sets</span>
+                    <span
+                        class="repository-label"
+                        *ngIf="activeRepository"
+                        [@hshrink]
+                        >{{ activeRepository?.name }}</span
+                    >
+                </h1>
+            </div>
+            <div
+                class="card-flat-outline index-status"
+                *ngIf="
+                    !repositoryIndex ||
+                    repositoryIndexFetchStatus === 'IN_PROGRESS' ||
+                    repositoryIndexFetchStatus === 'ERROR'
+                "
+                @vshrink
+            >
+                <div
+                    *ngIf="
+                        !repositoryIndex &&
+                        repositoryIndexFetchStatus !== 'IN_PROGRESS' &&
+                        repositoryIndexFetchStatus !== 'ERROR'
+                    "
+                    @vshrink
+                >
+                    <span>No repository selected.</span>
+                </div>
+                <div
+                    *ngIf="repositoryIndexFetchStatus === 'IN_PROGRESS'"
+                    @vshrink
+                >
+                    <app-spinner></app-spinner>
+                    <span> Loading repository index... </span>
+                </div>
+                <div
+                    *ngIf="repositoryIndexFetchStatus === 'ERROR'"
+                    @vshrink
+                    class="index-status-error"
+                >
+                    <i class="material-icons">warning</i>
+                    <div style="white-space: pre">
+                        Could not fetch repository index:
+                        <br />
+                        <br />
+                        {{ indexFetchErrorReason }}
+                    </div>
+                    <app-collapsible
+                        title="Technical details"
+                        *ngIf="indexFetchErrorDetails"
+                        @vshrink
+                    >
+                        <pre>{{ indexFetchErrorDetails }}</pre>
+                    </app-collapsible>
+                    <button
+                        class="btn btn-transparent"
+                        (click)="fetchRepositoryIndex()"
+                    >
+                        Retry Loading Index
+                    </button>
+                </div>
+            </div>
+            <div
+                class="card set"
+                *ngFor="
+                    let set of repositoryIndex?.sets || [];
+                    let setIndex = index
+                "
+                [@noop]
+            >
+                <h1>
+                    <span>{{ set.name }}</span>
+                </h1>
+                <div class="set-review-modes">
+                    <app-review-mode-chip
+                        *ngFor="let mode of set.modes"
+                        [mode]="asReviewMode(mode)"
+                    ></app-review-mode-chip>
+                </div>
+                <div class="set-description" *ngIf="set.description">
+                    {{ set.description }}
+                </div>
+                <div class="set-unsupported" *ngIf="!set.supported">
+                    <i class="material-icons">warning</i>
+                    <span>
+                        This set is not supported by this version of
+                        ShiraKamiSRS
+                    </span>
+                </div>
+                <div class="set-footer">
+                    <div class="set-footer-card-count">
+                        {{ set.cardCount }} Card{{
+                            set.cardCount === 1 ? '' : 's'
+                        }}
+                    </div>
+                    <div class="set-footer-actions">
+                        <button
+                            class="btn btn-secondary"
+                            [disabled]="!set.supported"
+                            (click)="previewSet(set)"
+                        >
+                            <i class="material-icons">preview</i>
+                            <span>View Cards</span>
+                        </button>
+                        <button
+                            class="btn btn-primary"
+                            [disabled]="
+                                !set.supported ||
+                                setImportStatus === 'SUCCESS' ||
+                                setImportStatus === 'IN_PROGRESS'
+                            "
+                            (click)="importSet(setIndex, set)"
+                        >
+                            <div
+                                [@hshrink]
+                                *ngIf="
+                                    setImportRef !== setIndex ||
+                                    (setImportStatus !== 'IN_PROGRESS' &&
+                                        setImportStatus !== 'SUCCESS')
+                                "
+                            >
+                                <i class="material-icons">download</i>
+                                <span>Import</span>
+                            </div>
+                            <div
+                                [@hshrink]
+                                *ngIf="
+                                    setImportStatus === 'IN_PROGRESS' &&
+                                    setImportRef === setIndex
+                                "
+                            >
+                                <app-spinner [size]="'SMALL'"></app-spinner>
+                            </div>
+                            <div
+                                [@hshrink]
+                                *ngIf="
+                                    setImportStatus === 'SUCCESS' &&
+                                    setImportRef === setIndex
+                                "
+                            >
+                                <i class="material-icons">done</i>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
