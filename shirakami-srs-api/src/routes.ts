@@ -6,6 +6,7 @@ import { AuthenticationModule } from './v1/authentication/authentication.module'
 import { UsersModule } from './v1/users/users.module';
 import { ReviewsModule } from './v1/reviews/reviews.module';
 import { LessonsModule } from './v1/lessons/lessons.module';
+import { SetRepositoriesModule } from './v1/set-repositories/set-repositories.module';
 
 export const APP_ROUTES: Routes = [
   {
@@ -37,6 +38,10 @@ export const APP_ROUTES: Routes = [
             module: CardsModule,
           },
         ],
+      },
+      {
+        path: '/setrepositories',
+        module: SetRepositoriesModule,
       },
     ],
   },

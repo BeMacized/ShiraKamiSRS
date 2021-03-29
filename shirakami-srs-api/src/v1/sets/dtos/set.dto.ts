@@ -46,7 +46,7 @@ export class SetDto extends CreateOrUpdateSetDto {
       cards: entity.cards ? entity.cards.map(CardDto.fromEntity) : undefined,
       modes: entity.modes,
       srsStatus: entity.srsStatus,
-      createdAt: Math.floor(entity.createdAt.getTime() / 1000),
+      createdAt: Math.floor((entity.createdAt?.getTime() ?? 0) / 1000),
     };
   }
 }

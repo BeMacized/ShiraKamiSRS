@@ -35,7 +35,7 @@ export class CardDto extends CreateOrUpdateCardDto {
       setId: entity.setId,
       value: entity.value,
       sortIndex: entity.sortIndex,
-      createdAt: Math.floor(entity.createdAt.getTime() / 1000),
+      createdAt: Math.floor((entity.createdAt?.getTime() ?? 0) / 1000),
       reviews:
         entity.reviews?.map((review) => ReviewDto.fromEntity(review)) ||
         undefined,

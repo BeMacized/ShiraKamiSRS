@@ -1,0 +1,15 @@
+<ng-container *ngIf="mode === 'jpToEn'">
+    <span class="flag-icon flag-icon-jp"></span>
+    <i class="material-icons">arrow_forward</i>
+    <span class="flag-icon flag-icon-gb"></span>
+</ng-container>
+<ng-container *ngIf="mode === 'enToJp'">
+    <span class="flag-icon flag-icon-gb"></span>
+    <i class="material-icons">arrow_forward</i>
+    <span class="flag-icon flag-icon-jp"></span>
+</ng-container>
+<ng-container *ngIf="mode === 'kanjiToKana'">
+    <span>漢字</span>
+    <i class="material-icons">arrow_forward</i>
+    <span>かな</span>
+</ng-container>

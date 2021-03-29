@@ -4,24 +4,10 @@
             <div class="info">
                 <h1 class="info-title">{{ set.name }}</h1>
                 <div class="info-set-modes">
-                    <div class="set-mode" *ngIf="set.modes.includes('jpToEn')">
-                        <span class="flag-icon flag-icon-jp"></span>
-                        <i class="material-icons">arrow_forward</i>
-                        <span class="flag-icon flag-icon-gb"></span>
-                    </div>
-                    <div class="set-mode" *ngIf="set.modes.includes('enToJp')">
-                        <span class="flag-icon flag-icon-gb"></span>
-                        <i class="material-icons">arrow_forward</i>
-                        <span class="flag-icon flag-icon-jp"></span>
-                    </div>
-                    <div
-                        class="set-mode"
-                        *ngIf="set.modes.includes('kanjiToKana')"
-                    >
-                        <span>漢字</span>
-                        <i class="material-icons">arrow_forward</i>
-                        <span>かな</span>
-                    </div>
+                    <app-review-mode-chip
+                        *ngFor="let mode of set.modes"
+                        [mode]="mode"
+                    ></app-review-mode-chip>
                 </div>
                 <!--                <div class="info-next-review">Time until next review: Now</div>-->
             </div>
