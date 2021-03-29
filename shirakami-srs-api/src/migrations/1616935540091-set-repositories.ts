@@ -12,5 +12,4 @@ export class setRepositories1616935540091 implements MigrationInterface {
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query('DROP TABLE `set_repository_entity`');
   }
-  R;
 }

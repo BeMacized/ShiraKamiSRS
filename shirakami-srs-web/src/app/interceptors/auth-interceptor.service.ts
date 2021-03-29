@@ -49,6 +49,11 @@ export class AuthInterceptor implements HttpInterceptor {
             if (requestUrl.startsWith(this.apiBaseUrl)) return true;
         }
         if (requestUrl.startsWith(document.location.origin)) return true;
+        console.log({
+            requestUrl,
+            origin: document.location.origin,
+            apiBaseUrl: this.apiBaseUrl,
+        });
         return false;
     }
 }
