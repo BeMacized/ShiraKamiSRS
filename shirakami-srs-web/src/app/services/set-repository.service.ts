@@ -99,7 +99,11 @@ export class SetRepositoryService {
                     case 502: // Gateway error (Issues with repository)
                     case 409: // Conflict (Repository already added)
                         if (e.error.error)
-                            throw new ServiceError(e.error.error);
+                            throw new ServiceError(
+                                e.error.error,
+                                e.error.message,
+                                e.error
+                            );
                         break;
                 }
             }
