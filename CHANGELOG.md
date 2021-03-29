@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
     - Default first-party set repository
     - Previewing sets from repositories
     - Importing sets from repositories
+- Missing initialization migrations  
 
 ### Changed
 - N/A
