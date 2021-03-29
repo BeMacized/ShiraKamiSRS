@@ -36,6 +36,12 @@ export class SetBrowseViewComponent implements OnInit {
     setImportStatus: OperationStatus = 'IDLE';
     setImportRef: any;
 
+    showAddRepositoryPane = false;
+    addRepositoryUrl = '';
+    addRepositoryStatus: OperationStatus = 'IDLE';
+    addRepositoryError = '';
+    addRepositoryErrorDetails = '';
+
     get activeRepository(): SetRepositoryEntity {
         return this.repositories?.find(
             (r) => r.publicId === this.activePublicRepositoryId
@@ -77,6 +83,7 @@ export class SetBrowseViewComponent implements OnInit {
     }
 
     async selectRepository(repository: SetRepositoryEntity) {
+        if (!repository) return;
         this.activePublicRepositoryId = repository.publicId;
         await this.fetchRepositoryIndex();
     }
@@ -123,10 +130,6 @@ export class SetBrowseViewComponent implements OnInit {
                         case 'REPOSITORY_NOT_FOUND':
                             this.indexFetchErrorReason =
                                 'The repository index could not be found. Please contact your repository administrator.';
-                            return;
-                        case 'SET_NOT_OWNED':
-                            this.indexFetchErrorReason =
-                                'You do not have permission to load an index for this set. You could try removing it and adding it back.';
                             return;
                         case 'REPOSITORY_UNAVAILABLE':
                             this.indexFetchErrorReason =
@@ -221,5 +224,71 @@ export class SetBrowseViewComponent implements OnInit {
             repository: this.activeRepository,
             set,
         });
+    }
+
+    async addRepository() {
+        if (this.addRepositoryStatus === 'IN_PROGRESS') return;
+        this.addRepositoryStatus = 'IN_PROGRESS';
+        this.addRepositoryError = '';
+        this.addRepositoryErrorDetails = '';
+        try {
+            const repo = await this.setRepositoryService.addSetRepository(
+                this.addRepositoryUrl
+            );
+            this.addRepositoryStatus = 'SUCCESS';
+            this.showAddRepositoryPane = false;
+            this.addRepositoryUrl = '';
+            await this.fetchRepositories();
+            this.selectRepository(
+                this.repositories.find((r) => r.id === repo.id)
+            );
+        } catch (e) {
+            this.addRepositoryStatus = 'ERROR';
+            switch (e instanceof ServiceError ? e.code : '') {
+                case 'SERVICE_UNAVAILABLE':
+                    this.addRepositoryError =
+                        'Could not reach the server. Please verify your connection, or try again later.';
+                    break;
+                case 'REPOSITORY_EXISTS':
+                    this.addRepositoryError =
+                        'This repository has already been added!';
+                    return;
+                case 'SET_REPOSITORY_LIMIT_EXCEEDED':
+                    this.addRepositoryError =
+                        'You have reached your maximum limit of allowed repositories. Please remove one before adding a new one.';
+                    return;
+                case 'REPOSITORY_UNAVAILABLE':
+                    this.addRepositoryError =
+                        'The repository could not be reached, likely due to it not being online. Please try again later.';
+                    return;
+                case 'REPOSITORY_ERROR':
+                    this.addRepositoryError =
+                        'The repository gave an invalid response. Please contact your repository administrator.';
+                    this.indexFetchErrorDetails = e.description;
+                    return;
+                case 'REPOSITORY_UNSUPPORTED_INDEX':
+                    this.addRepositoryError =
+                        'The repository version is not yet supported by this version of ShiraKamiSRS.\nPlease check with an administrator, or contact your repository administrator if you believe this is in error.';
+                    this.addRepositoryErrorDetails = [
+                        'Repository Index Version: ' + e.data?.indexVersion,
+                        'ShiraKamiSRS Version: ' + e.data?.buildVersion,
+                    ].join('\n');
+                    return;
+                case 'REPOSITORY_INVALID_INDEX':
+                    this.addRepositoryError =
+                        'The repository gave an invalid response. Please contact your repository administrator.';
+                    this.addRepositoryErrorDetails =
+                        'Validation errors:\n\n' +
+                        JSON.stringify(e.data?.validationErrors, null, 2);
+                    return;
+                case 'REPOSITORY_UNKNOWN_ERROR':
+                    this.addRepositoryError = e.description;
+                    return;
+                default:
+                    console.error(e);
+                    this.addRepositoryError =
+                        'An unknown error occurred while trying to add the repository.';
+            }
+        }
     }
 }

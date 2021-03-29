@@ -22,7 +22,7 @@ import { memoizeAsync } from 'utils-decorators';
 import { SetRepositoryIndexDto } from './dtos/set-repository-index.dto';
 import { AxiosResponse } from 'axios';
 import { plainToClass } from 'class-transformer';
-import { validateOrReject } from 'class-validator';
+import { validateOrReject, ValidationError } from 'class-validator';
 import { buildVersion } from '../../assets/build-version.json';
 
 @Injectable()
@@ -264,11 +264,17 @@ export class SetRepositoriesService {
     try {
       await validateOrReject(index);
     } catch (errors) {
+      let validationErrors = errors;
+      try {
+        validationErrors = (errors as ValidationError[]).map(
+          ({ target, ...error }) => error,
+        );
+      } catch (e) {}
       throw {
         code: 'INVALID_INDEX',
         message:
           'The index provided by the repository did not match the required format.',
-        validationErrors: errors,
+        validationErrors,
       };
     }
     return SetRepositoryIndexDto.toEntity(index);

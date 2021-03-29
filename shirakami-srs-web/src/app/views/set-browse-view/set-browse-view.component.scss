@@ -2,6 +2,47 @@
 @import 'cards.scss';
 @import 'shadows.scss';
 
+.add-repository-card {
+    input {
+        margin: 0.5em 0;
+        width: 100%;
+    }
+
+    .alert {
+        margin-bottom: 0.5em;
+        display: flex;
+        flex-direction: column;
+
+        app-collapsible {
+            width: 100%;
+            margin-top: 0.5em;
+            overflow: hidden;
+            pre {
+                background: var(--color-caution-hover);
+                margin: 0;
+                padding: 0.5em;
+                border-radius: 0.25em;
+                white-space: pre-wrap;
+            }
+        }
+    }
+
+    .btn-row {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    button {
+        flex: 1;
+
+        &:not(:first-child) {
+            margin-left: 0.5em;
+        }
+    }
+}
+
 .repository-label {
     background: var(--color-surface);
     border-radius: 9999999px;
@@ -155,6 +196,7 @@
         display: flex;
         flex-direction: row;
         align-items: center;
+
         i.material-icons {
             font-size: 1.25em;
             margin-right: 0.5em;

@@ -5,8 +5,58 @@
             <div class="section-header">
                 <h1 class="section-header-title">Set Repositories</h1>
                 <div class="section-header-actions">
-                    <button class="btn btn-rect btn-transparent">
+                    <button
+                        class="btn btn-rect btn-transparent"
+                        (click)="showAddRepositoryPane = !showAddRepositoryPane"
+                    >
                         <i class="material-icons">add</i>
+                    </button>
+                </div>
+            </div>
+            <div
+                class="card add-repository-card"
+                *ngIf="showAddRepositoryPane"
+                [@vshrink]
+            >
+                <h2>Add Repository</h2>
+                <input
+                    type="text"
+                    class="input"
+                    [disabled]="addRepositoryStatus === 'IN_PROGRESS'"
+                    placeholder="Repository URL"
+                    [(ngModel)]="addRepositoryUrl"
+                />
+                <div
+                    class="alert alert-error"
+                    *ngIf="addRepositoryStatus === 'ERROR'"
+                    @vshrink
+                >
+                    <div>{{ addRepositoryError }}</div>
+                    <app-collapsible
+                        title="Technical details"
+                        *ngIf="addRepositoryErrorDetails"
+                        @vshrink
+                    >
+                        <pre>{{ addRepositoryErrorDetails }}</pre>
+                    </app-collapsible>
+                </div>
+                <div class="btn-row">
+                    <button
+                        class="btn btn-secondary btn-rect"
+                        (click)="showAddRepositoryPane = false"
+                        [disabled]="addRepositoryStatus === 'IN_PROGRESS'"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        class="btn btn-primary btn-rect"
+                        [disabled]="
+                            !addRepositoryUrl.trim() ||
+                            addRepositoryStatus === 'IN_PROGRESS'
+                        "
+                        (click)="addRepository()"
+                    >
+                        Add
                     </button>
                 </div>
             </div>
