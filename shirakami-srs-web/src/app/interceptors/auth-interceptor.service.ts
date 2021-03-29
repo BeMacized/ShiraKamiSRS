@@ -42,18 +42,18 @@ export class AuthInterceptor implements HttpInterceptor {
     }
 
     includeAuthorizationHeader(requestUrl: string): boolean {
+        // Internal
+        if (requestUrl.startsWith('/')) return true;
+        // Same base url
         if (
             this.apiBaseUrl.startsWith('https://') ||
             this.apiBaseUrl.startsWith('http://')
         ) {
             if (requestUrl.startsWith(this.apiBaseUrl)) return true;
         }
+        // Front origin
         if (requestUrl.startsWith(document.location.origin)) return true;
-        console.log({
-            requestUrl,
-            origin: document.location.origin,
-            apiBaseUrl: this.apiBaseUrl,
-        });
+        // Otherwise, don't authorize
         return false;
     }
 }
