@@ -1,6 +1,7 @@
 @import 'themes';
 
 input[type='text'],
+input[type='email'],
 input[type='password'] {
     &.input {
         padding: 0.5em 1em;
