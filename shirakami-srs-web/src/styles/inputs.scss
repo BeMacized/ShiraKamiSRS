@@ -1,6 +1,7 @@
 @import 'themes';
 
 input[type='text'],
+input[type='email'],
 input[type='password'] {
     &.input {
         padding: 0.5em 1em;
@@ -11,6 +12,7 @@ input[type='password'] {
         transition: all 0.15s ease;
         background: var(--color-surface-mute);
         color: var(--color-on-surface);
+        max-width: 100%;
 
         &::placeholder {
             color: var(--color-on-surface-mute);
