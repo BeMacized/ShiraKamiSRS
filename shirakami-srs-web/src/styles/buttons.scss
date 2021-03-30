@@ -80,6 +80,12 @@ button.btn {
         &:not(:disabled):hover {
             --scoped-bg-color: var(--color-on-secondary);
         }
+        body.dark & {
+            --scoped-border-color: var(--color-surface-border);
+            &:not(:disabled):hover {
+                --scoped-bg-color: var(--color-surface-mute);
+            }
+        }
         &:disabled {
             opacity: 0.5;
         }
