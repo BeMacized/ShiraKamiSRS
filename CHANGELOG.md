@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## 0.1.24 (Unreleased)
+## 0.1.24
 ### Fixed
 - Changed email inputs to email type for improved autofill
 - Fixed transparent button hover effect in dark mode
