@@ -1,15 +1,15 @@
-<div
-    class="logo xs-hidden"
-    (mouseenter)="hover = true"
-    (mouseleave)="hover = false"
-    (click)="fbkActivate($event)"
->
-    <div [@logo]="hover || fbkActive ? 'shown' : 'hidden'">ShiraKami</div>
-    <div [@logoInv]="hover || fbkActive ? 'hidden' : 'shown'">白紙</div>
-    <div>SRS</div>
+<div *ngIf="type === 'HEADER'" class="header-logo">
+    <div
+        class="img-container"
+        (click)="fbkActivate($event)"
+        [class.fbk]="fbkActive"
+    >
+        <img />
+    </div>
+    <div class="fbk-tagline" @vshrink *ngIf="fbkActive">{{ fbkString }}</div>
 </div>
-<div class="fbk-tagline" @vshrink *ngIf="fbkActive">{{ fbkString }}</div>
-<div class="logo sm-hidden">
-    <div>白紙</div>
-    <div>SRS</div>
+<div *ngIf="type === 'BANNER'" class="banner-logo">
+    <div class="img-container">
+        <img />
+    </div>
 </div>
