@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { vshrink } from '../../../utils/animations';
 import {
     animate,
@@ -14,54 +14,16 @@ const fbk = '猫じゃないですよ~';
     selector: 'app-logo',
     templateUrl: './logo.component.html',
     styleUrls: ['./logo.component.scss'],
-    animations: [
-        vshrink('vshrink', '0.5s ease'),
-        trigger('logo', [
-            state(
-                '*',
-                style({
-                    width: 0,
-                    'margin-left': 0,
-                    'margin-right': 0,
-                    'padding-left': 0,
-                    'padding-right': 0,
-                })
-            ),
-            state(
-                'hidden',
-                style({
-                    width: 0,
-                    'margin-left': 0,
-                    'margin-right': 0,
-                    'padding-left': 0,
-                    'padding-right': 0,
-                })
-            ),
-            state('shown', style({})),
-            transition('hidden => shown', [animate('0.15s ease')]),
-            transition('shown => hidden', [animate('0.15s ease')]),
-        ]),
-        trigger('logoInv', [
-            state(
-                'hidden',
-                style({
-                    width: 0,
-                    'margin-left': 0,
-                    'margin-right': 0,
-                    'padding-left': 0,
-                    'padding-right': 0,
-                })
-            ),
-            state('shown', style({})),
-            transition('hidden => shown', [animate('0.15s ease')]),
-            transition('shown => hidden', [animate('0.15s ease')]),
-        ]),
-    ],
+    animations: [vshrink('vshrink', '0.5s ease')],
 })
 export class LogoComponent implements OnInit {
     hover = false;
     fbkActive = false;
     fbkString: string;
+    // fbkActive = true;
+    // fbkString = fbk;
+
+    @Input() type: 'HEADER' | 'BANNER' = 'BANNER';
 
     constructor() {}
 

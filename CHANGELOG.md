@@ -1,6 +1,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 0.1.25 (Unreleased)
+### Added
+- New logo images
+- Theming controls to mobile navigation
+- Logout option to mobile navigation
+
+### Removed
+- Removed account dropdown on mobile
+
 ## 0.1.24
 ### Fixed
 - Changed email inputs to email type for improved autofill

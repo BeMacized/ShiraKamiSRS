@@ -2,47 +2,51 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    max-height: 100%;
+    height: 100%;
     overflow: hidden;
 }
 
-.fbk-tagline {
-    margin-top: -0.5em;
-    font-size: 1.5em;
-    font-weight: bold;
+.header-logo {
+    max-height: 100%;
+    max-width: 100%;
+    height: 100%;
+    position: relative;
+    padding: 0 0.5em;
+
+    .img-container {
+        height: 100%;
+        transition: all 0.55s ease;
+        img {
+            height: 100%;
+            content: var(--image-logo-header);
+        }
+        &.fbk {
+            transform: perspective(400px) rotateX(-45deg) translateY(-2.5em);
+        }
+    }
+    .fbk-tagline {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        font-size: 1.5em;
+        font-weight: bold;
+        text-align: center;
+    }
 }
 
-.logo {
-    font-size: 4em;
-    user-select: none;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
+.banner-logo {
+    max-height: 100%;
+    max-width: 100%;
 
-    &,
-    div {
-        word-break: keep-all;
-        white-space: nowrap;
-        overflow: hidden;
-    }
-
-    div {
-        transition: all 0.15s ease;
-        overflow: hidden;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-
-        &:nth-child(1),
-        &:nth-child(2) {
-            color: var(--color-primary);
-            font-weight: 200;
-        }
-
-        &:last-child {
-            color: var(--color-on-surface);
-            font-weight: 200;
+    .img-container {
+        max-height: 100%;
+        max-width: 100%;
+        img {
+            max-width: 100%;
+            max-height: 100%;
+            content: var(--image-logo-banner);
         }
     }
 }

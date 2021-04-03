@@ -71,6 +71,9 @@
     --color-success: #{material-color('light-green', '500')};
     --color-success-hover: #{material-color('light-green', '400')};
     --color-on-success: white;
+
+    --image-logo-header: url('/assets/img/logos/logo_header_light.png');
+    --image-logo-banner: url('/assets/img/logos/logo_banner_light.png');
 }
 
 @mixin darkTheme() {
@@ -107,6 +110,9 @@
     --color-success: #{material-color('light-green', '900')};
     --color-success-hover: #{material-color('light-green', '800')};
     --color-on-success: white;
+
+    --image-logo-header: url('/assets/img/logos/logo_header_dark.png');
+    --image-logo-banner: url('/assets/img/logos/logo_banner_dark.png');
 }
 
 // Selectors

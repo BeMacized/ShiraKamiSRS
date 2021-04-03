@@ -23,7 +23,27 @@
     </span>
 </div>
 <div class="separator"></div>
-
+<div class="theme-selector">
+    <button
+        [class.active]="theme.settings.mode === 'SYSTEM'"
+        (click)="theme.setMode('SYSTEM')"
+    >
+        <i class="material-icons">brightness_auto</i>
+    </button>
+    <button
+        [class.active]="theme.settings.mode === 'LIGHT'"
+        (click)="theme.setMode('LIGHT')"
+    >
+        <i class="material-icons">brightness_5</i>
+    </button>
+    <button
+        [class.active]="theme.settings.mode === 'DARK'"
+        (click)="theme.setMode('DARK')"
+    >
+        <i class="material-icons">nights_stay</i>
+    </button>
+</div>
+<!--<div class="separator"></div>-->
 <div class="menu-block">
     <button class="menu-item" routerLink="/dashboard" routerLinkActive="active">
         <i class="material-icons">dashboard</i>
@@ -36,5 +56,11 @@
     >
         <i class="material-icons">move_to_inbox</i>
         <span>Discover Sets</span>
+    </button>
+</div>
+<div class="menu-block">
+    <button class="menu-item" (click)="authService.logout()">
+        <i class="material-icons">exit_to_app</i>
+        <span>Log Out</span>
     </button>
 </div>
