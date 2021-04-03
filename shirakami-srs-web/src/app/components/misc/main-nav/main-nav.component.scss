@@ -108,7 +108,9 @@ button.btn.btn-action {
 
 app-logo {
     font-size: 0.75em;
-    margin-right: 3em;
+    @include bp(sm) {
+        margin-right: 3em;
+    }
 }
 
 .username {
@@ -189,15 +191,6 @@ app-logo {
             &:active {
             }
         }
-    }
-
-    &-username {
-        padding: 1em 2em;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        transition: all 0.15s ease;
-        user-select: none;
     }
 
     &-item {

@@ -4,6 +4,8 @@ import { User } from '../../../models/user.model';
 import { takeUntil } from 'rxjs/operators';
 import { UserService } from '../../../services/user.service';
 import { Subject } from 'rxjs';
+import { AuthService } from '../../../services/auth.service';
+import { ThemeService } from '../../../services/theme.service';
 
 @Component({
     selector: 'app-mobile-nav',
@@ -16,7 +18,9 @@ export class MobileNavComponent implements OnInit, OnDestroy {
 
     constructor(
         public menuService: MenuService,
-        private userService: UserService
+        private userService: UserService,
+        public authService: AuthService,
+        public theme: ThemeService
     ) {
         this.userService.user
             .pipe(takeUntil(this.destroy$))

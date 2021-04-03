@@ -13,7 +13,7 @@
     >
         <i class="material-icons">menu</i>
     </button>
-    <app-logo></app-logo>
+    <app-logo type="HEADER"></app-logo>
     <div
         class="nav-item xs-hidden"
         routerLink="/dashboard"
@@ -34,14 +34,14 @@
             <span>Discover Sets</span>
         </button>
     </div>
-    <div class="left">
+    <div class="left xs-hidden">
         <div
             class="nav-item"
             *ngIf="user"
             (clickOutside)="showAccountDropdown = false"
         >
             <button class="nav-item-content account" (click)="clickAccount()">
-                <span class="username xs-hidden">
+                <span class="username">
                     <span>{{ user.username }}</span>
                     <span
                         >#{{ (user.discriminator + '').padStart(4, '0') }}</span
@@ -77,12 +77,6 @@
                     >
                         <i class="material-icons">nights_stay</i>
                     </button>
-                </div>
-                <div class="dropdown-username username sm-hidden">
-                    <span>{{ user.username }}</span>
-                    <span
-                        >#{{ (user.discriminator + '').padStart(4, '0') }}</span
-                    >
                 </div>
                 <div class="dropdown-item" (click)="authService.logout()">
                     <i class="material-icons">exit_to_app</i>
