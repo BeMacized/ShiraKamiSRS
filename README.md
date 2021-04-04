@@ -16,11 +16,7 @@ This is the main repository for ShiraKamiSRS. It is a self-hostable Spaced Repet
 
 Want to get started? A publicly hosted instance is available over at [shirakamisrs.com](https://shirakamisrs.com/)!
 
-**Note:** Currently, ShiraKamiSRS is still in its very early stages. A lot of very basic/obvious functionality is still missing. Check out [here](Roadmap) what is planned!
-
-<p align="center">
-    <img src="https://github.com/BeMacized/ShiraKamiSRS/raw/feature/readme/docs/resources/mockup_preview.png" width="900">
-</p>
+**Note:** Currently, ShiraKamiSRS is still in its very early stages. A lot of very basic/obvious functionality is still missing. Check out what is planned [here](#roadmap)!
 
 ## Features
 
@@ -28,7 +24,7 @@ The main highlights:
 
 - :books: Learning your own vocabulary<br>
   Build your own cards and sets.
-- :keyboard: Built in IME<br>
+- :keyboard: Built-in IME<br>
   For easily typing hiragana and katakana.
 - :houses: Completely [self-hostable](https://github.com/BeMacized/ShiraKamiSRS/wiki/Self-Hosting)<br>
   For if you prefer running things on your own server.
@@ -36,6 +32,11 @@ The main highlights:
   Easily import pre-built sets. Anyone can host repositories to share sets!
 - :safety_vest:	Importing/Exporting sets<br>
   Easily back up your progress, or move your data to a different instance.
+- :iphone: Mobile friendly interface<br>
+  Do your reviews on the go!
   
+<p align="center">
+    <img src="https://github.com/BeMacized/ShiraKamiSRS/raw/feature/readme/docs/resources/mockup_preview.png" width="900">
+</p>
 
 ## Roadmap
