@@ -1,0 +1,40 @@
+name: 'Testing Build'
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+-testing.[0-9]+'
+
+jobs:
+  build_publish_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
+      - name: Build and publish Docker image
+        uses: sergeysova/docker-publish-action@v1.1.1
+        with:
+          image: bemacized/shirakami-srs
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CR_PAT }}
+          tag_semver: fail
+          semver_higher: true
+          buildargs: 'BUILD_VERSION=${{steps.get_version.outputs.VERSION}}'
+      - name: Update deployments
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.DO_SSH_HOST }}
+          username: ${{ secrets.DO_SSH_USER }}
+          key: ${{ secrets.DO_SSH_PRIVKEY }}
+          port: ${{ secrets.DO_SSH_PORT }}
+          script: docker-compose pull && docker-compose up -d --remove-orphans
+      - uses: sarisia/actions-status-discord@v1
+        if: always()
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          username: GitHub Actions
+          description: "Testing Build & Deploy"
+          avatar_url: 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'
