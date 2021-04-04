@@ -10,7 +10,7 @@
     <a><img alt="Production Build Status" src="https://github.com/BeMacized/ShiraKamiSRS/actions/workflows/production-build.yml/badge.svg"/></a>
     <a><img alt="Testing Build Status" src="https://github.com/BeMacized/ShiraKamiSRS/actions/workflows/testing-build.yml/badge.svg"/></a>
     <a href="https://discord.gg/dvsgnxWUr5"><img alt="Discord" src="https://img.shields.io/discord/816313048783388694?color=7289DA&label=chat&logo=discord"></a>
-    <a href="https://github.com/BeMacized/ShiraKamiSRS/blob/master/readme/LICENSE"><img alt="License" src="https://img.shields.io/github/license/BeMacized/ShiraKamiSRS"></a>
+    <a href="https://github.com/BeMacized/ShiraKamiSRS/blob/develop/LICENSE"><img alt="License" src="https://img.shields.io/github/license/BeMacized/ShiraKamiSRS"></a>
 </p>
 
 This is the main repository for ShiraKamiSRS. It is a self-hostable Spaced Repetition System (SRS) specifically geared towards learning Japanese vocabulary, heavily inspired by [WaniKani](https://wanikani.com/).
@@ -61,7 +61,7 @@ ShiraKamiSRS has been built with [Angular](https://angular.io/) and [NestJS](htt
 
 ## Roadmap
 
-Currently, ShiraKamiSRS is still missing a lot of basic features. I probably have more things I still want to do than I could list here, but I do think it is important to list a few major ones so it is known they are still coming:
+Currently, ShiraKamiSRS is still missing a lot of basic features. I probably have more things I still want to do than I could list here, but I do think it is important to list a few major ones so it is known they are still coming. In no particular order:
 
 - User Settings<br>
   Currently there is no way for users to manage their own settings. In the future, users should be able to change their account information such as their email, username, or avatar.

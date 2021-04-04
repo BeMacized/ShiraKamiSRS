@@ -46,6 +46,8 @@ import { SetBrowseViewComponent } from './views/set-browse-view/set-browse-view.
 import { MobileNavComponent } from './components/misc/mobile-nav/mobile-nav.component';
 import { ReviewModeChipComponent } from './components/misc/review-mode-chip/review-mode-chip.component';
 import { SetPreviewModalComponent } from './components/modals/set-preview-modal/set-preview-modal.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 export function initializeApp(appInitService: AppInitService) {
     return () => appInitService.init();
@@ -98,6 +100,12 @@ export function initializeApp(appInitService: AppInitService) {
         MomentModule,
         Ng2FittextModule,
         NgPipesModule,
+        ServiceWorkerModule.register('ngsw-worker.js', {
+          enabled: environment.production,
+          // Register the ServiceWorker as soon as the app is stable
+          // or after 30 seconds (whichever comes first).
+          registrationStrategy: 'registerWhenStable:30000'
+        }),
     ],
     providers: [
         ThemeService,
