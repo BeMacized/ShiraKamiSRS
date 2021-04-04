@@ -61,7 +61,7 @@ ShiraKamiSRS has been built with [Angular](https://angular.io/) and [NestJS](htt
 
 ## Roadmap
 
-Currently, ShiraKamiSRS is still missing a lot of basic features. I probably have more things I still want to do than I could list here, but I do think it is important to list a few major ones so it is known they are still coming:
+Currently, ShiraKamiSRS is still missing a lot of basic features. I probably have more things I still want to do than I could list here, but I do think it is important to list a few major ones so it is known they are still coming. In no particular order:
 
 - User Settings<br>
   Currently there is no way for users to manage their own settings. In the future, users should be able to change their account information such as their email, username, or avatar.
