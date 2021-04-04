@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://github.com/BeMacized/ShiraKamiSRS/raw/feature/readme/docs/resources/logo_banner/Logo%20Banner%20Light.png" width="350">
+    <img src="https://github.com/BeMacized/ShiraKamiSRS/raw/develop/docs/resources/logo_banner/Logo%20Banner%20Light.png" width="350">
     <br/>
     <br/>
     Open source, self-hostable SRS for studying Japanese vocabulary.
@@ -20,7 +20,7 @@ Want to get started? A publicly hosted instance is available over at [shirakamis
 **Note:** Currently, ShiraKamiSRS is still in its very early stages. A lot of very basic/obvious functionality is still missing. Check out what is planned [here](#roadmap)!
 
 <p align="center">
-    <img src="https://github.com/BeMacized/ShiraKamiSRS/raw/feature/readme/docs/resources/mockup_preview.png" width="900">
+    <img src="https://github.com/BeMacized/ShiraKamiSRS/raw/develop/docs/resources/mockup_preview.png" width="900">
 </p>
 
 ## Features
