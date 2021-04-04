@@ -12,8 +12,6 @@
     <a href="https://discord.gg/dvsgnxWUr5"><img alt="Discord" src="https://img.shields.io/discord/816313048783388694?color=7289DA&label=chat&logo=discord"></a>
 </p>
 
-## About
-
 This is the main repository for ShiraKamiSRS. It is a self-hostable Spaced Repetition System (SRS) specifically geared towards learning Japanese vocabulary, heavily inspired by [WaniKani](https://wanikani.com/).
 
 Want to get started? A publicly hosted instance is available over at [shirakamisrs.com](https://shirakamisrs.com/)!
@@ -21,7 +19,9 @@ Want to get started? A publicly hosted instance is available over at [shirakamis
 **Note:** Currently, ShiraKamiSRS is still in its very early stages. A lot of very basic/obvious functionality is still missing. Check out [here](Roadmap) what is planned!
 
 
-### Features
+## Features
+
+The main highlights:
 
 - :books: Learning your own vocabulary<br>
   Build your own cards and sets.
