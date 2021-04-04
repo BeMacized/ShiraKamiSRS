@@ -47,6 +47,7 @@ FROM card_entity ce
          ) as setModesRaw
     WHERE mode IS NOT NULL
 ) setModes ON setModes.setId = ce.setId
+LEFT JOIN set_entity ON ce.setId = set_entity.id
 WHERE ce.id NOT IN (
     SELECT cardId
     FROM review_entity
@@ -55,13 +56,20 @@ WHERE ce.id NOT IN (
 )
 AND (setModes.mode <> 'kanjiToKana' OR ce.valueSupportedmodes LIKE '%kanjiToKana%')
 ${setId ? 'AND setModes.setId = ?' : ''}
+AND set_entity.userId = ?
 ORDER BY setModes.createdAt ASC, ce.sortIndex ASC
 ${limit ? `LIMIT ?` : ``}     
     `;
-    const lessonParameters: any[] = [userId];
-    if (setId) lessonParameters.push(setId);
-    lessonParameters.push(...lessonParameters, ...lessonParameters);
-    if (setId) lessonParameters.push(setId);
+    const lessonParameters: any[] = [
+      userId,
+      setId,
+      userId,
+      setId,
+      userId,
+      setId,
+      setId,
+      userId,
+    ].filter((param) => !!param);
     // TODO: FIND OUT HOW TO OPTIMIZE QUERY TO LIMIT DISTINCT VALUES INSTEAD OF FILTERING LATER.
     if (limit) lessonParameters.push(limit * 3);
 
@@ -133,6 +141,7 @@ FROM card_entity ce
          ) as setModesRaw
     WHERE mode IS NOT NULL
 ) setModes ON setModes.setId = ce.setId
+LEFT JOIN set_entity ON ce.setId = set_entity.id
 WHERE ce.id NOT IN (
     SELECT cardId
     FROM review_entity
@@ -141,11 +150,18 @@ WHERE ce.id NOT IN (
 )
 AND (setModes.mode <> 'kanjiToKana' OR ce.valueSupportedmodes LIKE '%kanjiToKana%')
 ${setId ? 'AND setModes.setId = ?' : ''}
+AND set_entity.userId = ?
 `;
-    const countParameters = [...lessonParameters].slice(
-      0,
-      lessonParameters.length - (limit ? 1 : 0),
-    );
+    const countParameters = [
+      userId,
+      setId,
+      userId,
+      setId,
+      userId,
+      setId,
+      setId,
+      userId,
+    ].filter((param) => !!param);
     const total = (
       await this.cardRepository.query(countQuery, countParameters)
     )[0].total;
