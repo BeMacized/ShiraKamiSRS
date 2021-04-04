@@ -18,6 +18,10 @@ Want to get started? A publicly hosted instance is available over at [shirakamis
 
 **Note:** Currently, ShiraKamiSRS is still in its very early stages. A lot of very basic/obvious functionality is still missing. Check out what is planned [here](#roadmap)!
 
+<p align="center">
+    <img src="https://github.com/BeMacized/ShiraKamiSRS/raw/feature/readme/docs/resources/mockup_preview.png" width="900">
+</p>
+
 ## Features
 
 The main highlights:
@@ -34,9 +38,5 @@ The main highlights:
   Easily back up your progress, or move your data to a different instance.
 - :iphone: Mobile friendly interface<br>
   Do your reviews on the go!
-  
-<p align="center">
-    <img src="https://github.com/BeMacized/ShiraKamiSRS/raw/feature/readme/docs/resources/mockup_preview.png" width="900">
-</p>
 
 ## Roadmap
