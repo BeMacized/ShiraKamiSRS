@@ -42,7 +42,7 @@ The main highlights:
   
 ### Built With
 
-ShiraKamiSRS has been built on [Angular](https://angular.io/) and [NestJS](https://nestjs.com/).
+ShiraKamiSRS has been built with [Angular](https://angular.io/) and [NestJS](https://nestjs.com/).
   
 ## Getting Started
 
