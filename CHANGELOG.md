@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 0.1.28
+### Added
+- PWA Functionality
+- Various icons
+
 ## 0.1.27
 ### Fixed
 - Fixed bug with users receiving lessons from other users

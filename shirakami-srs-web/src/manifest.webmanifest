@@ -1,0 +1,13 @@
+{
+  "name": "ShiraKamiSRS",
+  "short_name": "ShiraKami",
+  "theme_color": "#26c6da",
+  "background_color": "#161b22",
+  "display": "standalone",
+  "scope": "./",
+  "start_url": "./",
+  "icons": [
+    { "src": "/192.png", "type": "image/png", "sizes": "192x192" },
+    { "src": "/512.png", "type": "image/png", "sizes": "512x512" }
+  ]
+}
