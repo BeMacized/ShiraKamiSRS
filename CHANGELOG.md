@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 0.1.26
+- No changes
+
 ## 0.1.25
 ### Added
 - New logo images
