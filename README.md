@@ -39,6 +39,8 @@ The main highlights:
   Easily back up your progress, or move your data to a different instance.
 - :iphone: Mobile friendly interface<br>
   Do your reviews on the go!
+- :waning_crescent_moon: Built-in dark mode<br>
+  Join us on the dark side. We have kitties!
   
 ### Built With
 
