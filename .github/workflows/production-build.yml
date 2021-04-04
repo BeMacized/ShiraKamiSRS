@@ -1,9 +1,9 @@
-name: 'Build & Deploy'
+name: 'Production Build'
 
 on:
   push:
     tags:
-      - '*'
+      - '[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
   build_publish_and_deploy:
@@ -14,17 +14,18 @@ jobs:
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
       - name: Build and publish Docker image
-        uses: sergeysova/docker-publish-action@master
+        uses: sergeysova/docker-publish-action@v1.1.1
         with:
           image: bemacized/shirakami-srs
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.CR_PAT }}
+          tag_extra: latest
           tag_semver: fail
           semver_higher: true
           buildargs: 'BUILD_VERSION=${{steps.get_version.outputs.VERSION}}'
       - name: Update deployments
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v0.1.4
         with:
           host: ${{ secrets.DO_SSH_HOST }}
           username: ${{ secrets.DO_SSH_USER }}
@@ -36,5 +37,5 @@ jobs:
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           username: GitHub Actions
-          description: "Build, Publish & Deploy"
+          description: "Production Build & Deploy"
           avatar_url: 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'
