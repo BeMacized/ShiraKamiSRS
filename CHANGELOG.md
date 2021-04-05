@@ -6,6 +6,9 @@ All notable changes to this project will be documented in this file.
 - PWA Functionality
 - Various icons
 
+### Fixed
+- Some usability issues on iOS
+
 ## 0.1.27
 ### Fixed
 - Fixed bug with users receiving lessons from other users
@@ -20,13 +23,13 @@ All notable changes to this project will be documented in this file.
 - Logout option to mobile navigation
 
 ### Removed
-- Removed account dropdown on mobile
+- Account dropdown on mobile
 
 ## 0.1.24
 ### Fixed
+- Input fields in modals overflowing on mobile devices
+- Transparent button hover effect in dark mode
 - Changed email inputs to email type for improved autofill
-- Fixed transparent button hover effect in dark mode
-- Fixed input fields in modals overflowing on mobile devices
 
 ## 0.1.23
 ### Added
