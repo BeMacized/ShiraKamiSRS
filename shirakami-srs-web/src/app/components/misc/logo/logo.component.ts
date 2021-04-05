@@ -20,8 +20,6 @@ export class LogoComponent implements OnInit {
     hover = false;
     fbkActive = false;
     fbkString: string;
-    // fbkActive = true;
-    // fbkString = fbk;
 
     @Input() type: 'HEADER' | 'BANNER' = 'BANNER';
 
