@@ -48,6 +48,8 @@ import { ReviewModeChipComponent } from './components/misc/review-mode-chip/revi
 import { SetPreviewModalComponent } from './components/modals/set-preview-modal/set-preview-modal.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { SnackbarComponent } from './components/misc/snackbar/snackbar.component';
+import { UpdateService } from './services/update.service';
 
 export function initializeApp(appInitService: AppInitService) {
     return () => appInitService.init();
@@ -89,6 +91,7 @@ export function initializeApp(appInitService: AppInitService) {
         MobileNavComponent,
         ReviewModeChipComponent,
         SetPreviewModalComponent,
+        SnackbarComponent,
     ],
     imports: [
         BrowserModule,
@@ -101,10 +104,10 @@ export function initializeApp(appInitService: AppInitService) {
         Ng2FittextModule,
         NgPipesModule,
         ServiceWorkerModule.register('ngsw-worker.js', {
-          enabled: environment.production,
-          // Register the ServiceWorker as soon as the app is stable
-          // or after 30 seconds (whichever comes first).
-          registrationStrategy: 'registerWhenStable:30000'
+            enabled: environment.production,
+            // Register the ServiceWorker as soon as the app is stable
+            // or after 30 seconds (whichever comes first).
+            registrationStrategy: 'registerWhenStable:30000',
         }),
     ],
     providers: [
@@ -122,7 +125,8 @@ export function initializeApp(appInitService: AppInitService) {
     // entryComponents: [],
 })
 export class AppModule {
-    constructor() {
+    constructor(updateService: UpdateService) {
         console.log(`Loading ShiraKamiSRS v${buildVersion}`);
+        updateService.init();
     }
 }

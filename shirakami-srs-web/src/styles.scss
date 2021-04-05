@@ -21,7 +21,8 @@ body {
     font-size: 12px;
     min-height: 100vh;
     max-width: 100vw;
-    transition: background-color 0.15s ease, color .15s ease;
+    transition: background-color 0.15s ease, color 0.15s ease;
+    touch-action: manipulation;
 }
 
 * {
