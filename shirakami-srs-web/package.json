@@ -24,6 +24,7 @@
         "@angular/router": "~11.0.5",
         "@angular/service-worker": "~11.0.5",
         "@ngx-pwa/local-storage": "^11.0.2",
+        "@types/uuid": "^8.3.0",
         "animate.css": "^4.1.1",
         "damerau-levenshtein-js": "^1.1.7",
         "file-saver": "^2.0.5",
@@ -39,6 +40,7 @@
         "rxjs": "~6.6.0",
         "sass-material-colors": "^0.0.5",
         "tslib": "^2.0.0",
+        "uuid": "^8.3.2",
         "wanakana": "^4.0.2",
         "zone.js": "~0.10.2"
     },

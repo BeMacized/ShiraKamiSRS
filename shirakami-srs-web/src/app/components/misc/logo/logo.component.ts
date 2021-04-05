@@ -7,6 +7,7 @@ import {
     transition,
     trigger,
 } from '@angular/animations';
+import { SnackbarService } from '../../../services/snackbar.service';
 
 const fbk = '猫じゃないですよ~';
 

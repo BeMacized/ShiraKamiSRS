@@ -12,3 +12,15 @@
     <router-outlet #o="outlet"></router-outlet>
 </div>
 <div id="global-overlay-container"></div>
+<div id="snackbar-overlay-container">
+    <div
+        class="snackbar-container"
+        *ngFor="
+            let snackbar of snackbarService.snackbars | async;
+            trackBy: snackbarService.trackSnackbarBy
+        "
+        [@fadeUp]
+    >
+        <app-snackbar [snackbar]="snackbar"></app-snackbar>
+    </div>
+</div>
