@@ -13,7 +13,7 @@
     <a href="https://github.com/BeMacized/ShiraKamiSRS/blob/develop/LICENSE"><img alt="License" src="https://img.shields.io/github/license/BeMacized/ShiraKamiSRS"></a>
 </p>
 
-This is the main repository for ShiraKamiSRS. It is a self-hostable Spaced Repetition System (SRS) specifically geared towards learning Japanese vocabulary, heavily inspired by [WaniKani](https://wanikani.com/).
+This is the main repository for ShiraKamiSRS. It is an open source, self-hostable [Spaced Repetition System (SRS)](https://en.wikipedia.org/wiki/Spaced_repetition) specifically geared towards learning Japanese vocabulary, heavily inspired by [WaniKani](https://wanikani.com/).
 
 Want to get started? A publicly hosted instance is available over at [shirakamisrs.com](https://shirakamisrs.com/)!
 
