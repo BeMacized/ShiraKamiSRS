@@ -7,6 +7,7 @@ import {
     transition,
     trigger,
 } from '@angular/animations';
+import { SnackbarService } from '../../../services/snackbar.service';
 
 const fbk = '猫じゃないですよ~';
 
@@ -20,8 +21,6 @@ export class LogoComponent implements OnInit {
     hover = false;
     fbkActive = false;
     fbkString: string;
-    // fbkActive = true;
-    // fbkString = fbk;
 
     @Input() type: 'HEADER' | 'BANNER' = 'BANNER';
 

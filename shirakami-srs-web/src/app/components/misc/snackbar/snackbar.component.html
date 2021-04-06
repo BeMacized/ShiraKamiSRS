@@ -1,0 +1,23 @@
+<div
+    class="snackbar"
+    (click)="onTap()"
+    [style.cursor]="snackbar.options.tapToDismiss ? 'pointer' : 'initial'"
+>
+    <div class="snackbar-content">
+        <div class="snackbar-text">{{ snackbar.options.text }}</div>
+        <button
+            class="snackbar-action"
+            *ngIf="snackbar.options.action"
+            (click)="snackbar.options.action.onTap(snackbar)"
+        >
+            <span>{{ snackbar.options.action.label }}</span>
+        </button>
+    </div>
+    <div class="snackbar-progress" *ngIf="snackbar.options.timeout">
+        <div
+            class="snackbar-progress-fill"
+            [style.width]="barWidth"
+            [style.transition-duration]="barTransitionDuration"
+        ></div>
+    </div>
+</div>
