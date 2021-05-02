@@ -57,7 +57,7 @@ export class ReviewsService {
       .createQueryBuilder('review')
       .leftJoinAndSelect('review.card', 'card')
       .leftJoinAndSelect('card.set', 'set')
-      .where('reviewDate BETWEEN :low AND :high', {
+      .where('(reviewDate BETWEEN :low AND :high)', {
         low: moment.unix(0).toDate().toISOString(),
         high: moment()
           .startOf('hour')
@@ -65,18 +65,19 @@ export class ReviewsService {
           .toDate()
           .toISOString(),
       })
-      .andWhere('currentLevel < :maxLevel', {
+      .andWhere('(currentLevel < :maxLevel)', {
         maxLevel: user.srsSettings.levels.reduce(
           (acc, e) => Math.max(acc, e.id),
           0,
         ),
       })
-      .andWhere('set.userId = :userId', { userId: user.id })
-      .andWhere(`set.modes LIKE '%'||mode||'%'`);
-    if (setId)
-      reviewQuery = reviewQuery.andWhere('card.setId = :setId', {
+      .andWhere('(set.userId = :userId)', { userId: user.id })
+      .andWhere(`(set.modes LIKE '%'||mode||'%')`);
+    if (setId) {
+      reviewQuery = reviewQuery.andWhere('(card.setId = :setId)', {
         setId: setId,
       });
+    }
     const reviews = await reviewQuery.getMany();
     const cards: CardEntity[] = Object.values(
       reviews.reduce(
